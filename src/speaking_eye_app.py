@@ -1,6 +1,7 @@
 from gi.repository import Wnck, Gtk, GObject
 
 from gtk_extras import get_window_name
+from x_helpers import get_wm_class
 
 
 class SpeakingEyeApp(Gtk.Application):
@@ -17,6 +18,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.main_loop = GObject.MainLoop()
 
     def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
+        wm_class = str()
         active_window = screen.get_active_window()
 
         # to prevent double handler connections
@@ -25,11 +27,13 @@ class SpeakingEyeApp(Gtk.Application):
 
         if active_window:
             self.name_changed_handler_id = active_window.connect('name-changed', self.on_name_changed)
+            wm_class = get_wm_class(active_window.get_xid())
 
-        print(f'{get_window_name(previously_active_window)} -> {get_window_name(active_window)}')
+        print(f'{wm_class}')
+        print(f'\t{get_window_name(active_window)}')
 
     def on_name_changed(self, window: Wnck.Window) -> None:
-        print(f'\t new name: {get_window_name(window)}')
+        print(f'\t-> {get_window_name(window)}')
 
     def start_main_loop(self) -> None:
         try:
