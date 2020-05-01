@@ -1,13 +1,20 @@
+import os
 from gi.repository import Wnck, Gtk, GObject
 
 from gtk_extras import get_window_name
+from tray_icon import TrayIcon
 from x_helpers import get_wm_class
+
+APP_ID = 'speaking-eye'
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+ACTIVE_ICON = os.path.join(SRC_DIR, '../icon/active.png')
 
 
 class SpeakingEyeApp(Gtk.Application):
 
     def __init__(self):
         super().__init__()
+        self.icon = TrayIcon(APP_ID, ACTIVE_ICON, Gtk.Menu())
         self.screen = None
         self.main_loop = None
         self.name_changed_handler_id = None
