@@ -14,7 +14,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def __init__(self):
         super().__init__()
-        self.icon = TrayIcon(APP_ID, ACTIVE_ICON, Gtk.Menu())
+        self.icon = TrayIcon(APP_ID, ACTIVE_ICON, self.create_tray_menu())
         self.screen = None
         self.main_loop = None
         self.name_changed_handler_id = None
@@ -50,3 +50,17 @@ class SpeakingEyeApp(Gtk.Application):
 
     def stop_main_loop(self) -> None:
         self.main_loop.quit()
+
+    def on_close_item_click(self, menu_item: Gtk.MenuItem) -> None:
+        self.stop_main_loop()
+
+    def create_tray_menu(self) -> Gtk.Menu:
+        menu = Gtk.Menu()
+
+        close_item = Gtk.MenuItem('Close')
+        close_item.connect('activate', self.on_close_item_click)
+
+        menu.append(close_item)
+        menu.show_all()
+
+        return menu
