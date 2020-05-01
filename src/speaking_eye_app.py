@@ -25,7 +25,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.main_loop = GObject.MainLoop()
 
     def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
-        wm_class = str()
+        wm_class = ''
         active_window = screen.get_active_window()
 
         # to prevent double handler connections
