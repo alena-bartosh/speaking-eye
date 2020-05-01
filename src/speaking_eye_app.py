@@ -20,7 +20,7 @@ class SpeakingEyeApp(Gtk.Application):
         active_window = screen.get_active_window()
 
         # to prevent double handler connections
-        if self.name_changed_handler_id:
+        if previously_active_window and self.name_changed_handler_id:
             previously_active_window.disconnect(self.name_changed_handler_id)
 
         if active_window:
