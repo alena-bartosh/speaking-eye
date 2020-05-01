@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, timedelta
 from gi.repository import Wnck, Gtk, GObject
 
 from gtk_extras import get_window_name
@@ -18,6 +19,9 @@ class SpeakingEyeApp(Gtk.Application):
         self.screen = None
         self.main_loop = None
         self.name_changed_handler_id = None
+        self.start_time = datetime.now()
+
+        print(f'### Start time: [{self.start_time.strftime("%Y-%m-%d %H:%M:%S")}]')
 
     def do_activate(self) -> None:
         self.screen = Wnck.Screen.get_default()
@@ -49,6 +53,13 @@ class SpeakingEyeApp(Gtk.Application):
             self.stop_main_loop()
 
     def stop_main_loop(self) -> None:
+        finish_time = datetime.now()
+        print(f'### Finish time: [{finish_time.strftime("%Y-%m-%d %H:%M:%S")}]')
+
+        work_time = finish_time - self.start_time
+        work_time -= timedelta(microseconds=work_time.microseconds)
+        print(f'### Work time: [{work_time}]')
+
         self.main_loop.quit()
 
     def on_close_item_click(self, menu_item: Gtk.MenuItem) -> None:
