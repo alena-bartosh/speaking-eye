@@ -56,6 +56,8 @@ class SpeakingEyeApp(Gtk.Application):
         if active_window:
             self.name_changed_handler_id = active_window.connect('name-changed', self.on_name_changed)
             self.wm_class = get_wm_class(active_window.get_xid())
+        else:
+            self.wm_class = 'Desktop'
 
         print(f'OPEN {self.wm_class}')
         print(f'\t{get_window_name(active_window)}')
