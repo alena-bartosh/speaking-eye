@@ -13,6 +13,7 @@ APP_ID = 'speaking-eye'
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 ACTIVE_ICON = os.path.join(SRC_DIR, '../icon/active.png')
 RESULT_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_results.tsv')
+RAW_DATA_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_raw_data.tsv')
 
 
 class SpeakingEyeApp(Gtk.Application):
@@ -28,8 +29,8 @@ class SpeakingEyeApp(Gtk.Application):
         self.active_tab_start_time = None
         self.active_window_name = None
         self.wm_class = None
-
         self.apps_time = {}
+        self.raw_data_tsv_file = open(RAW_DATA_TSV, 'a')
 
         Notify.init(APP_ID)
 
@@ -63,15 +64,17 @@ class SpeakingEyeApp(Gtk.Application):
             self.active_window_name = 'Desktop'
 
         print(f'OPEN {self.wm_class}')
-        print(f'\t{self.active_window_name}')
 
-    def on_close_window(self, now: datetime) -> None:
+    def on_close_window(self, now: datetime, save_to_file: bool = True) -> None:
         if not self.wm_class:
             return
 
         active_window_work_time = now - self.active_window_start_time
 
         print(f'CLOSE {self.wm_class} [{active_window_work_time}]')
+
+        if save_to_file:
+            self.save_activity_line(self.active_window_start_time, now)
 
         if self.wm_class in self.apps_time:
             self.apps_time[self.wm_class] += active_window_work_time
@@ -81,10 +84,10 @@ class SpeakingEyeApp(Gtk.Application):
         self.active_tab_start_time = None
 
     def on_name_changed(self, window: Wnck.Window) -> None:
-        self.active_window_name = get_window_name(window)
-
         now = datetime.now()
         self.on_close_tab(now)
+
+        self.active_window_name = get_window_name(window)
         self.active_tab_start_time = now
 
     def on_close_tab(self, now: datetime) -> None:
@@ -92,7 +95,9 @@ class SpeakingEyeApp(Gtk.Application):
             self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
 
         active_tab_work_time = now - active_tab_start_time
-        print(f'\t[{active_tab_work_time}] -> {self.active_window_name}')
+        print(f'\t[{active_tab_work_time}]\t{self.active_window_name}')
+
+        self.save_activity_line(active_tab_start_time, now)
 
     def start_main_loop(self) -> None:
         try:
@@ -104,7 +109,7 @@ class SpeakingEyeApp(Gtk.Application):
         now = datetime.now()
 
         self.on_close_tab(now)
-        self.on_close_window(now)
+        self.on_close_window(now, save_to_file=False)
 
         finish_time = now
         work_time = finish_time - self.start_time
@@ -113,6 +118,7 @@ class SpeakingEyeApp(Gtk.Application):
         finish_msg = f'Finish time: [{finish_time.strftime("%H:%M:%S")}]'
         work_time_msg = f'Work time: [{work_time}]'
 
+        print()
         print(f'{finish_msg}\n{work_time_msg}')
         print(f'Apps time: {json.dumps(self.apps_time, indent=2, default=str)}')
 
@@ -121,6 +127,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         pd.DataFrame(self.apps_time.items(), columns=['application', 'work_time']).to_csv(RESULT_TSV, sep='\t')
 
+        self.raw_data_tsv_file.close()
         self.main_loop.quit()
 
     def on_close_item_click(self, menu_item: Gtk.MenuItem) -> None:
@@ -139,3 +146,9 @@ class SpeakingEyeApp(Gtk.Application):
 
     def show_notification(self, msg: str) -> None:
         Notify.Notification.new('Speaking Eye', msg, ACTIVE_ICON).show()
+
+    def save_activity_line(self, start_time: datetime, end_time: datetime) -> None:
+        work_time = end_time - start_time
+
+        line = f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\n'
+        self.raw_data_tsv_file.write(line)
