@@ -85,6 +85,8 @@ class SpeakingEyeApp(Gtk.Application):
             self.stop()
 
     def stop(self) -> None:
+        self.on_close_window()
+
         finish_time = datetime.now()
         work_time = finish_time - self.start_time
         work_time -= timedelta(microseconds=work_time.microseconds)
