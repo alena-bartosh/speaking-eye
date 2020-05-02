@@ -20,7 +20,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.icon = TrayIcon(APP_ID, ACTIVE_ICON, self.create_tray_menu())
         self.screen = None
         self.main_loop = None
-        self.notify = Notify
         self.name_changed_handler_id = None
         self.start_time = datetime.now()
         self.active_window_start_time = datetime.now()
@@ -31,9 +30,9 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.apps_time = {}
 
-        self.notify.init(APP_ID)
+        Notify.init(APP_ID)
 
-        start_msg = f'### Start time: [{self.start_time.strftime("%Y-%m-%d %H:%M:%S")}]'
+        start_msg = f'Start time: [{self.start_time.strftime("%H:%M:%S")}]'
         print(start_msg)
         self.show_notification(msg=start_msg)
 
@@ -93,15 +92,15 @@ class SpeakingEyeApp(Gtk.Application):
         work_time = finish_time - self.start_time
         work_time -= timedelta(microseconds=work_time.microseconds)
 
-        finish_msg = f'### Finish time: [{finish_time.strftime("%Y-%m-%d %H:%M:%S")}]'
-        work_time_msg = f'### Work time: [{work_time}]'
+        finish_msg = f'Finish time: [{finish_time.strftime("%H:%M:%S")}]'
+        work_time_msg = f'Work time: [{work_time}]'
 
         print(f'{finish_msg}\n{work_time_msg}')
-        print(f'### Apps time: {json.dumps(self.apps_time, indent=2, default=str)}')
+        print(f'Apps time: {json.dumps(self.apps_time, indent=2, default=str)}')
 
         self.show_notification(msg=finish_msg)
         self.show_notification(msg=work_time_msg)
-        self.notify.uninit()
+        Notify.uninit()
 
         self.main_loop.quit()
 
@@ -120,4 +119,4 @@ class SpeakingEyeApp(Gtk.Application):
         return menu
 
     def show_notification(self, msg: str) -> None:
-        self.notify.Notification.new(f'|SPEAKING EYE| {msg}').show()
+        Notify.Notification.new(f'|SPEAKING EYE| {msg}').show()
