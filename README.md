@@ -6,7 +6,8 @@ sudo apt-get install \
     python3-gi \
     gir1.2-gtk-3.0 \
     gir1.2-wnck-3.0 \
-    gir1.2-appindicator3-0.1
+    gir1.2-appindicator3-0.1 \
+    gir1.2-notify-0.7
 ```
 
 ### Setup
