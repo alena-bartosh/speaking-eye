@@ -25,10 +25,9 @@ class SpeakingEyeApp(Gtk.Application):
         self.name_changed_handler_id = None
         self.start_time = datetime.now()
         self.active_window_start_time = datetime.now()
-        self.wm_class = ''
-
-        self.active_tab_start_time = datetime.now()
-        self.active_tab_work_time = 0
+        self.active_tab_start_time = None
+        self.active_window_name = None
+        self.wm_class = None
 
         self.apps_time = {}
 
@@ -44,30 +43,33 @@ class SpeakingEyeApp(Gtk.Application):
         self.main_loop = GObject.MainLoop()
 
     def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
-        self.on_close_window()
+        now = datetime.now()
+        self.on_close_window(now)
 
         # to prevent double handler connections
         if previously_active_window and self.name_changed_handler_id:
             previously_active_window.disconnect(self.name_changed_handler_id)
 
-        self.active_window_start_time = datetime.now()
+        self.active_window_start_time = now
 
         active_window = screen.get_active_window()
 
         if active_window:
             self.name_changed_handler_id = active_window.connect('name-changed', self.on_name_changed)
             self.wm_class = get_wm_class(active_window.get_xid())
+            self.active_window_name = get_window_name(active_window)
         else:
             self.wm_class = 'Desktop'
+            self.active_window_name = 'Desktop'
 
         print(f'OPEN {self.wm_class}')
-        print(f'\t{get_window_name(active_window)}')
+        print(f'\t{self.active_window_name}')
 
-    def on_close_window(self) -> None:
+    def on_close_window(self, now: datetime) -> None:
         if not self.wm_class:
             return
 
-        active_window_work_time = datetime.now() - self.active_window_start_time
+        active_window_work_time = now - self.active_window_start_time
 
         print(f'CLOSE {self.wm_class} [{active_window_work_time}]')
 
@@ -76,10 +78,21 @@ class SpeakingEyeApp(Gtk.Application):
         else:
             self.apps_time[self.wm_class] = active_window_work_time
 
+        self.active_tab_start_time = None
+
     def on_name_changed(self, window: Wnck.Window) -> None:
-        self.active_tab_work_time = round((datetime.now() - self.active_tab_start_time).total_seconds(), 3)
-        print(f'\t[{self.active_tab_work_time}] -> {get_window_name(window)}')
-        self.active_tab_start_time = datetime.now()
+        self.active_window_name = get_window_name(window)
+
+        now = datetime.now()
+        self.on_close_tab(now)
+        self.active_tab_start_time = now
+
+    def on_close_tab(self, now: datetime) -> None:
+        active_tab_start_time = \
+            self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
+
+        active_tab_work_time = now - active_tab_start_time
+        print(f'\t[{active_tab_work_time}] -> {self.active_window_name}')
 
     def start_main_loop(self) -> None:
         try:
@@ -88,9 +101,12 @@ class SpeakingEyeApp(Gtk.Application):
             self.stop()
 
     def stop(self) -> None:
-        self.on_close_window()
+        now = datetime.now()
 
-        finish_time = datetime.now()
+        self.on_close_tab(now)
+        self.on_close_window(now)
+
+        finish_time = now
         work_time = finish_time - self.start_time
         work_time -= timedelta(microseconds=work_time.microseconds)
 
