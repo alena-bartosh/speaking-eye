@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import json
 import os
 
 from gi.repository import Wnck, Gtk, GObject, Notify
+import pandas as pd
 
 from gtk_extras import get_window_name
 from tray_icon import TrayIcon
@@ -11,6 +12,7 @@ from x_helpers import get_wm_class
 APP_ID = 'speaking-eye'
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 ACTIVE_ICON = os.path.join(SRC_DIR, '../icon/active.png')
+RESULT_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_results.tsv')
 
 
 class SpeakingEyeApp(Gtk.Application):
@@ -101,6 +103,8 @@ class SpeakingEyeApp(Gtk.Application):
         self.show_notification(msg=finish_msg)
         self.show_notification(msg=work_time_msg)
         Notify.uninit()
+
+        pd.DataFrame(self.apps_time.items(), columns=['application', 'work_time']).to_csv(RESULT_TSV, sep='\t')
 
         self.main_loop.quit()
 
