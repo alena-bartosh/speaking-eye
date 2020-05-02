@@ -116,8 +116,7 @@ class SpeakingEyeApp(Gtk.Application):
         print(f'{finish_msg}\n{work_time_msg}')
         print(f'Apps time: {json.dumps(self.apps_time, indent=2, default=str)}')
 
-        self.show_notification(msg=finish_msg)
-        self.show_notification(msg=work_time_msg)
+        self.show_notification(msg=f'{finish_msg}; {work_time_msg}')
         Notify.uninit()
 
         pd.DataFrame(self.apps_time.items(), columns=['application', 'work_time']).to_csv(RESULT_TSV, sep='\t')
