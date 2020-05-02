@@ -1,4 +1,6 @@
 pkg-resources==0.0.0
+pycairo==1.19.1
+PyGObject==3.36.0
 ruamel.yaml==0.16.10
 ruamel.yaml.clib==0.2.0
 vext==0.7.3
