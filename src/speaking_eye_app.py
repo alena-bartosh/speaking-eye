@@ -139,4 +139,4 @@ class SpeakingEyeApp(Gtk.Application):
         return menu
 
     def show_notification(self, msg: str) -> None:
-        Notify.Notification.new(f'|SPEAKING EYE| {msg}').show()
+        Notify.Notification.new('Speaking Eye', msg, ACTIVE_ICON).show()
