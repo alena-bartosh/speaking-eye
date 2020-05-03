@@ -76,12 +76,17 @@ class SpeakingEyeApp(Gtk.Application):
         if save_to_file:
             self.save_activity_line(self.active_window_start_time, now)
 
-        if self.wm_class in self.apps_time:
-            self.apps_time[self.wm_class] += active_window_work_time
-        else:
-            self.apps_time[self.wm_class] = active_window_work_time
+        self.save_work_time(active_window_work_time)
 
         self.active_tab_start_time = None
+
+    def save_work_time(self, work_time: timedelta) -> None:
+        app = f'|{self.wm_class}|{self.active_window_name}'
+
+        if app in self.apps_time:
+            self.apps_time[app] += work_time
+        else:
+            self.apps_time[app] = work_time
 
     def on_name_changed(self, window: Wnck.Window) -> None:
         now = datetime.now()
@@ -96,6 +101,8 @@ class SpeakingEyeApp(Gtk.Application):
 
         active_tab_work_time = now - active_tab_start_time
         print(f'\t[{active_tab_work_time}]\t{self.active_window_name}')
+
+        self.save_work_time(active_tab_work_time)
 
         self.save_activity_line(active_tab_start_time, now)
 
