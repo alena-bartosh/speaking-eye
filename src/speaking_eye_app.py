@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, date
+from typing import Dict
 import json
 import os
 
@@ -45,7 +46,11 @@ class SpeakingEyeApp(Gtk.Application):
 
     def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
         now = datetime.now()
-        self.on_close_window(now)
+
+        # self.wm_class is None only for Speaking Eye start (only for the first check)
+        if self.wm_class:
+            self.on_close_window(now)
+            self.save_app_work_time(now)
 
         # to prevent double handler connections
         if previously_active_window and self.name_changed_handler_id:
@@ -65,27 +70,15 @@ class SpeakingEyeApp(Gtk.Application):
 
         print(f'OPEN {self.wm_class}')
 
-    def on_close_window(self, now: datetime, save_to_file: bool = True, save_to_dict: bool = True) -> None:
-        if not self.wm_class:
-            return
-
+    def on_close_window(self, now: datetime) -> None:
         active_window_work_time = now - self.active_window_start_time
 
         print(f'CLOSE {self.wm_class} [{active_window_work_time}]')
 
-        if save_to_file:
-            self.save_activity_line(self.active_window_start_time, now)
-
-        if save_to_dict:
-            self.save_work_time(active_window_work_time)
-
-        self.active_tab_start_time = None
-
-    def save_work_time(self, work_time: timedelta) -> None:
+    def save_activity_time(self, work_time: timedelta) -> None:
         app = f'|{self.wm_class}|{self.active_window_name}'
 
         if app in self.apps_time:
-            print('ERROR_APP_IN_DICT', app, work_time)
             self.apps_time[app] += work_time
         else:
             self.apps_time[app] = work_time
@@ -93,6 +86,7 @@ class SpeakingEyeApp(Gtk.Application):
     def on_name_changed(self, window: Wnck.Window) -> None:
         now = datetime.now()
         self.on_close_tab(now)
+        self.save_app_work_time(now)
 
         self.active_window_name = get_window_name(window)
         self.active_tab_start_time = now
@@ -104,10 +98,6 @@ class SpeakingEyeApp(Gtk.Application):
         active_tab_work_time = now - active_tab_start_time
         print(f'\t[{active_tab_work_time}]\t{self.active_window_name}')
 
-        self.save_work_time(active_tab_work_time)
-
-        self.save_activity_line(active_tab_start_time, now)
-
     def start_main_loop(self) -> None:
         try:
             self.main_loop.run()
@@ -118,7 +108,8 @@ class SpeakingEyeApp(Gtk.Application):
         now = datetime.now()
 
         self.on_close_tab(now)
-        self.on_close_window(now, save_to_file=False, save_to_dict=False)
+        self.on_close_window(now)
+        self.save_app_work_time(now)
 
         finish_time = now
         work_time = finish_time - self.start_time
@@ -156,16 +147,22 @@ class SpeakingEyeApp(Gtk.Application):
     def show_notification(self, msg: str) -> None:
         Notify.Notification.new('Speaking Eye', msg, ACTIVE_ICON).show()
 
-    def save_activity_line(self, start_time: datetime, end_time: datetime) -> None:
-        work_time = end_time - start_time
-
+    def save_activity_line_to_file(self, start_time: datetime, end_time: datetime, work_time: timedelta) -> None:
         line = f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\n'
         self.raw_data_tsv_file.write(line)
 
-    def try_load_apps_time(self):
+    def try_load_apps_time(self) -> Dict[str, timedelta]:
         if not os.path.exists(RESULT_TSV):
             return {}
 
         df = pd.read_csv(RESULT_TSV, sep='\t', index_col=0)
 
         return dict(zip(list(df['application']), [pd.to_timedelta(el) for el in df['work_time']]))
+
+    def save_app_work_time(self, now: datetime):
+        active_activity_start_time = \
+            self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
+        active_activity_work_time = now - active_activity_start_time
+
+        self.save_activity_time(active_activity_work_time)
+        self.save_activity_line_to_file(active_activity_start_time, now, active_activity_work_time)
