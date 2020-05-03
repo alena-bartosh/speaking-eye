@@ -29,7 +29,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.active_tab_start_time = None
         self.active_window_name = None
         self.wm_class = None
-        self.apps_time = {}
+        self.apps_time = self.try_load_apps_time()
         self.raw_data_tsv_file = open(RAW_DATA_TSV, 'a')
 
         Notify.init(APP_ID)
@@ -65,7 +65,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         print(f'OPEN {self.wm_class}')
 
-    def on_close_window(self, now: datetime, save_to_file: bool = True) -> None:
+    def on_close_window(self, now: datetime, save_to_file: bool = True, save_to_dict: bool = True) -> None:
         if not self.wm_class:
             return
 
@@ -76,7 +76,8 @@ class SpeakingEyeApp(Gtk.Application):
         if save_to_file:
             self.save_activity_line(self.active_window_start_time, now)
 
-        self.save_work_time(active_window_work_time)
+        if save_to_dict:
+            self.save_work_time(active_window_work_time)
 
         self.active_tab_start_time = None
 
@@ -84,6 +85,7 @@ class SpeakingEyeApp(Gtk.Application):
         app = f'|{self.wm_class}|{self.active_window_name}'
 
         if app in self.apps_time:
+            print('ERROR_APP_IN_DICT', app, work_time)
             self.apps_time[app] += work_time
         else:
             self.apps_time[app] = work_time
@@ -116,7 +118,7 @@ class SpeakingEyeApp(Gtk.Application):
         now = datetime.now()
 
         self.on_close_tab(now)
-        self.on_close_window(now, save_to_file=False)
+        self.on_close_window(now, save_to_file=False, save_to_dict=False)
 
         finish_time = now
         work_time = finish_time - self.start_time
@@ -159,3 +161,11 @@ class SpeakingEyeApp(Gtk.Application):
 
         line = f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\n'
         self.raw_data_tsv_file.write(line)
+
+    def try_load_apps_time(self):
+        if not os.path.exists(RESULT_TSV):
+            return {}
+
+        df = pd.read_csv(RESULT_TSV, sep='\t', index_col=0)
+
+        return dict(zip(list(df['application']), [pd.to_timedelta(el) for el in df['work_time']]))
