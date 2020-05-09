@@ -2,6 +2,8 @@ from datetime import datetime, timedelta, date
 from typing import Dict
 import json
 import os
+import signal
+from types import FrameType
 
 from gi.repository import Wnck, Gtk, GObject, Notify
 import pandas as pd
@@ -40,6 +42,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.show_notification(msg=start_msg)
 
     def do_activate(self) -> None:
+        signal.signal(signal.SIGTERM, self.handle_sigterm)
         self.screen = Wnck.Screen.get_default()
         self.screen.connect('active-window-changed', self.on_active_window_changed)
         self.main_loop = GObject.MainLoop()
@@ -159,10 +162,13 @@ class SpeakingEyeApp(Gtk.Application):
 
         return dict(zip(list(df['application']), [pd.to_timedelta(el) for el in df['work_time']]))
 
-    def save_app_work_time(self, now: datetime):
+    def save_app_work_time(self, now: datetime) -> None:
         active_activity_start_time = \
             self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
         active_activity_work_time = now - active_activity_start_time
 
         self.save_activity_time(active_activity_work_time)
         self.save_activity_line_to_file(active_activity_start_time, now, active_activity_work_time)
+
+    def handle_sigterm(self, signal_number: int, frame: FrameType) -> None:
+        self.stop()
