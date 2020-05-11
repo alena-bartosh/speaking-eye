@@ -15,7 +15,6 @@ from x_helpers import get_wm_class
 APP_ID = 'speaking-eye'
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 ACTIVE_ICON = os.path.join(SRC_DIR, '../icon/active.png')
-RESULT_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_results.tsv')
 RAW_DATA_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_raw_data.tsv')
 
 
@@ -128,8 +127,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.show_notification(msg=f'{finish_msg}; {work_time_msg}')
         Notify.uninit()
 
-        pd.DataFrame(self.apps_time.items(), columns=['application', 'work_time']).to_csv(RESULT_TSV, sep='\t')
-
         self.raw_data_tsv_file.close()
         self.main_loop.quit()
 
@@ -156,12 +153,17 @@ class SpeakingEyeApp(Gtk.Application):
         self.raw_data_tsv_file.flush()
 
     def try_load_apps_time(self) -> Dict[str, timedelta]:
-        if not os.path.exists(RESULT_TSV):
+        if not os.path.exists(RAW_DATA_TSV):
             return {}
 
-        df = pd.read_csv(RESULT_TSV, sep='\t', index_col=0)
+        col_names = ['start_time', 'end_time', 'work_time', 'wm_class', 'active_window_name']
 
-        return dict(zip(list(df['application']), [pd.to_timedelta(el) for el in df['work_time']]))
+        df = pd.read_csv(RAW_DATA_TSV, names=col_names, sep='\t')
+        df['application'] = df['wm_class'] + ' | ' + df['active_window_name']
+        df['work_time'] = pd.to_timedelta(df['work_time'])
+        df = df.groupby('application')['work_time'].sum().reset_index()
+
+        return dict(zip(list(df['application']), list(df['work_time'])))
 
     def save_app_work_time(self, now: datetime) -> None:
         active_activity_start_time = \
