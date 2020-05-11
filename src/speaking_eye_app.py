@@ -5,7 +5,7 @@ import os
 import signal
 from types import FrameType
 
-from gi.repository import Wnck, Gtk, GObject, Notify
+from gi.repository import Wnck, Gtk, GObject, Notify, GLib
 import pandas as pd
 
 from gtk_extras import get_window_name
@@ -33,6 +33,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.wm_class = None
         self.apps_time = self.try_load_apps_time()
         self.raw_data_tsv_file = open(RAW_DATA_TSV, 'a')
+        self.save_timer_id = None
 
         Notify.init(APP_ID)
 
@@ -45,6 +46,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.screen = Wnck.Screen.get_default()
         self.screen.connect('active-window-changed', self.on_active_window_changed)
         self.main_loop = GObject.MainLoop()
+        self.start_save_timer()
 
     def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
         now = datetime.now()
@@ -165,13 +167,33 @@ class SpeakingEyeApp(Gtk.Application):
 
         return dict(zip(list(df['application']), list(df['work_time'])))
 
-    def save_app_work_time(self, now: datetime) -> None:
-        active_activity_start_time = \
+    def save_app_work_time(self, now: datetime, reset_start_time=False) -> None:
+        activity_start_time = \
             self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
-        active_activity_work_time = now - active_activity_start_time
+        activity_work_time = now - activity_start_time
 
-        self.save_activity_time(active_activity_work_time)
-        self.save_activity_line_to_file(active_activity_start_time, now, active_activity_work_time)
+        self.save_activity_time(activity_work_time)
+        self.save_activity_line_to_file(activity_start_time, now, activity_work_time)
+
+        if reset_start_time:
+            self.active_tab_start_time = now
+            self.active_window_start_time = now
 
     def handle_sigterm(self, signal_number: int, frame: FrameType) -> None:
         self.stop()
+
+    # TODO: add Timer class
+    def start_save_timer(self):
+        interval_ms = 10 * 60 * 1000
+
+        self.save_timer_id = GLib.timeout_add(interval_ms, self.save_timer_handler)
+
+    def save_timer_handler(self):
+        now = datetime.now()
+        self.save_app_work_time(now, True)
+
+        return True
+
+    def stop_save_timer(self):
+        GObject.source_remove(self.save_timer_id)
+        self.save_timer_id = None
