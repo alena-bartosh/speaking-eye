@@ -153,6 +153,7 @@ class SpeakingEyeApp(Gtk.Application):
     def save_activity_line_to_file(self, start_time: datetime, end_time: datetime, work_time: timedelta) -> None:
         line = f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\n'
         self.raw_data_tsv_file.write(line)
+        self.raw_data_tsv_file.flush()
 
     def try_load_apps_time(self) -> Dict[str, timedelta]:
         if not os.path.exists(RESULT_TSV):
