@@ -183,17 +183,17 @@ class SpeakingEyeApp(Gtk.Application):
         self.stop()
 
     # TODO: add Timer class
-    def start_save_timer(self):
+    def start_save_timer(self) -> None:
         interval_ms = 10 * 60 * 1000
 
         self.save_timer_id = GLib.timeout_add(interval_ms, self.save_timer_handler)
 
-    def save_timer_handler(self):
+    def save_timer_handler(self) -> bool:
         now = datetime.now()
         self.save_app_work_time(now, True)
 
         return True
 
-    def stop_save_timer(self):
+    def stop_save_timer(self) -> None:
         GObject.source_remove(self.save_timer_id)
         self.save_timer_id = None
