@@ -31,7 +31,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.active_tab_start_time = None
         self.active_window_name = None
         self.wm_class = None
-        self.apps_time = self.try_load_apps_time()
+        self.work_apps_time = self.try_load_work_apps_time()
         self.raw_data_tsv_file = open(RAW_DATA_TSV, 'a')
         self.save_timer_id = None
 
@@ -82,10 +82,10 @@ class SpeakingEyeApp(Gtk.Application):
     def save_activity_time(self, work_time: timedelta) -> None:
         app = f'|{self.wm_class}|{self.active_window_name}'
 
-        if app in self.apps_time:
-            self.apps_time[app] += work_time
+        if app in self.work_apps_time:
+            self.work_apps_time[app] += work_time
         else:
-            self.apps_time[app] = work_time
+            self.work_apps_time[app] = work_time
 
     def on_name_changed(self, window: Wnck.Window) -> None:
         now = datetime.now()
@@ -124,7 +124,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         print()
         print(f'{finish_msg}\n{work_time_msg}')
-        print(f'Apps time: {json.dumps(self.apps_time, indent=2, default=str)}')
+        print(f'Apps time: {json.dumps(self.work_apps_time, indent=2, default=str)}')
 
         self.show_notification(msg=f'{finish_msg}; {work_time_msg}')
         Notify.uninit()
@@ -154,7 +154,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.raw_data_tsv_file.write(line)
         self.raw_data_tsv_file.flush()
 
-    def try_load_apps_time(self) -> Dict[str, timedelta]:
+    def try_load_work_apps_time(self) -> Dict[str, timedelta]:
         if not os.path.exists(RAW_DATA_TSV):
             return {}
 
