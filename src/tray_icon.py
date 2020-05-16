@@ -11,7 +11,12 @@ class TrayIcon:
 
         self.indicator = \
             AppIndicator.Indicator.new(app_id, FALLBACK_ICON, AppIndicator.IndicatorCategory.APPLICATION_STATUS)
-        if os.path.exists(icon):
-            self.indicator.set_icon(icon)
+
+        self.set_icon_if_exist(icon)
+
         self.indicator.set_status(AppIndicator.IndicatorStatus.ACTIVE)
         self.indicator.set_menu(self.menu)
+
+    def set_icon_if_exist(self, icon: str) -> None:
+        if os.path.exists(icon):
+            self.indicator.set_icon(icon)
