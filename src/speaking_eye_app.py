@@ -141,12 +141,15 @@ class SpeakingEyeApp(Gtk.Application):
         self.stop()
 
     def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
+        now = datetime.now()
+        self.save_app_work_time(now, reset_start_time=True)
+
         self.is_work_time = not self.is_work_time
+
+        print(f'### Set Work Time to [{self.is_work_time}]')
 
         icon = ACTIVE_ICON if self.is_work_time else DISABLED_ICON
         self.tray_icon.set_icon_if_exist(icon)
-
-        print(f'### Set Work Time to [{self.is_work_time}]')
 
     def create_tray_menu(self) -> Gtk.Menu:
         menu = Gtk.Menu()
