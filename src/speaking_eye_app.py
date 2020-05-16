@@ -139,13 +139,21 @@ class SpeakingEyeApp(Gtk.Application):
     def on_close_item_click(self, menu_item: Gtk.MenuItem) -> None:
         self.stop()
 
+    def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
+        self.is_work_time = not self.is_work_time
+        print(f'### Set Work Time to [{self.is_work_time}]')
+
     def create_tray_menu(self) -> Gtk.Menu:
         menu = Gtk.Menu()
 
+        work_state_checkbox_item = Gtk.CheckMenuItem('Work Time')
+        work_state_checkbox_item.connect('activate', self.on_work_state_checkbox_item_click)
+        menu.append(work_state_checkbox_item)
+
         close_item = Gtk.MenuItem('Close')
         close_item.connect('activate', self.on_close_item_click)
-
         menu.append(close_item)
+
         menu.show_all()
 
         return menu
