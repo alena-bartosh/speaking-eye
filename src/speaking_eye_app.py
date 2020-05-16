@@ -15,6 +15,7 @@ from x_helpers import get_wm_class
 APP_ID = 'speaking-eye'
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 ACTIVE_ICON = os.path.join(SRC_DIR, '../icon/active.png')
+DISABLED_ICON = os.path.join(SRC_DIR, '../icon/disabled.png')
 RAW_DATA_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_raw_data.tsv')
 
 
@@ -22,7 +23,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def __init__(self):
         super().__init__()
-        self.icon = TrayIcon(APP_ID, ACTIVE_ICON, self.create_tray_menu())
+        self.tray_icon = TrayIcon(APP_ID, DISABLED_ICON, self.create_tray_menu())
         self.screen = None
         self.main_loop = None
         self.name_changed_handler_id = None
@@ -141,6 +142,10 @@ class SpeakingEyeApp(Gtk.Application):
 
     def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
         self.is_work_time = not self.is_work_time
+
+        icon = ACTIVE_ICON if self.is_work_time else DISABLED_ICON
+        self.tray_icon.set_icon_if_exist(icon)
+
         print(f'### Set Work Time to [{self.is_work_time}]')
 
     def create_tray_menu(self) -> Gtk.Menu:
