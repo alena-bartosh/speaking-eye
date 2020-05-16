@@ -34,6 +34,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.work_apps_time = self.try_load_work_apps_time()
         self.raw_data_tsv_file = open(RAW_DATA_TSV, 'a')
         self.save_timer_id = None
+        self.is_work_time = False
 
         Notify.init(APP_ID)
 
@@ -79,8 +80,11 @@ class SpeakingEyeApp(Gtk.Application):
 
         print(f'CLOSE {self.wm_class} [{active_window_work_time}]')
 
-    def save_activity_time(self, work_time: timedelta) -> None:
-        app = f'|{self.wm_class}|{self.active_window_name}'
+    def save_activity_time_if_needed(self, work_time: timedelta) -> None:
+        if not self.is_work_time:
+            return
+
+        app = f'{self.wm_class} | {self.active_window_name}'
 
         if app in self.work_apps_time:
             self.work_apps_time[app] += work_time
@@ -150,7 +154,8 @@ class SpeakingEyeApp(Gtk.Application):
         Notify.Notification.new('Speaking Eye', msg, ACTIVE_ICON).show()
 
     def save_activity_line_to_file(self, start_time: datetime, end_time: datetime, work_time: timedelta) -> None:
-        line = f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\n'
+        line = \
+            f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\t{self.is_work_time}\n'
         self.raw_data_tsv_file.write(line)
         self.raw_data_tsv_file.flush()
 
@@ -158,9 +163,10 @@ class SpeakingEyeApp(Gtk.Application):
         if not os.path.exists(RAW_DATA_TSV):
             return {}
 
-        col_names = ['start_time', 'end_time', 'work_time', 'wm_class', 'active_window_name']
+        col_names = ['start_time', 'end_time', 'work_time', 'wm_class', 'active_window_name', 'is_work_time']
 
         df = pd.read_csv(RAW_DATA_TSV, names=col_names, sep='\t')
+        df = df.loc[df['is_work_time'].astype(bool).eq(True)]
         df['application'] = df['wm_class'] + ' | ' + df['active_window_name']
         df['work_time'] = pd.to_timedelta(df['work_time'])
         df = df.groupby('application')['work_time'].sum().reset_index()
@@ -172,7 +178,7 @@ class SpeakingEyeApp(Gtk.Application):
             self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
         activity_work_time = now - activity_start_time
 
-        self.save_activity_time(activity_work_time)
+        self.save_activity_time_if_needed(activity_work_time)
         self.save_activity_line_to_file(activity_start_time, now, activity_work_time)
 
         if reset_start_time:
