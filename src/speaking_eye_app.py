@@ -190,7 +190,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def save_timer_handler(self) -> bool:
         now = datetime.now()
-        self.save_app_work_time(now, True)
+        self.save_app_work_time(now, reset_start_time=True)
 
         return True
 
