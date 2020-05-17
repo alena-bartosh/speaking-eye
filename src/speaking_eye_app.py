@@ -35,7 +35,9 @@ class SpeakingEyeApp(Gtk.Application):
         self.work_apps_time = self.try_load_work_apps_time()
         self.raw_data_tsv_file = open(RAW_DATA_TSV, 'a')
         self.save_timer_id = None
+        self.reminder_timer_id = None
         self.is_work_time = False
+        self.last_overtime_notification = None
 
         Notify.init(APP_ID)
 
@@ -175,8 +177,43 @@ class SpeakingEyeApp(Gtk.Application):
 
         return menu
 
+    def on_overtime_notification_closed(self, notification: Notify.Notification) -> None:
+        if not self.is_work_time:
+            print('### Do not run timer because of end of the work')
+            return
+
+        self.start_reminder_timer(mins=15)
+
+    def on_finish_work_action_clicked(self, notification: Notify.Notification, action_id: str, arg: Any) -> None:
+        self.stop_reminder_timer_if_exists()
+        self.set_work_time_state(False)
+
     def show_notification(self, msg: str) -> None:
         Notify.Notification.new('Speaking Eye', msg, ACTIVE_ICON).show()
+
+    def show_overtime_notification(self) -> None:
+        msg = f'You have already worked {8} hours.\nIt\'s time to finish working and start living.'
+
+        notification = Notify.Notification.new('Speaking Eye', msg, ACTIVE_ICON)
+        notification.connect('closed', self.on_overtime_notification_closed)
+
+        notification.add_action(
+            'finish_work',
+            'Finish work',
+            self.on_finish_work_action_clicked,
+            None
+        )
+        notification.add_action(
+            'remind_later',
+            'Remind me after 15 mins',
+            lambda *args: None,
+            None
+        )
+
+        notification.set_urgency(Notify.Urgency.CRITICAL)
+        notification.show()
+
+        self.last_overtime_notification = notification
 
     def save_activity_line_to_file(self, start_time: datetime, end_time: datetime, work_time: timedelta) -> None:
         line = \
@@ -228,3 +265,19 @@ class SpeakingEyeApp(Gtk.Application):
     def stop_save_timer(self) -> None:
         GObject.source_remove(self.save_timer_id)
         self.save_timer_id = None
+
+    def start_reminder_timer(self, mins: int) -> None:
+        interval_ms = mins * 60 * 1000
+
+        self.reminder_timer_id = GLib.timeout_add(interval_ms, self.reminder_timer_handler)
+
+    def reminder_timer_handler(self) -> bool:
+        self.show_overtime_notification()
+        self.reminder_timer_id = None
+
+        return False
+
+    def stop_reminder_timer_if_exists(self) -> None:
+        if self.reminder_timer_id:
+            GObject.source_remove(self.reminder_timer_id)
+            self.reminder_timer_id = None
