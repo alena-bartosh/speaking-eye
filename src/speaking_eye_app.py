@@ -40,8 +40,11 @@ class SpeakingEyeApp(Gtk.Application):
         self.save_timer = Timer('save_timer', handler=self.save_timer_handler, interval_ms=10*60*1000, repeat=True)
         self.reminder_timer = \
             Timer('reminder_timer', handler=self.show_overtime_notification, interval_ms=15*60*1000, repeat=False)
+        self.overtime_timer = \
+            Timer('overtime_timer', handler=self.overtime_timer_handler, interval_ms=1*60*1000, repeat=True)
         self.is_work_time = False
         self.last_overtime_notification = None
+        self.user_work_time_hour_limit = 8
 
         Notify.init(APP_ID)
 
@@ -55,6 +58,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.screen.connect('active-window-changed', self.on_active_window_changed)
         self.main_loop = GObject.MainLoop()
         self.save_timer.start()
+        self.overtime_timer.start()
 
     def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
         now = datetime.now()
@@ -196,7 +200,8 @@ class SpeakingEyeApp(Gtk.Application):
         Notify.Notification.new('Speaking Eye', msg, ACTIVE_ICON).show()
 
     def show_overtime_notification(self) -> None:
-        msg = f'You have already worked {8} hours.\nIt\'s time to finish working and start living.'
+        msg = f'You have already worked {self.user_work_time_hour_limit} hours.\n' \
+              f'It\'s time to finish working and start living.'
 
         notification = Notify.Notification.new('Speaking Eye', msg, ACTIVE_ICON)
         notification.connect('closed', self.on_overtime_notification_closed)
@@ -239,6 +244,9 @@ class SpeakingEyeApp(Gtk.Application):
 
         return dict(zip(list(df['application']), list(df['work_time'])))
 
+    def get_user_work_time(self) -> timedelta:
+        return reduce(operator.add, self.work_apps_time.values(), timedelta())
+
     def save_app_work_time(self, now: datetime, reset_start_time=False) -> None:
         activity_start_time = \
             self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
@@ -257,3 +265,8 @@ class SpeakingEyeApp(Gtk.Application):
     def save_timer_handler(self) -> None:
         now = datetime.now()
         self.save_app_work_time(now, reset_start_time=True)
+
+    def overtime_timer_handler(self):
+        if self.get_user_work_time().total_seconds() >= self.user_work_time_hour_limit * 60 * 60:
+            self.show_overtime_notification()
+            self.overtime_timer.stop()
