@@ -7,7 +7,7 @@
 
 ### :postal_horn: Speaking about
 - [x] your activity on the computer
-- [ ] overtime
+- [x] overtime
 - [ ] time to take a break
 - [ ] distracting apps if you spend a lot of time there
 
