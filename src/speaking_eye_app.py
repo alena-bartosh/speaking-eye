@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, date
-from typing import Dict
+from typing import Dict, Any
 import json
 import os
 import signal
@@ -142,16 +142,23 @@ class SpeakingEyeApp(Gtk.Application):
     def on_close_item_click(self, menu_item: Gtk.MenuItem) -> None:
         self.stop()
 
-    def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
+    def set_work_time_state(self, value: bool) -> None:
+        if value == self.is_work_time:
+            print('### Trying to change is_work_time to the same value')
+            return
+
         now = datetime.now()
         self.save_app_work_time(now, reset_start_time=True)
 
-        self.is_work_time = not self.is_work_time
+        self.is_work_time = value
 
         print(f'### Set Work Time to [{self.is_work_time}]')
 
         icon = ACTIVE_ICON if self.is_work_time else DISABLED_ICON
         self.tray_icon.set_icon_if_exist(icon)
+
+    def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
+        self.set_work_time_state(not self.is_work_time)
 
     def create_tray_menu(self) -> Gtk.Menu:
         menu = Gtk.Menu()
