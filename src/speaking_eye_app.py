@@ -114,6 +114,8 @@ class SpeakingEyeApp(Gtk.Application):
             self.stop()
 
     def stop(self) -> None:
+        self.stop_save_timer()
+
         now = datetime.now()
 
         self.on_close_tab(now)
