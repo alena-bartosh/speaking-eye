@@ -36,7 +36,8 @@ class SpeakingEyeApp(Gtk.Application):
         self.work_apps_time = self.try_load_work_apps_time()
         self.raw_data_tsv_file = open(RAW_DATA_TSV, 'a')
         self.save_timer = Timer('save_timer', handler=self.save_timer_handler, interval_ms=10*60*1000, repeat=True)
-        self.reminder_timer_id = None
+        self.reminder_timer = \
+            Timer('reminder_timer', handler=self.show_overtime_notification, interval_ms=15*60*1000, repeat=False)
         self.is_work_time = False
         self.last_overtime_notification = None
 
@@ -183,10 +184,10 @@ class SpeakingEyeApp(Gtk.Application):
             print('### Do not run timer because of end of the work')
             return
 
-        self.start_reminder_timer(mins=15)
+        self.reminder_timer.start()
 
     def on_finish_work_action_clicked(self, notification: Notify.Notification, action_id: str, arg: Any) -> None:
-        self.stop_reminder_timer_if_exists()
+        self.reminder_timer.stop()
         self.set_work_time_state(False)
 
     def show_notification(self, msg: str) -> None:
@@ -254,19 +255,3 @@ class SpeakingEyeApp(Gtk.Application):
     def save_timer_handler(self) -> None:
         now = datetime.now()
         self.save_app_work_time(now, reset_start_time=True)
-
-    def start_reminder_timer(self, mins: int) -> None:
-        interval_ms = mins * 60 * 1000
-
-        self.reminder_timer_id = GLib.timeout_add(interval_ms, self.reminder_timer_handler)
-
-    def reminder_timer_handler(self) -> bool:
-        self.show_overtime_notification()
-        self.reminder_timer_id = None
-
-        return False
-
-    def stop_reminder_timer_if_exists(self) -> None:
-        if self.reminder_timer_id:
-            GObject.source_remove(self.reminder_timer_id)
-            self.reminder_timer_id = None
