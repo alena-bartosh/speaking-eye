@@ -1,11 +1,13 @@
 from datetime import date, datetime, timedelta
+from functools import reduce
+from types import FrameType
 from typing import Any, Dict
 import json
+import operator
 import os
 import signal
-from types import FrameType
 
-from gi.repository import GLib, GObject, Gtk, Notify, Wnck
+from gi.repository import GObject, Gtk, Notify, Wnck
 import pandas as pd
 
 from gtk_extras import get_window_name
