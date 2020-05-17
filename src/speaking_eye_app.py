@@ -9,6 +9,7 @@ from gi.repository import GLib, GObject, Gtk, Notify, Wnck
 import pandas as pd
 
 from gtk_extras import get_window_name
+from timer import Timer
 from tray_icon import TrayIcon
 from x_helpers import get_wm_class
 
@@ -34,7 +35,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.wm_class = None
         self.work_apps_time = self.try_load_work_apps_time()
         self.raw_data_tsv_file = open(RAW_DATA_TSV, 'a')
-        self.save_timer_id = None
+        self.save_timer = Timer('save_timer', handler=self.save_timer_handler, interval_ms=10*60*1000, repeat=True)
         self.reminder_timer_id = None
         self.is_work_time = False
         self.last_overtime_notification = None
@@ -50,7 +51,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.screen = Wnck.Screen.get_default()
         self.screen.connect('active-window-changed', self.on_active_window_changed)
         self.main_loop = GObject.MainLoop()
-        self.start_save_timer()
+        self.save_timer.start()
 
     def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
         now = datetime.now()
@@ -116,7 +117,7 @@ class SpeakingEyeApp(Gtk.Application):
             self.stop()
 
     def stop(self) -> None:
-        self.stop_save_timer()
+        self.save_timer.stop()
 
         now = datetime.now()
 
@@ -250,21 +251,9 @@ class SpeakingEyeApp(Gtk.Application):
     def handle_sigterm(self, signal_number: int, frame: FrameType) -> None:
         self.stop()
 
-    # TODO: add Timer class
-    def start_save_timer(self) -> None:
-        interval_ms = 10 * 60 * 1000
-
-        self.save_timer_id = GLib.timeout_add(interval_ms, self.save_timer_handler)
-
-    def save_timer_handler(self) -> bool:
+    def save_timer_handler(self) -> None:
         now = datetime.now()
         self.save_app_work_time(now, reset_start_time=True)
-
-        return True
-
-    def stop_save_timer(self) -> None:
-        GObject.source_remove(self.save_timer_id)
-        self.save_timer_id = None
 
     def start_reminder_timer(self, mins: int) -> None:
         interval_ms = mins * 60 * 1000
