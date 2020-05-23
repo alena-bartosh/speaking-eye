@@ -56,7 +56,8 @@ class SpeakingEyeApp(Gtk.Application):
             Timer('overtime_timer', handler=self.overtime_timer_handler, interval_ms=1*60*1000, repeat=True)
         self.is_work_time = False
         self.last_overtime_notification = None
-        self.user_work_time_hour_limit = 8
+        self.user_work_time_hour_limit = self.config.get('time_limits', {}).get('work_time_hours', 8)
+        self.logger.debug(f'Set user work time limit to [{self.user_work_time_hour_limit}] hours')
 
         Notify.init(APP_ID)
 
