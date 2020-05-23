@@ -171,7 +171,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def set_work_time_state(self, value: bool) -> None:
         if value == self.is_work_time:
-            self.logger.debug('### Trying to change is_work_time to the same value')
+            self.logger.debug('Trying to change is_work_time to the same value')
             return
 
         now = datetime.now()
@@ -179,7 +179,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.is_work_time = value
 
-        self.logger.debug(f'### Set Work Time to [{self.is_work_time}]')
+        self.logger.debug(f'Set Work Time to [{self.is_work_time}]')
 
         icon = self.active_icon if self.is_work_time else self.disabled_icon
         self.tray_icon.set_icon_if_exist(icon)
@@ -204,7 +204,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def on_overtime_notification_closed(self, notification: Notify.Notification) -> None:
         if not self.is_work_time:
-            self.logger.debug('### Do not run timer because of end of the work')
+            self.logger.debug('Do not run timer because of end of the work')
             return
 
         self.reminder_timer.start()
@@ -282,7 +282,7 @@ class SpeakingEyeApp(Gtk.Application):
         now = datetime.now()
         self.save_app_work_time(now)
 
-    def overtime_timer_handler(self):
+    def overtime_timer_handler(self) -> None:
         if self.get_user_work_time().total_seconds() >= self.user_work_time_hour_limit * 60 * 60:
             self.show_overtime_notification()
             self.overtime_timer.stop()
