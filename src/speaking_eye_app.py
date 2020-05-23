@@ -26,8 +26,9 @@ RAW_DATA_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_raw_d
 
 class SpeakingEyeApp(Gtk.Application):
 
-    def __init__(self):
+    def __init__(self, config: Dict):
         super().__init__()
+        self.config = config
         self.tray_icon = TrayIcon(APP_ID, DISABLED_ICON, self.create_tray_menu())
         self.screen = None
         self.main_loop = None
@@ -47,6 +48,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_work_time = False
         self.last_overtime_notification = None
         self.user_work_time_hour_limit = 8
+        # TODO: logger must be a ctor parameter
         self.logger = self.init_logger()
 
         Notify.init(APP_ID)
