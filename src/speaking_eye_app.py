@@ -1,4 +1,5 @@
 from datetime import date, datetime, timedelta
+from enum import Enum
 from functools import reduce
 from types import FrameType
 from typing import Any, Dict
@@ -19,9 +20,12 @@ from x_helpers import get_wm_class
 
 APP_ID = 'speaking-eye'
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-ACTIVE_ICON = os.path.join(SRC_DIR, '../icon/dark/active.png')
-DISABLED_ICON = os.path.join(SRC_DIR, '../icon/dark/disabled.png')
 RAW_DATA_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_raw_data.tsv')
+
+
+class IconState(Enum):
+    ACTIVE = 'active'
+    DISABLED = 'disabled'
 
 
 class SpeakingEyeApp(Gtk.Application):
@@ -29,7 +33,12 @@ class SpeakingEyeApp(Gtk.Application):
     def __init__(self, config: Dict):
         super().__init__()
         self.config = config
-        self.tray_icon = TrayIcon(APP_ID, DISABLED_ICON, self.create_tray_menu())
+        # TODO: logger must be a ctor parameter
+        self.logger = self.init_logger()
+        self.theme = self.config.get('theme', 'dark')
+        self.active_icon = self.get_icon(IconState.ACTIVE)
+        self.disabled_icon = self.get_icon(IconState.DISABLED)
+        self.tray_icon = TrayIcon(APP_ID, self.disabled_icon, self.create_tray_menu())
         self.screen = None
         self.main_loop = None
         self.name_changed_handler_id = None
@@ -48,8 +57,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_work_time = False
         self.last_overtime_notification = None
         self.user_work_time_hour_limit = 8
-        # TODO: logger must be a ctor parameter
-        self.logger = self.init_logger()
 
         Notify.init(APP_ID)
 
@@ -173,7 +180,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.logger.debug(f'### Set Work Time to [{self.is_work_time}]')
 
-        icon = ACTIVE_ICON if self.is_work_time else DISABLED_ICON
+        icon = self.active_icon if self.is_work_time else self.disabled_icon
         self.tray_icon.set_icon_if_exist(icon)
 
     def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
@@ -206,13 +213,13 @@ class SpeakingEyeApp(Gtk.Application):
         self.set_work_time_state(False)
 
     def show_notification(self, msg: str) -> None:
-        Notify.Notification.new('Speaking Eye', msg, ACTIVE_ICON).show()
+        Notify.Notification.new('Speaking Eye', msg, self.active_icon).show()
 
     def show_overtime_notification(self) -> None:
         msg = f'You have already worked {self.user_work_time_hour_limit} hours.\n' \
               f'It\'s time to finish working and start living.'
 
-        notification = Notify.Notification.new('Speaking Eye', msg, ACTIVE_ICON)
+        notification = Notify.Notification.new('Speaking Eye', msg, self.active_icon)
         notification.connect('closed', self.on_overtime_notification_closed)
 
         notification.add_action(
@@ -278,3 +285,14 @@ class SpeakingEyeApp(Gtk.Application):
         if self.get_user_work_time().total_seconds() >= self.user_work_time_hour_limit * 60 * 60:
             self.show_overtime_notification()
             self.overtime_timer.stop()
+
+    def get_icon(self, icon_state: IconState) -> str:
+        if not self.theme:
+            raise Exception('self.theme should be set!')
+
+        full_path = os.path.join(SRC_DIR, f'../icon/{self.theme}/{icon_state.value}.png')
+
+        if not os.path.exists(full_path):
+            self.logger.warning(f'Icon [{full_path}] not found')
+
+        return full_path
