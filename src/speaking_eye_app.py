@@ -3,7 +3,6 @@ from enum import Enum
 from functools import reduce
 from types import FrameType
 from typing import Any, Dict
-import coloredlogs
 import json
 import logging
 import operator
@@ -18,7 +17,6 @@ from timer import Timer
 from tray_icon import TrayIcon
 from x_helpers import get_wm_class
 
-APP_ID = 'speaking-eye'
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 RAW_DATA_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_raw_data.tsv')
 
@@ -30,15 +28,14 @@ class IconState(Enum):
 
 class SpeakingEyeApp(Gtk.Application):
 
-    def __init__(self, config: Dict):
+    def __init__(self, app_id: str, config: Dict, logger: logging.Logger):
         super().__init__()
         self.config = config
-        # TODO: logger must be a ctor parameter
-        self.logger = self.init_logger()
+        self.logger = logger
         self.theme = self.config.get('theme', 'dark')
         self.active_icon = self.get_icon(IconState.ACTIVE)
         self.disabled_icon = self.get_icon(IconState.DISABLED)
-        self.tray_icon = TrayIcon(APP_ID, self.disabled_icon, self.create_tray_menu())
+        self.tray_icon = TrayIcon(app_id, self.disabled_icon, self.create_tray_menu())
         self.screen = None
         self.main_loop = None
         self.name_changed_handler_id = None
@@ -59,17 +56,11 @@ class SpeakingEyeApp(Gtk.Application):
         self.user_work_time_hour_limit = self.config.get('time_limits', {}).get('work_time_hours', 8)
         self.logger.debug(f'Set user work time limit to [{self.user_work_time_hour_limit}] hours')
 
-        Notify.init(APP_ID)
+        Notify.init(app_id)
 
         start_msg = f'Start time: [{self.start_time.strftime("%H:%M:%S")}]'
         self.logger.debug(start_msg)
         self.show_notification(msg=start_msg)
-
-    def init_logger(self) -> logging.Logger:
-        coloredlogs.install(level='DEBUG')
-        logger = logging.getLogger(APP_ID)
-
-        return logger
 
     def do_activate(self) -> None:
         signal.signal(signal.SIGTERM, self.handle_sigterm)
