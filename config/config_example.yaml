@@ -1,0 +1,23 @@
+# white eye for 'dark' theme and black eye for 'white' theme
+theme: dark
+
+# speaking-eye analyzes activity only for detailed_apps and distracting_apps
+# app names are looked up with a regular expression so you can specify only part of the name
+
+apps:
+  detailed:
+    - Desktop
+    - Jupyter Notebook
+    - Meet
+    - Slack
+    - Terminal
+    - jetbrains-pycharm
+
+  distracting:
+    - Telegram
+    - YouTube
+
+time_limits:
+  work_time_hours: 8
+  breaks_interval_hours: 2
+  distracting_apps_mins: 5
