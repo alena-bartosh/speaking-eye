@@ -17,8 +17,8 @@ from x_helpers import get_wm_class
 
 APP_ID = 'speaking-eye'
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-ACTIVE_ICON = os.path.join(SRC_DIR, '../icon/active.png')
-DISABLED_ICON = os.path.join(SRC_DIR, '../icon/disabled.png')
+ACTIVE_ICON = os.path.join(SRC_DIR, '../icon/dark/active.png')
+DISABLED_ICON = os.path.join(SRC_DIR, '../icon/dark/disabled.png')
 RAW_DATA_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_raw_data.tsv')
 
 
