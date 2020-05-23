@@ -2,7 +2,9 @@ from datetime import date, datetime, timedelta
 from functools import reduce
 from types import FrameType
 from typing import Any, Dict
+import coloredlogs
 import json
+import logging
 import operator
 import os
 import signal
@@ -45,12 +47,19 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_work_time = False
         self.last_overtime_notification = None
         self.user_work_time_hour_limit = 8
+        self.logger = self.init_logger()
 
         Notify.init(APP_ID)
 
         start_msg = f'Start time: [{self.start_time.strftime("%H:%M:%S")}]'
-        print(start_msg)
+        self.logger.debug(start_msg)
         self.show_notification(msg=start_msg)
+
+    def init_logger(self) -> logging.Logger:
+        coloredlogs.install(level='DEBUG')
+        logger = logging.getLogger(APP_ID)
+
+        return logger
 
     def do_activate(self) -> None:
         signal.signal(signal.SIGTERM, self.handle_sigterm)
@@ -84,12 +93,12 @@ class SpeakingEyeApp(Gtk.Application):
             self.wm_class = 'Desktop'
             self.active_window_name = 'Desktop'
 
-        print(f'OPEN {self.wm_class}')
+        self.logger.debug(f'OPEN {self.wm_class}')
 
     def on_close_window(self, now: datetime) -> None:
         active_window_work_time = now - self.active_window_start_time
 
-        print(f'CLOSE {self.wm_class} [{active_window_work_time}]')
+        self.logger.debug(f'CLOSE {self.wm_class} [{active_window_work_time}]')
 
     def save_activity_time_if_needed(self, work_time: timedelta) -> None:
         if not self.is_work_time:
@@ -114,7 +123,7 @@ class SpeakingEyeApp(Gtk.Application):
             self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
 
         active_tab_work_time = now - active_tab_start_time
-        print(f'\t[{active_tab_work_time}]\t{self.active_window_name}')
+        self.logger.debug(f'\t[{active_tab_work_time}]\t{self.active_window_name}')
 
     def start_main_loop(self) -> None:
         try:
@@ -138,9 +147,8 @@ class SpeakingEyeApp(Gtk.Application):
         finish_msg = f'Finish time: [{finish_time.strftime("%H:%M:%S")}]'
         work_time_msg = f'Work time: [{work_time}]'
 
-        print()
-        print(f'{finish_msg}\n{work_time_msg}')
-        print(f'Apps time: {json.dumps(self.work_apps_time, indent=2, default=str)}')
+        self.logger.debug(f'{finish_msg}\n{work_time_msg}')
+        self.logger.debug(f'Apps time: {json.dumps(self.work_apps_time, indent=2, default=str)}')
 
         self.show_notification(msg=f'{finish_msg}; {work_time_msg}')
         Notify.uninit()
@@ -153,7 +161,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def set_work_time_state(self, value: bool) -> None:
         if value == self.is_work_time:
-            print('### Trying to change is_work_time to the same value')
+            self.logger.debug('### Trying to change is_work_time to the same value')
             return
 
         now = datetime.now()
@@ -161,7 +169,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.is_work_time = value
 
-        print(f'### Set Work Time to [{self.is_work_time}]')
+        self.logger.debug(f'### Set Work Time to [{self.is_work_time}]')
 
         icon = ACTIVE_ICON if self.is_work_time else DISABLED_ICON
         self.tray_icon.set_icon_if_exist(icon)
@@ -186,7 +194,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def on_overtime_notification_closed(self, notification: Notify.Notification) -> None:
         if not self.is_work_time:
-            print('### Do not run timer because of end of the work')
+            self.logger.debug('### Do not run timer because of end of the work')
             return
 
         self.reminder_timer.start()
