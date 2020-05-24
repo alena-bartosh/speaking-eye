@@ -45,7 +45,9 @@ class SpeakingEyeApp(Gtk.Application):
         self.active_window_start_time = datetime.now()
         self.active_tab_start_time = None
         self.active_window_name = None
+        self.previous_active_window_name = None
         self.wm_class = None
+        self.previous_wm_class = None
         self.work_apps_time = self.try_load_work_apps_time()
         self.raw_data_tsv_file = open(RAW_DATA_TSV, 'a')
         self.save_timer = Timer('save_timer', handler=self.save_timer_handler, interval_ms=10*60*1000, repeat=True)
@@ -89,7 +91,23 @@ class SpeakingEyeApp(Gtk.Application):
     def on_screen_saver_active_changed(self, connection: Gio.DBusConnection, sender_name: str, object_path: str,
                                        interface_name: str, signal_name: str, parameters: GLib.Variant) -> None:
         is_activated, = parameters
-        print(f'on_screen_saver_active_changed({is_activated})')
+
+        now = datetime.now()
+
+        self.on_close_window(now)
+        self.save_app_work_time(now)
+
+        if is_activated:
+            self.previous_wm_class = self.wm_class
+            self.previous_active_window_name = self.active_window_name
+
+            self.wm_class = 'LockScreen'
+            self.active_window_name = ''
+        else:
+            self.wm_class = self.previous_wm_class
+            self.active_window_name = self.previous_active_window_name
+
+        self.on_open_window()
 
     def __dbus_subscribe_to_screen_saver_signals(self):
         bus_names = self.__dbus_get_all_bus_names()
