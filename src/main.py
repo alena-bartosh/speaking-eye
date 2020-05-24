@@ -1,3 +1,10 @@
+"""
+Track & analyze your computer activity.
+Focus on work and don't forget to take breaks
+
+alena-bartosh, may 2020
+"""
+
 import gi
 
 gi.require_version('Wnck', '3.0')
