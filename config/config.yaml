@@ -1,4 +1,4 @@
-# white eye for 'dark' theme and black eye for 'white' theme
+# white eye for 'dark' theme and black eye for 'light' theme
 theme: dark
 
 # speaking-eye analyzes activity only for detailed_apps and distracting_apps
