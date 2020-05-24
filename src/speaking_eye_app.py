@@ -2,14 +2,15 @@ from datetime import date, datetime, timedelta
 from enum import Enum
 from functools import reduce
 from types import FrameType
-from typing import Any, Dict
+from typing import Any, Dict, List
 import json
 import logging
 import operator
 import os
+import re
 import signal
 
-from gi.repository import GObject, Gtk, Notify, Wnck
+from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
 import pandas as pd
 
 from gtk_extras import get_window_name
@@ -32,6 +33,7 @@ class SpeakingEyeApp(Gtk.Application):
         super().__init__()
         self.config = config
         self.logger = logger
+        self.connection = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         self.theme = self.config.get('theme', 'dark')
         self.active_icon = self.get_icon(IconState.ACTIVE)
         self.disabled_icon = self.get_icon(IconState.DISABLED)
@@ -54,13 +56,50 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_work_time = False
         self.last_overtime_notification = None
         self.user_work_time_hour_limit = self.config.get('time_limits', {}).get('work_time_hours', 8)
+
         self.logger.debug(f'Set user work time limit to [{self.user_work_time_hour_limit}] hours')
 
         Notify.init(app_id)
+        self.__dbus_subscribe_to_screen_saver_signals()
 
         start_msg = f'Start time: [{self.start_time.strftime("%H:%M:%S")}]'
         self.logger.debug(start_msg)
         self.show_notification(msg=start_msg)
+
+    def __dbus_method_call(self, bus_name: str, object_path: str, interface_name: str, method_name: str) -> Any:
+        if not self.connection:
+            raise Exception('self.connection should be set!')
+
+        no_parameters = None
+        default_reply_type = None
+        default_call_timeout = -1
+        not_cancellable = None
+
+        raw_result = self.connection.call_sync(bus_name, object_path, interface_name,
+                                               method_name, no_parameters, default_reply_type,
+                                               Gio.DBusCallFlags.NONE, default_call_timeout, not_cancellable)
+        result, = raw_result
+
+        return result
+
+    def __dbus_get_all_bus_names(self) -> List[str]:
+        return self.__dbus_method_call('org.freedesktop.DBus', '/org/freedesktop/DBus',
+                                       'org.freedesktop.DBus', 'ListNames')
+
+    def on_screen_saver_active_changed(self, connection: Gio.DBusConnection, sender_name: str, object_path: str,
+                                       interface_name: str, signal_name: str, parameters: GLib.Variant) -> None:
+        is_activated, = parameters
+        print(f'on_screen_saver_active_changed({is_activated})')
+
+    def __dbus_subscribe_to_screen_saver_signals(self):
+        bus_names = self.__dbus_get_all_bus_names()
+
+        screen_saver_re = re.compile(r'^org\..*\.ScreenSaver$')
+        filtered_bus_names = filter(screen_saver_re.match, bus_names)
+
+        for bus_name in filtered_bus_names:
+            self.connection.signal_subscribe(None, bus_name, 'ActiveChanged', None, None,
+                                             Gio.DBusSignalFlags.NONE, self.on_screen_saver_active_changed)
 
     def do_activate(self) -> None:
         signal.signal(signal.SIGTERM, self.handle_sigterm)
