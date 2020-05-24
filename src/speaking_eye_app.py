@@ -133,6 +133,9 @@ class SpeakingEyeApp(Gtk.Application):
             self.wm_class = 'Desktop'
             self.active_window_name = 'Desktop'
 
+        self.on_open_window()
+
+    def on_open_window(self) -> None:
         self.logger.debug(f'OPEN {self.wm_class}')
 
     def on_close_window(self, now: datetime) -> None:
