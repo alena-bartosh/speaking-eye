@@ -64,6 +64,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.last_overtime_notification = None
         self.user_work_time_hour_limit = self.config.get('time_limits', {}).get('work_time_hours', 8)
         self.user_breaks_interval_hours = self.config.get('time_limits', {}).get('breaks_interval_hours', 2)
+        self.last_lock_screen_time = None
 
         self.logger.debug(f'Set user work time limit to [{self.user_work_time_hour_limit}] hours')
         self.logger.debug(f'Set user user breaks interval to [{self.user_breaks_interval_hours}] hours')
@@ -147,6 +148,9 @@ class SpeakingEyeApp(Gtk.Application):
         # to prevent double handler connections
         if previously_active_window and self.name_changed_handler_id:
             previously_active_window.disconnect(self.name_changed_handler_id)
+
+        if self.wm_class == SpecialWmClass.LOCK_SCREEN.value and self.is_work_time:
+            self.last_lock_screen_time = now
 
         active_window = screen.get_active_window()
 
