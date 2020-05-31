@@ -32,5 +32,18 @@ pip install --upgrade pip && \
 pip install -r requirements.txt
 ```
 
+### Usage
+```
+python3 speaking_eye.py --help
+usage: speaking_eye.py [-h] [--log-level] [-c]
+
+[speaking-eye] Track & analyze your computer activity
+
+optional arguments:
+  -h, --help      show this help message and exit
+  --log-level     debug/info/warning/error
+  -c , --config   config path
+```
+
 ### Code conduction
 * Use [Gitmoji](https://gitmoji.carloscuesta.me) for commit messages
