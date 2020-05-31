@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta
 from enum import Enum
 from functools import reduce
+from random import choice
 from types import FrameType
 from typing import Any, Dict, List
 import json
@@ -20,6 +21,10 @@ from x_helpers import get_wm_class
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 RAW_DATA_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_raw_data.tsv')
+
+BREAK_TIME_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
+                     '🙇', '🙋', '🚣', '🤸', '🧟', '🐙',
+                     '🐧', '☕', '🍌', '🥐', '🆓', '🔮']
 
 
 class IconState(Enum):
@@ -64,6 +69,7 @@ class SpeakingEyeApp(Gtk.Application):
             Timer('break_timer', handler=self.break_timer_handler, interval_ms=1*60*1000, repeat=True)
         self.is_work_time = False
         self.last_overtime_notification = None
+        self.last_break_notification = None
         self.user_work_time_hour_limit = self.config.get('time_limits', {}).get('work_time_hours', 8)
         self.user_breaks_interval_hours = self.config.get('time_limits', {}).get('breaks_interval_hours', 2)
         self.last_lock_screen_time = None
@@ -278,6 +284,10 @@ class SpeakingEyeApp(Gtk.Application):
         self.reminder_timer.stop()
         self.set_work_time_state(False)
 
+    def on_take_break_clicked(self, notification: Notify.Notification, action_id: str, arg: Any) -> None:
+        # TODO: lock screen
+        pass
+
     def show_notification(self, msg: str) -> None:
         Notify.Notification.new('Speaking Eye', msg, self.active_icon).show()
 
@@ -306,8 +316,29 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.last_overtime_notification = notification
 
-    def show_break_notification(self):
-        pass
+    def show_break_notification(self) -> None:
+        emoji = choice(BREAK_TIME_EMOJIS)
+        msg = f'It\'s time to take a break {emoji}'
+
+        notification = Notify.Notification.new('Speaking Eye', msg, self.active_icon)
+
+        notification.add_action(
+            'take_break',
+            'Take a break (lock screen)',
+            self.on_take_break_clicked,
+            None
+        )
+        notification.add_action(
+            'remind_later',
+            'Remind me after 15 mins',
+            lambda *args: None,
+            None
+        )
+
+        notification.set_urgency(Notify.Urgency.CRITICAL)
+        notification.show()
+
+        self.last_break_notification = notification
 
     def save_activity_line_to_file(self, start_time: datetime, end_time: datetime, work_time: timedelta) -> None:
         line = \
