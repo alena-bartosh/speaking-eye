@@ -63,8 +63,10 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_work_time = False
         self.last_overtime_notification = None
         self.user_work_time_hour_limit = self.config.get('time_limits', {}).get('work_time_hours', 8)
+        self.user_breaks_interval_hours = self.config.get('time_limits', {}).get('breaks_interval_hours', 2)
 
         self.logger.debug(f'Set user work time limit to [{self.user_work_time_hour_limit}] hours')
+        self.logger.debug(f'Set user user breaks interval to [{self.user_breaks_interval_hours}] hours')
 
         Notify.init(app_id)
         self.__dbus_subscribe_to_screen_saver_signals()
