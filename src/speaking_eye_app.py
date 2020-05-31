@@ -68,6 +68,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.break_timer = \
             Timer('break_timer', handler=self.break_timer_handler, interval_ms=1*60*1000, repeat=True)
         self.is_work_time = False
+        self.is_work_time_update_time = self.start_time
         self.last_overtime_notification = None
         self.last_break_notification = None
         self.user_work_time_hour_limit = self.config.get('time_limits', {}).get('work_time_hours', 8)
@@ -249,6 +250,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.save_app_work_time(now)
 
         self.is_work_time = value
+        self.is_work_time_update_time = now
 
         self.logger.debug(f'Set Work Time to [{self.is_work_time}]')
 
