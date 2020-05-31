@@ -52,7 +52,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.main_loop = None
         self.name_changed_handler_id = None
         self.start_time = datetime.now()
-        self.active_window_start_time = datetime.now()
+        self.active_window_start_time = self.start_time
         self.active_tab_start_time = None
         self.active_window_name = None
         self.previous_active_window_name = None
