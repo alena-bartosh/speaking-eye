@@ -44,6 +44,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.config = config
         self.logger = logger
         self.connection = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+        self.screen_saver_bus_names = self.__dbus_get_screen_saver_bus_names()
         self.theme = self.config.get('theme', 'dark')
         self.active_icon = self.get_icon(IconState.ACTIVE)
         self.disabled_icon = self.get_icon(IconState.DISABLED)
@@ -127,13 +128,17 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.on_open_window()
 
-    def __dbus_subscribe_to_screen_saver_signals(self):
+    def __dbus_get_screen_saver_bus_names(self):
         bus_names = self.__dbus_get_all_bus_names()
-
         screen_saver_re = re.compile(r'^org\..*\.ScreenSaver$')
-        filtered_bus_names = filter(screen_saver_re.match, bus_names)
 
-        for bus_name in filtered_bus_names:
+        return filter(screen_saver_re.match, bus_names)
+
+    def __dbus_subscribe_to_screen_saver_signals(self):
+        if not self.screen_saver_bus_names:
+            raise Exception('self.screen_saver_bus_names should be set!')
+
+        for bus_name in self.screen_saver_bus_names:
             self.connection.signal_subscribe(None, bus_name, 'ActiveChanged', None, None,
                                              Gio.DBusSignalFlags.NONE, self.on_screen_saver_active_changed)
 
