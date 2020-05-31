@@ -1,9 +1,4 @@
-"""
-Track & analyze your computer activity.
-Focus on work and don't forget to take breaks
-
-alena-bartosh, may 2020
-"""
+__author__ = 'alena-bartosh'
 
 import gi
 
