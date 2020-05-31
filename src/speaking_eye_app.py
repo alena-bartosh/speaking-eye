@@ -60,6 +60,8 @@ class SpeakingEyeApp(Gtk.Application):
             Timer('reminder_timer', handler=self.show_overtime_notification, interval_ms=15*60*1000, repeat=False)
         self.overtime_timer = \
             Timer('overtime_timer', handler=self.overtime_timer_handler, interval_ms=1*60*1000, repeat=True)
+        self.break_timer = \
+            Timer('break_timer', handler=self.break_timer_handler, interval_ms=1*60*1000, repeat=True)
         self.is_work_time = False
         self.last_overtime_notification = None
         self.user_work_time_hour_limit = self.config.get('time_limits', {}).get('work_time_hours', 8)
@@ -134,6 +136,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.main_loop = GObject.MainLoop()
         self.save_timer.start()
         self.overtime_timer.start()
+        self.break_timer.start()
 
     def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
         now = datetime.now()
@@ -303,6 +306,9 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.last_overtime_notification = notification
 
+    def show_break_notification(self):
+        pass
+
     def save_activity_line_to_file(self, start_time: datetime, end_time: datetime, work_time: timedelta) -> None:
         line = \
             f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\t{self.is_work_time}\n'
@@ -348,6 +354,19 @@ class SpeakingEyeApp(Gtk.Application):
         if self.get_user_work_time().total_seconds() >= self.user_work_time_hour_limit * 60 * 60:
             self.show_overtime_notification()
             self.overtime_timer.stop()
+
+    def break_timer_handler(self) -> None:
+        if not self.is_work_time:
+            return
+
+        now = datetime.now()
+
+        last_break_time = self.last_lock_screen_time if self.last_lock_screen_time else self.start_time
+        need_to_show_break_notification = \
+            (now - last_break_time).total_seconds() >= self.user_breaks_interval_hours * 60 * 60
+
+        if need_to_show_break_notification:
+            self.show_break_notification()
 
     def get_icon(self, icon_state: IconState) -> str:
         if not self.theme:
