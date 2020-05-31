@@ -111,6 +111,16 @@ class SpeakingEyeApp(Gtk.Application):
         return self.__dbus_method_call('org.freedesktop.DBus', '/org/freedesktop/DBus',
                                        'org.freedesktop.DBus', 'ListNames')
 
+    def __dbus_lock_screen(self) -> None:
+        for bus in self.screen_saver_bus_names:
+            # TODO: think about 'try-except' here
+            if bus == 'org.freedesktop.ScreenSaver':
+                continue
+
+            interface_name = f'/{bus.replace(".", "/")}'
+
+            self.__dbus_method_call(bus, interface_name, bus, 'Lock')
+
     def on_screen_saver_active_changed(self, connection: Gio.DBusConnection, sender_name: str, object_path: str,
                                        interface_name: str, signal_name: str, parameters: GLib.Variant) -> None:
         is_activated, = parameters
@@ -297,8 +307,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.set_work_time_state(False)
 
     def on_take_break_clicked(self, notification: Notify.Notification, action_id: str, arg: Any) -> None:
-        # TODO: lock screen
-        pass
+        self.__dbus_lock_screen()
 
     def show_notification(self, msg: str) -> None:
         Notify.Notification.new('Speaking Eye', msg, self.active_icon).show()

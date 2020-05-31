@@ -1,14 +1,14 @@
 # Speaking Eye
 
 ### :eyes: Looking at
-- [ ] your working hours/breaks
+- [x] your working hours/breaks
 - [x] activity in any apps (IDE, browser tabs, terminal, etc.)
 - [ ] distracting activity (custom list of apps/time limits)
 
 ### :postal_horn: Speaking about
 - [x] your activity on the computer
 - [x] overtime
-- [ ] time to take a break
+- [x] time to take a break
 - [ ] distracting apps if you spend a lot of time there
 
 ### System dependencies
