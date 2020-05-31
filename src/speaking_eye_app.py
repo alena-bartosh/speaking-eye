@@ -99,9 +99,13 @@ class SpeakingEyeApp(Gtk.Application):
         raw_result = self.connection.call_sync(bus_name, object_path, interface_name,
                                                method_name, no_parameters, default_reply_type,
                                                Gio.DBusCallFlags.NONE, default_call_timeout, not_cancellable)
-        result, = raw_result
 
-        return result
+        if raw_result:
+            result, = raw_result
+
+            return result
+
+        return None
 
     def __dbus_get_all_bus_names(self) -> List[str]:
         return self.__dbus_method_call('org.freedesktop.DBus', '/org/freedesktop/DBus',
@@ -128,13 +132,13 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.on_open_window()
 
-    def __dbus_get_screen_saver_bus_names(self):
+    def __dbus_get_screen_saver_bus_names(self) -> List[str]:
         bus_names = self.__dbus_get_all_bus_names()
         screen_saver_re = re.compile(r'^org\..*\.ScreenSaver$')
 
-        return filter(screen_saver_re.match, bus_names)
+        return list(filter(screen_saver_re.match, bus_names))
 
-    def __dbus_subscribe_to_screen_saver_signals(self):
+    def __dbus_subscribe_to_screen_saver_signals(self) -> None:
         if not self.screen_saver_bus_names:
             raise Exception('self.screen_saver_bus_names should be set!')
 
