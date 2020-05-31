@@ -27,6 +27,11 @@ class IconState(Enum):
     DISABLED = 'disabled'
 
 
+class SpecialWmClass(Enum):
+    DESKTOP = 'Desktop'
+    LOCK_SCREEN = 'LockScreen'
+
+
 class SpeakingEyeApp(Gtk.Application):
 
     def __init__(self, app_id: str, config: Dict, logger: logging.Logger):
@@ -101,7 +106,7 @@ class SpeakingEyeApp(Gtk.Application):
             self.previous_wm_class = self.wm_class
             self.previous_active_window_name = self.active_window_name
 
-            self.wm_class = 'LockScreen'
+            self.wm_class = SpecialWmClass.LOCK_SCREEN.value
             self.active_window_name = ''
         else:
             self.wm_class = self.previous_wm_class
@@ -148,8 +153,8 @@ class SpeakingEyeApp(Gtk.Application):
             self.wm_class = get_wm_class(active_window.get_xid())
             self.active_window_name = get_window_name(active_window)
         else:
-            self.wm_class = 'Desktop'
-            self.active_window_name = 'Desktop'
+            self.wm_class = SpecialWmClass.DESKTOP.value
+            self.active_window_name = ''
 
         self.on_open_window()
 
