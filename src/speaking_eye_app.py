@@ -75,6 +75,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.user_work_time_hour_limit = self.config.get('time_limits', {}).get('work_time_hours', 8)
         self.user_breaks_interval_hours = self.config.get('time_limits', {}).get('breaks_interval_hours', 2)
         self.last_lock_screen_time = None
+        self.tsv_file = None
 
         self.logger.debug(f'Set user work time limit to [{self.user_work_time_hour_limit}] hours')
         self.logger.debug(f'Set user user breaks interval to [{self.user_breaks_interval_hours}] hours')
@@ -360,11 +361,27 @@ class SpeakingEyeApp(Gtk.Application):
         self.last_break_notification = notification
 
     def save_activity_line_to_file(self, start_time: datetime, end_time: datetime, work_time: timedelta) -> None:
-        with open(self.get_tsv_file_path(), 'a') as f:
-            line = \
-                f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\t{self.is_work_time}\n'
-            f.write(line)
-            f.flush()
+        self.open_tsv_file_if_needed()
+
+        line = \
+            f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\t{self.is_work_time}\n'
+        self.tsv_file.write(line)
+        self.tsv_file.flush()
+
+    def open_tsv_file_if_needed(self) -> None:
+        tsv_file_path = self.get_tsv_file_path()
+
+        if self.tsv_file is None:
+            self.tsv_file = open(tsv_file_path, 'a')
+            return
+
+        if self.tsv_file.name == tsv_file_path:
+            return
+
+        self.tsv_file.close()
+        self.tsv_file = open(tsv_file_path, 'a')
+
+        # TODO: reset work apps time + show a notification
 
     def try_load_work_apps_time(self) -> Dict[str, timedelta]:
         tsv_file_path = self.get_tsv_file_path()
