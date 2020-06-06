@@ -20,7 +20,7 @@ from tray_icon import TrayIcon
 from x_helpers import get_wm_class
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-RAW_DATA_TSV = os.path.join(SRC_DIR, f'../dist/{date.today()}_speaking_eye_raw_data.tsv')
+RAW_DATA_TSV_FMT = os.path.join(SRC_DIR, '../dist/{date}_speaking_eye_raw_data.tsv')
 
 BREAK_TIME_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
                      '🙇', '🙋', '🚣', '🤸', '🧟', '🐙',
@@ -60,7 +60,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.wm_class = None
         self.previous_wm_class = None
         self.work_apps_time = self.try_load_work_apps_time()
-        self.raw_data_tsv_file = open(RAW_DATA_TSV, 'a')
         self.save_timer = Timer('save_timer', handler=self.save_timer_handler, interval_ms=10*60*1000, repeat=True)
         self.reminder_timer = \
             Timer('reminder_timer', handler=self.show_overtime_notification, interval_ms=15*60*1000, repeat=False)
@@ -255,7 +254,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.show_notification(msg=f'{finish_msg}; {work_time_msg}')
         Notify.uninit()
 
-        self.raw_data_tsv_file.close()
         self.main_loop.quit()
 
     def on_close_item_click(self, menu_item: Gtk.MenuItem) -> None:
@@ -362,24 +360,30 @@ class SpeakingEyeApp(Gtk.Application):
         self.last_break_notification = notification
 
     def save_activity_line_to_file(self, start_time: datetime, end_time: datetime, work_time: timedelta) -> None:
-        line = \
-            f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\t{self.is_work_time}\n'
-        self.raw_data_tsv_file.write(line)
-        self.raw_data_tsv_file.flush()
+        with open(self.get_tsv_file_path(), 'a') as f:
+            line = \
+                f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\t{self.is_work_time}\n'
+            f.write(line)
+            f.flush()
 
     def try_load_work_apps_time(self) -> Dict[str, timedelta]:
-        if not os.path.exists(RAW_DATA_TSV):
+        tsv_file_path = self.get_tsv_file_path()
+
+        if not os.path.exists(tsv_file_path):
             return {}
 
         col_names = ['start_time', 'end_time', 'work_time', 'wm_class', 'active_window_name', 'is_work_time']
 
-        df = pd.read_csv(RAW_DATA_TSV, names=col_names, sep='\t')
+        df = pd.read_csv(tsv_file_path, names=col_names, sep='\t')
         df = df.loc[df['is_work_time'].astype(bool).eq(True)]
         df['application'] = df['wm_class'] + ' | ' + df['active_window_name']
         df['work_time'] = pd.to_timedelta(df['work_time'])
         df = df.groupby('application')['work_time'].sum().reset_index()
 
         return dict(zip(list(df['application']), list(df['work_time'])))
+
+    def get_tsv_file_path(self) -> str:
+        return RAW_DATA_TSV_FMT.format(date=date.today())
 
     def get_user_work_time(self) -> timedelta:
         return reduce(operator.add, self.work_apps_time.values(), timedelta())
