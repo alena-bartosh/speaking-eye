@@ -137,6 +137,9 @@ class SpeakingEyeApp(Gtk.Application):
             self.wm_class = SpecialWmClass.LOCK_SCREEN.value
             self.active_window_name = ''
         else:
+            if self.is_work_time:
+                self.last_lock_screen_time = now
+
             self.wm_class = self.previous_wm_class
             self.active_window_name = self.previous_active_window_name
 
@@ -178,9 +181,6 @@ class SpeakingEyeApp(Gtk.Application):
         # to prevent double handler connections
         if previously_active_window and self.name_changed_handler_id:
             previously_active_window.disconnect(self.name_changed_handler_id)
-
-        if self.wm_class == SpecialWmClass.LOCK_SCREEN.value and self.is_work_time:
-            self.last_lock_screen_time = now
 
         active_window = screen.get_active_window()
 
