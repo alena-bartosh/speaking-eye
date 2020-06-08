@@ -14,6 +14,9 @@
 ### System dependencies
 ```sh
 sudo apt-get install \
+    python3-dev \
+    python3-venv \
+    libcairo2-dev \
     libgirepository1.0-dev \
     python3-gi \
     gir1.2-gtk-3.0 \
