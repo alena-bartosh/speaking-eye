@@ -48,5 +48,16 @@ optional arguments:
   -c , --config   config path
 ```
 
+### One-time start
+```
+./start.sh
+```
+
+### Set auto start
+Speaking Eye will turn on in 2 minutes after reboot
+```
+ ./install_systemd.sh 
+```
+
 ### Code conduction
 * Use [Gitmoji](https://gitmoji.carloscuesta.me) for commit messages
