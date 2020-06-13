@@ -6,18 +6,24 @@ theme: dark
 
 apps:
   detailed:
-    - Desktop
-    - Jupyter Notebook
-    - Meet
-    - Slack
-    - Terminal
-    - jetbrains-pycharm
+    - Internet:
+        wm_name: Chromium|Firefox
+    - Jupyter Notebook:
+        wm_name: Chromium|Firefox
+        tab: Jupyter Notebook
+    - IDE:
+        wm_name: jetbrains-pycharm|jetbrains-idea
+    - Terminal:
+        wm_name: Terminal
 
   distracting:
-    - Telegram
-    - YouTube
+    - Telegram:
+        wm_name: Telegram
+    - YouTube:
+        wm_name: Chromium|Firefox
+        tab: YouTube
 
 time_limits:
-  work_time_hours: 8
+  work_time_hours: 9
   breaks_interval_hours: 2
   distracting_apps_mins: 5

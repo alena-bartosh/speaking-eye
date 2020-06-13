@@ -6,12 +6,26 @@ theme: dark
 
 apps:
   detailed:
-    - all  # for tracking all activities
+    - all                               # 'all' for tracking all activities
 
   distracting:
-    - none  # no distracting apps
+    - none                              # 'none' if no distracting apps
 
 time_limits:
   work_time_hours: 8
   breaks_interval_hours: 2
   distracting_apps_mins: 5
+
+# examples:
+
+# apps:
+#   detailed:
+#     - Serious working projects:                       # name that will be used in the report
+#         wm_name: jetbrains-pycharm|jetbrains-idea     # real apps name or parts of name
+#                                                       # '|' means OR
+#         tab: working.sh|projects.py                   # separate tabs if needed
+#
+#   distracting:
+#     - Viewing pictures:
+#         wm_name: Nautilus
+#         tab: dir-with-cute-corgi-dogs-photos
