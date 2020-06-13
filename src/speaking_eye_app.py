@@ -76,6 +76,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.user_breaks_interval_hours = self.config.get('time_limits', {}).get('breaks_interval_hours', 2)
         self.last_lock_screen_time = None
         self.tsv_file = None
+        self.is_lock_screen_activated = False
 
         self.logger.debug(f'Set user work time limit to [{self.user_work_time_hour_limit}] hours')
         self.logger.debug(f'Set user user breaks interval to [{self.user_breaks_interval_hours}] hours')
@@ -124,13 +125,14 @@ class SpeakingEyeApp(Gtk.Application):
     def on_screen_saver_active_changed(self, connection: Gio.DBusConnection, sender_name: str, object_path: str,
                                        interface_name: str, signal_name: str, parameters: GLib.Variant) -> None:
         is_activated, = parameters
+        self.is_lock_screen_activated = is_activated
 
         now = datetime.now()
 
         self.on_close_window(now)
         self.save_app_work_time(now)
 
-        if is_activated:
+        if self.is_lock_screen_activated:
             self.previous_wm_class = self.wm_class
             self.previous_active_window_name = self.active_window_name
 
@@ -434,7 +436,7 @@ class SpeakingEyeApp(Gtk.Application):
             self.overtime_timer.stop()
 
     def break_timer_handler(self) -> None:
-        if not self.is_work_time:
+        if not self.is_work_time or self.is_lock_screen_activated:
             return
 
         now = datetime.now()
