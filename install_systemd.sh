@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # experimental:
-# systemd user service and timer generator
-# after running this script speaking-eye will turn on in 2 minutes after reboot
+# systemd user service generator
+# after running this script speaking-eye will automatically turn on after system startup
 
 # stop script if any command fails
 set -e
@@ -17,22 +17,11 @@ Description=Speaking Eye App
 
 [Service]
 ExecStart=${REPO_DIR}/start.sh
-
-[Install]
-WantedBy=default.target
-EOL
-
-cat > ~/.local/share/systemd/user/speaking-eye.timer <<EOL
-[Unit]
-Description=Speaking Eye App Timer
-
-[Timer]
-OnBootSec=2min
-Unit=speaking-eye.service
+Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=default.target
 EOL
 
 systemctl --user daemon-reload
-systemctl --user enable speaking-eye.timer

@@ -54,7 +54,7 @@ optional arguments:
 ```
 
 ### Set auto start
-Speaking Eye will turn on in 2 minutes after reboot
+Speaking Eye will automatically turn on after system startup
 ```
  ./install_systemd.sh 
 ```
