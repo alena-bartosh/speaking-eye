@@ -9,9 +9,11 @@ gi.require_version('Notify', '0.7')
 
 import argparse
 import coloredlogs
+import fcntl
 import logging
 import os
 import sys
+import tempfile
 import yaml
 
 from speaking_eye_app import SpeakingEyeApp
@@ -43,6 +45,14 @@ def main():
 
     coloredlogs.install(log_level_map[args.log_level])
     logger = logging.getLogger(APP_ID)
+
+    pid_file = f'{tempfile.gettempdir()}/{APP_ID}.pid'
+    fp = open(pid_file, 'w')
+
+    try:
+        fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except IOError:
+        app_exit(logger, msg='Another instance is already running!')
 
     config = None
     error_config_msg = 'Speaking Eye does not work without config. Bye baby!'
