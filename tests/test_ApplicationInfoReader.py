@@ -105,6 +105,20 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             reader.try_read(incorrect_data)
 
+    def test_when_special_application_info_not_lowercase(self):
+        reader = ApplicationInfoReader()
+        sub_tests_incorrect_data = {
+            'all uppercase': ['ALL'],
+            'none uppercase': ['NONE'],
+            'all mixed case': ['aLl'],
+            'none mixed case': ['nONe']
+        }
+
+        for sub_test, incorrect_data in sub_tests_incorrect_data.items():
+            with self.subTest(name=sub_test):
+                with self.assertRaises(ValueError):
+                    reader.try_read(incorrect_data)
+
 
 if __name__ == '__main__':
     unittest.main()
