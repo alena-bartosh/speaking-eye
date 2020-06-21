@@ -45,6 +45,10 @@ class ApplicationInfoReader:
         for data_item in data:
             is_special_case = data_item in SpecialApplicationInfo.list()
 
+            if not is_special_case and isinstance(data_item, str):
+                raise ValueError(f'Only special cases [{SpecialApplicationInfo.list()}] can be here '
+                                 f'or list of apps with wm_name and tab!')
+
             if is_special_case:
                 has_other_application_infos = len(data) > 1
                 special_case = SpecialApplicationInfo(data_item)

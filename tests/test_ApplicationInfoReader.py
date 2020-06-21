@@ -98,6 +98,13 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
 
                 self.assertListEqual(result, expected)
 
+    def test_when_app_name_is_not_object(self):
+        reader = ApplicationInfoReader()
+        incorrect_data = ['I am not an object because I have not ":" in the .yaml']
+
+        with self.assertRaises(ValueError):
+            reader.try_read(incorrect_data)
+
 
 if __name__ == '__main__':
     unittest.main()
