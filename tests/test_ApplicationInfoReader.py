@@ -119,6 +119,18 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     reader.try_read(incorrect_data)
 
+    def test_when_special_application_info_is_object(self):
+        reader = ApplicationInfoReader()
+        sub_tests_incorrect_data = {
+            'all': [{'all': {}}],
+            'none': [{'none': {}}]
+        }
+
+        for sub_test, incorrect_data in sub_tests_incorrect_data.items():
+            with self.subTest(name=sub_test):
+                with self.assertRaises(ValueError):
+                    reader.try_read(incorrect_data)
+
 
 if __name__ == '__main__':
     unittest.main()
