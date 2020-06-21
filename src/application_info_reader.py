@@ -1,9 +1,19 @@
+from enum import Enum
 from typing import List
 
 from application_info import ApplicationInfo
 
 WM_NAME_KEY = 'wm_name'
 TAB_KEY = 'tab'
+
+
+class SpecialApplicationInfo(Enum):
+    ALL = 'all'
+    NONE = 'none'
+
+    @staticmethod
+    def list():
+        return [special.value for special in SpecialApplicationInfo]
 
 
 class ApplicationInfoReader:
@@ -18,10 +28,18 @@ class ApplicationInfoReader:
         result = []
 
         for data_item in data:
+            if data_item in SpecialApplicationInfo.list():
+                special_case = data_item
+                has_other_application_infos = len(data) > 1
+
+                if has_other_application_infos:
+                    raise ValueError(f'Special case [{special_case}] must be the only one in a list!')
+
+                app_info = ApplicationInfo(special_case, '', '')
+                result.append(app_info)
+
             raw_app_info, = data_item.items()
             app_name, app_info = raw_app_info
-
-            # TODO: handle 'all' and 'none' cases
 
             wm_name = app_info[WM_NAME_KEY] if WM_NAME_KEY in app_info else ''
             tab = app_info[TAB_KEY] if TAB_KEY in app_info else ''
