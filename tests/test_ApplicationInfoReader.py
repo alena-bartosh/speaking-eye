@@ -57,6 +57,32 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
 
         self.assertListEqual(result, expected)
 
+    def test_when_all_special_application_info_used_with_others(self):
+        reader = ApplicationInfoReader()
+        sub_tests_data = {
+            'all in the beginning': ['all', {'App name': {'wm_name': 'wm1'}}],
+            'all in the middle': [{'App name 1': {'wm_name': 'wm1'}}, 'all', {'App name 2': {'wm_name': 'wm2'}}],
+            'all in the end': [{'App name': {'wm_name': 'wm1'}}, 'all']
+        }
+
+        for sub_test, incorrect_data in sub_tests_data.items():
+            with self.subTest(name=sub_test):
+                with self.assertRaises(ValueError):
+                    reader.try_read(incorrect_data)
+
+    def test_when_none_special_application_info_used_with_others(self):
+        reader = ApplicationInfoReader()
+        sub_tests_data = {
+            'none in the beginning': ['none', {'App name': {'wm_name': 'wm1'}}],
+            'none in the middle': [{'App name 1': {'wm_name': 'wm1'}}, 'none', {'App name 2': {'wm_name': 'wm2'}}],
+            'none in the end': [{'App name': {'wm_name': 'wm1'}}, 'none']
+        }
+
+        for sub_test, incorrect_data in sub_tests_data.items():
+            with self.subTest(name=sub_test):
+                with self.assertRaises(ValueError):
+                    reader.try_read(incorrect_data)
+
 
 if __name__ == '__main__':
     unittest.main()
