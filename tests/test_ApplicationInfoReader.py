@@ -83,6 +83,21 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     reader.try_read(incorrect_data)
 
+    def test_when_only_special_application_info_used(self):
+        reader = ApplicationInfoReader()
+        sub_tests_data = {
+            'only all': (['all'], [ApplicationInfo(name='all', wm_name='', tab='')]),
+            'only none': (['none'], [ApplicationInfo(name='none', wm_name='', tab='')])
+        }
+
+        for sub_test, sub_test_data in sub_tests_data.items():
+            with self.subTest(name=sub_test):
+                data, expected = sub_test_data
+
+                result = reader.try_read(data)
+
+                self.assertListEqual(result, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
