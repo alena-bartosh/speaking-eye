@@ -59,5 +59,10 @@ Speaking Eye will automatically turn on after system startup
  ./install_systemd.sh 
 ```
 
+### Run unittests
+```
+./run_unittests.sh
+```
+
 ### Code conduction
 * Use [Gitmoji](https://gitmoji.carloscuesta.me) for commit messages
