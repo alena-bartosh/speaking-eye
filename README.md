@@ -1,5 +1,7 @@
 # Speaking Eye
 
+![](https://github.com/alena-bartosh/speaking-eye/workflows/Lint%20&%20Tests/badge.svg)
+
 ### :eyes: Looking at
 - [x] your working hours/breaks
 - [x] activity in any apps (IDE, browser tabs, terminal, etc.)
