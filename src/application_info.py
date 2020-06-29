@@ -1,6 +1,3 @@
-# TODO: add unittests
-
-
 class ApplicationInfo:
 
     def __init__(self, name: str, wm_name: str, tab: str):
