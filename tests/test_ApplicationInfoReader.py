@@ -8,18 +8,19 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
 
     def test_when_incorrect_data(self):
         sub_tests_incorrect_data = {
-            'None': None,
-            'Empty list': [],
-            'Wrong input type (dict)': {},
-            'Wrong input type (number)': 42,
-            'Wrong input type (str)': 'I am a string',
-            'An application item w/o wm_name & tab': [{'App name': {}}],
+            'None': (None, r"Incorrect data type \[<class 'NoneType'>\]!"),
+            'Empty list': ([], r'Empty data!'),
+            'Wrong input type (dict)': ({}, r"Incorrect data type \[<class 'dict'>\]!"),
+            'Wrong input type (number)': (42, r"Incorrect data type \[<class 'int'>\]!"),
+            'Wrong input type (str)': ('I am a string', r"Incorrect data type \[<class 'str'>\]!"),
+            'An application item w/o wm_name & tab':
+                ([{'App name': {}}], r'Application \[App name\] has empty wm_name and tab!'),
         }
         reader = ApplicationInfoReader()
 
-        for sub_test, incorrect_data in sub_tests_incorrect_data.items():
+        for sub_test, (incorrect_data, expected_error_msg) in sub_tests_incorrect_data.items():
             with self.subTest(name=sub_test):
-                with self.assertRaises(ValueError):
+                with self.assertRaisesRegex(ValueError, expected_regex=expected_error_msg):
                     reader.try_read(incorrect_data)
 
     def test_when_correct_data(self):
@@ -67,7 +68,8 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
 
         for sub_test, incorrect_data in sub_tests_data.items():
             with self.subTest(name=sub_test):
-                with self.assertRaises(ValueError):
+                with self.assertRaisesRegex(ValueError,
+                                            expected_regex=r'Special case \[all\] must be the only one in a list!'):
                     reader.try_read(incorrect_data)
 
     def test_when_none_special_application_info_used_with_others(self):
@@ -80,7 +82,8 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
 
         for sub_test, incorrect_data in sub_tests_data.items():
             with self.subTest(name=sub_test):
-                with self.assertRaises(ValueError):
+                with self.assertRaisesRegex(ValueError,
+                                            expected_regex=r'Special case \[none\] must be the only one in a list!'):
                     reader.try_read(incorrect_data)
 
     def test_when_only_special_application_info_used(self):
@@ -102,7 +105,9 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
         reader = ApplicationInfoReader()
         incorrect_data = ['I am not an object because I have not ":" in the .yaml']
 
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError,
+                                    expected_regex=r"Only special cases \[\['all', 'none'\]\] can be here or "
+                                                   r"list of apps with wm_name and tab!"):
             reader.try_read(incorrect_data)
 
     def test_when_special_application_info_not_lowercase(self):
@@ -116,7 +121,9 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
 
         for sub_test, incorrect_data in sub_tests_incorrect_data.items():
             with self.subTest(name=sub_test):
-                with self.assertRaises(ValueError):
+                with self.assertRaisesRegex(ValueError,
+                                            expected_regex=r"Only special cases \[\['all', 'none'\]\] can be here or "
+                                                           r"list of apps with wm_name and tab!"):
                     reader.try_read(incorrect_data)
 
     def test_when_special_application_info_is_object(self):
@@ -128,7 +135,9 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
 
         for sub_test, incorrect_data in sub_tests_incorrect_data.items():
             with self.subTest(name=sub_test):
-                with self.assertRaises(ValueError):
+                with self.assertRaisesRegex(ValueError,
+                                            expected_regex=r"Special cases \[\['all', 'none'\]\] "
+                                                           r"with \":\" are not supported!"):
                     reader.try_read(incorrect_data)
 
 
