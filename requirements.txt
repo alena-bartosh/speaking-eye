@@ -2,7 +2,6 @@ coloredlogs==14.0
 humanfriendly==8.2
 numpy==1.18.3
 pandas==1.0.3
-pkg-resources==0.0.0
 pycairo==1.19.1
 PyGObject==3.36.0
 python-dateutil==2.8.1
