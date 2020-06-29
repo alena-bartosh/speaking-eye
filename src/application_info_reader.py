@@ -25,6 +25,11 @@ class ApplicationInfoReader:
         raw_app_info, = data_item.items()
         app_name, app_info = raw_app_info
 
+        is_special_case_used_as_app_name = app_name in SpecialApplicationInfo.list()
+
+        if is_special_case_used_as_app_name:
+            raise ValueError(f'Special cases [{SpecialApplicationInfo.list()}] with ":" are not supported!')
+
         wm_name = app_info[WM_NAME_KEY] if WM_NAME_KEY in app_info else ''
         tab = app_info[TAB_KEY] if TAB_KEY in app_info else ''
 
