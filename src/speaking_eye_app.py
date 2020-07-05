@@ -387,12 +387,19 @@ class SpeakingEyeApp(Gtk.Application):
         # TODO: if app work time from 23:00 to 01:00
         #  then split between old and new file: [23:00; 00:00] U [00:00; 01:00]
         self.tsv_file.close()
+
         self.tsv_file = open(tsv_file_path, 'a')
 
+        self.on_new_day_started()
+
+    def on_new_day_started(self) -> None:
         self.work_apps_time = {}
         open_new_file_msg = 'New file was opened and apps work time was reset'
+
         self.logger.debug(open_new_file_msg)
         self.show_notification(msg=open_new_file_msg)
+
+        self.set_work_time_state(False)
 
     def try_load_work_apps_time(self) -> Dict[str, timedelta]:
         tsv_file_path = self.get_tsv_file_path()
