@@ -38,7 +38,7 @@ pip install -r requirements.txt
 ```
 
 ### Usage
-```
+```sh
 python3 speaking_eye.py --help
 usage: speaking_eye.py [-h] [--log-level] [-c]
 
@@ -51,18 +51,18 @@ optional arguments:
 ```
 
 ### One-time start
-```
+```sh
 ./start.sh
 ```
 
 ### Set auto start
 Speaking Eye will automatically turn on after system startup
-```
+```sh
  ./install_systemd.sh 
 ```
 
 ### Run unittests
-```
+```sh
 ./run_unittests.sh
 ```
 
