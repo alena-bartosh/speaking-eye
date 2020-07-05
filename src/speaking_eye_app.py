@@ -278,6 +278,10 @@ class SpeakingEyeApp(Gtk.Application):
         icon = self.active_icon if self.is_work_time else self.disabled_icon
         self.tray_icon.set_icon_if_exist(icon)
 
+        if self.is_work_time:
+            self.last_lock_screen_time = now
+            self.last_break_reminder_time = now
+
     def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
         self.set_work_time_state(not self.is_work_time)
 
