@@ -11,12 +11,14 @@ class Activity:
         self.activity_time: Optional[timedelta] = None
         self.is_work_time = is_work_time
 
-    def set_end_time(self, end_time: datetime) -> None:
+    def set_end_time(self, end_time: datetime) -> 'Activity':
         if end_time < self.start_time:
             raise ValueError(f'end_time [{end_time}] should be greater than start_time [{self.start_time}]!')
 
         self.end_time = end_time
         self.activity_time = self.end_time - self.start_time
+
+        return self
 
     def has_finished(self) -> bool:
         return self.end_time is not None
