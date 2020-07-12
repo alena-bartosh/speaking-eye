@@ -1,6 +1,7 @@
 # Speaking Eye
 
 ![](https://github.com/alena-bartosh/speaking-eye/workflows/Lint%20&%20Tests/badge.svg)
+[![codecov](https://codecov.io/gh/alena-bartosh/speaking-eye/branch/master/graph/badge.svg)](https://codecov.io/gh/alena-bartosh/speaking-eye)
 
 ### :eyes: Looking at
 - [x] your working hours/breaks
