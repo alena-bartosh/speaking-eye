@@ -12,8 +12,8 @@ apps:
     - none                              # 'none' if no distracting apps
 
 time_limits:
-  work_time_hours: 8
-  breaks_interval_hours: 2
+  work_time_hours: 9
+  breaks_interval_hours: 3
   distracting_apps_mins: 5
 
 # examples:
