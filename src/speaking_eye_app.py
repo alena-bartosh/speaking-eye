@@ -73,8 +73,8 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_work_time_update_time = self.start_time
         self.last_overtime_notification = None
         self.last_break_notification = None
-        self.user_work_time_hour_limit = get(self.config, 'time_limits.work_time_hours') or 8
-        self.user_breaks_interval_hours = get(self.config, 'time_limits.breaks_interval_hours') or 2
+        self.user_work_time_hour_limit = get(self.config, 'time_limits.work_time_hours') or 9
+        self.user_breaks_interval_hours = get(self.config, 'time_limits.breaks_interval_hours') or 3
         self.last_lock_screen_time = None
         self.tsv_file = None
         self.is_lock_screen_activated = False
