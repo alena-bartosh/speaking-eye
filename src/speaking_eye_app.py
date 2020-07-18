@@ -12,6 +12,7 @@ import re
 import signal
 
 from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
+from pydash import get
 import pandas as pd
 
 from gtk_extras import get_window_name
@@ -45,7 +46,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.logger = logger
         self.connection = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         self.screen_saver_bus_names = self.__dbus_get_screen_saver_bus_names()
-        self.theme = self.config.get('theme', 'dark')
+        self.theme = get(self.config, 'theme', 'dark')
         self.active_icon = self.get_icon(IconState.ACTIVE)
         self.disabled_icon = self.get_icon(IconState.DISABLED)
         self.tray_icon = TrayIcon(app_id, self.disabled_icon, self.create_tray_menu())
@@ -72,8 +73,8 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_work_time_update_time = self.start_time
         self.last_overtime_notification = None
         self.last_break_notification = None
-        self.user_work_time_hour_limit = self.config.get('time_limits', {}).get('work_time_hours', 8)
-        self.user_breaks_interval_hours = self.config.get('time_limits', {}).get('breaks_interval_hours', 2)
+        self.user_work_time_hour_limit = get(self.config, 'time_limits.work_time_hours', 8)
+        self.user_breaks_interval_hours = get(self.config, 'time_limits.breaks_interval_hours', 2)
         self.last_lock_screen_time = None
         self.tsv_file = None
         self.is_lock_screen_activated = False
@@ -263,6 +264,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.stop()
 
     def set_work_time_state(self, value: bool) -> None:
+        # TODO: correct write to file when change work state while do the same
         if value == self.is_work_time:
             self.logger.debug('Trying to change is_work_time to the same value')
             return
