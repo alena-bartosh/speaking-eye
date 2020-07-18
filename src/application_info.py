@@ -5,7 +5,7 @@ class ApplicationInfo:
         self.wm_name = wm_name
         self.tab = tab
 
-    def __eq__(self, other):
+    def __eq__(self, other: 'ApplicationInfo') -> bool:
         """
         Overrides the default implementation
         to use the object values instead of identifiers for comparison
