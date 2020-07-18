@@ -46,7 +46,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.logger = logger
         self.connection = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         self.screen_saver_bus_names = self.__dbus_get_screen_saver_bus_names()
-        self.theme = get(self.config, 'theme', 'dark')
+        self.theme = get(self.config, 'theme') or 'dark'
         self.active_icon = self.get_icon(IconState.ACTIVE)
         self.disabled_icon = self.get_icon(IconState.DISABLED)
         self.tray_icon = TrayIcon(app_id, self.disabled_icon, self.create_tray_menu())
@@ -73,8 +73,8 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_work_time_update_time = self.start_time
         self.last_overtime_notification = None
         self.last_break_notification = None
-        self.user_work_time_hour_limit = get(self.config, 'time_limits.work_time_hours', 8)
-        self.user_breaks_interval_hours = get(self.config, 'time_limits.breaks_interval_hours', 2)
+        self.user_work_time_hour_limit = get(self.config, 'time_limits.work_time_hours') or 8
+        self.user_breaks_interval_hours = get(self.config, 'time_limits.breaks_interval_hours') or 2
         self.last_lock_screen_time = None
         self.tsv_file = None
         self.is_lock_screen_activated = False
