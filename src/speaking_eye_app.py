@@ -21,7 +21,7 @@ from tray_icon import TrayIcon
 from x_helpers import get_wm_class
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-RAW_DATA_TSV_FMT = os.path.join(SRC_DIR, '../dist/{date}_speaking_eye_raw_data.tsv')
+RAW_DATA_TSV_FMT = os.path.join(SRC_DIR, '../dest/{date}_speaking_eye_raw_data.tsv')
 
 BREAK_TIME_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
                      '🙇', '🙋', '🚣', '🤸', '🧟', '🐙',
