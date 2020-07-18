@@ -12,9 +12,10 @@ class ActivityConverterTestCase(unittest.TestCase):
             'When is_work_time is [True]': (
                 Activity('wm_class1',
                          'window_name1',
-                         datetime(2020, 7, 12, 20, 30, 0),
-                         is_work_time=True).set_end_time(datetime(2020, 7, 12, 21, 30, 0)),
-                '2020-07-12 20:30:00\t2020-07-12 21:30:00\t1:00:00\twm_class1\twindow_name1\tTrue\n'
+                         datetime(2020, 7, 12, 20, 30, 0, 1),
+                         is_work_time=True).set_end_time(datetime(2020, 7, 12, 21, 30, 0, 2)),
+                '2020-07-12 20:30:00.000001\t2020-07-12 21:30:00.000002\t'
+                '1:00:00.000001\twm_class1\twindow_name1\tTrue\n'
             ),
             'When is_work_time is [False]': (
                 Activity('wm_class2',
