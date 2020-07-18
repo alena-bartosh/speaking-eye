@@ -22,3 +22,29 @@ class Activity:
 
     def has_finished(self) -> bool:
         return self.end_time is not None
+
+    # TODO: add unittests
+    def __eq__(self, other: 'Activity') -> bool:
+        """
+        Overrides the default implementation
+        to use the object values instead of identifiers for comparison
+        """
+        if not isinstance(other, Activity):
+            return False
+
+        if self.wm_class != other.wm_class:
+            return False
+
+        if self.window_name != other.window_name:
+            return False
+
+        if self.start_time != other.start_time:
+            return False
+
+        if self.end_time != other.end_time:
+            return False
+
+        if self.activity_time != other.activity_time:
+            return False
+
+        return self.is_work_time == other.is_work_time
