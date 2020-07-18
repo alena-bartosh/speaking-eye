@@ -69,7 +69,7 @@ def main():
         app_exit(logger, error_config_msg)
 
     app = SpeakingEyeApp(APP_ID, config, logger)
-    app.run(sys.argv)
+    app.run()
     app.start_main_loop()
 
 
