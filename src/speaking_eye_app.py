@@ -40,7 +40,7 @@ class SpecialWmClass(Enum):
 
 class SpeakingEyeApp(Gtk.Application):
 
-    def __init__(self, app_id: str, config: Dict, logger: logging.Logger):
+    def __init__(self, app_id: str, config: Dict, logger: logging.Logger) -> None:
         super().__init__()
         self.config = config
         self.logger = logger

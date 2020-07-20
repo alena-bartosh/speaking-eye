@@ -6,7 +6,7 @@ FALLBACK_ICON = 'face-monkey'
 
 
 class TrayIcon:
-    def __init__(self, app_id: str, icon: str, menu: Gtk.Menu):
+    def __init__(self, app_id: str, icon: str, menu: Gtk.Menu) -> None:
         self.menu = menu
 
         self.indicator = \

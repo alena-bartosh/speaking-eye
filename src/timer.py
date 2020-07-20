@@ -4,7 +4,7 @@ from gi.repository import GLib, GObject
 
 
 class Timer:
-    def __init__(self, name: str, handler: Callable[[], None], interval_ms: int, repeat: bool):
+    def __init__(self, name: str, handler: Callable[[], None], interval_ms: int, repeat: bool) -> None:
         self.name = name
         self.handler = handler
         self.interval_ms = interval_ms

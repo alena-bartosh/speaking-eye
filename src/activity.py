@@ -3,7 +3,7 @@ from typing import Optional
 
 
 class Activity:
-    def __init__(self, wm_class: str, window_name: str, start_time: datetime, is_work_time: bool):
+    def __init__(self, wm_class: str, window_name: str, start_time: datetime, is_work_time: bool) -> None:
         self.wm_class = wm_class
         self.window_name = window_name
         self.start_time = start_time
