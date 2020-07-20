@@ -87,7 +87,3 @@ class ActivityTestCase(unittest.TestCase):
         for sub_test, another_activity in sub_tests_data.items():
             with self.subTest(name=sub_test):
                 self.assertNotEqual(activity, another_activity)
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -139,7 +139,3 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
                                             expected_regex=r"Special cases \[\['all', 'none'\]\] "
                                                            r"with \":\" are not supported!"):
                     reader.try_read(incorrect_data)
-
-
-if __name__ == '__main__':
-    unittest.main()

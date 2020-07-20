@@ -28,7 +28,3 @@ class BoolParserTestCase(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,
                                         expected_regex=fr'Unexpected value \[{value}\]'):
                 BoolParser.parse(value)
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -65,7 +65,3 @@ class ActivityConverterTestCase(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,
                                             expected_regex=expected_msg):
                     ActivityConverter.from_string(line)
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -35,7 +35,3 @@ class ApplicationInfoTestCase(unittest.TestCase):
         for sub_test, another_app_info in sub_tests_data.items():
             with self.subTest(name=sub_test):
                 self.assertNotEqual(app_info, another_app_info)
-
-
-if __name__ == '__main__':
-    unittest.main()
