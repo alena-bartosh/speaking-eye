@@ -43,7 +43,7 @@ class Activity:
         if self.end_time != other.end_time:
             return False
 
-        if self.activity_time != other.activity_time:
+        if self.activity_time != other.activity_time:  # pragma: no cover
             return False
 
         return self.is_work_time == other.is_work_time

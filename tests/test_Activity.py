@@ -80,8 +80,10 @@ class ActivityTestCase(unittest.TestCase):
                 Activity(wm_class, window_name, another_start_time, is_work_time).set_end_time(end_time),
             'Different end times':
                 Activity(wm_class, window_name, start_time, is_work_time).set_end_time(another_end_time),
-            'Different is work status':
+            'Different "is_work_time" status':
                 Activity(wm_class, window_name, start_time, another_is_work_time).set_end_time(end_time),
+            'Different types':
+                'I am not an Activity',
         }
 
         for sub_test, another_activity in sub_tests_data.items():
