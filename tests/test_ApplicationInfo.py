@@ -30,6 +30,7 @@ class ApplicationInfoTestCase(unittest.TestCase):
             'Different names': ApplicationInfo(another_name, wm_name, tab),
             'Different wm names': ApplicationInfo(name, another_wm_name, tab),
             'Different tabs': ApplicationInfo(name, wm_name, another_tab),
+            'Different types': 'I am not an ApplicationInfo',
         }
 
         for sub_test, another_app_info in sub_tests_data.items():
