@@ -38,6 +38,56 @@ class ActivityTestCase(unittest.TestCase):
         self.assertIsNone(activity.end_time)
         self.assertIsNone(activity.activity_time)
 
+    def test_when_activities_are_equal(self):
+        wm_class = 'wm_class'
+        window_name = 'window_name'
+        start_time = datetime(2020, 7, 12, 20, 30, 0)
+        is_work_time = True
+
+        left = Activity(wm_class, window_name, start_time, is_work_time)
+        right = Activity(wm_class, window_name, start_time, is_work_time)
+
+        self.assertEqual(left, right)
+
+        end_time = datetime(2020, 7, 12, 21, 30, 0)
+
+        left.set_end_time(end_time)
+        right.set_end_time(end_time)
+
+        self.assertEqual(left, right)
+
+    def test_when_activities_are_not_equal(self):
+        wm_class = 'wm_class'
+        window_name = 'window_name'
+        start_time = datetime(2020, 7, 12, 20, 30, 0)
+        end_time = datetime(2020, 7, 12, 21, 30, 0)
+        is_work_time = True
+
+        activity = Activity(wm_class, window_name, start_time, is_work_time).set_end_time(end_time)
+
+        another_wm_class = 'another_wm_class'
+        another_window_name = 'another_window_name'
+        another_start_time = datetime(2020, 7, 12, 20, 50, 0)
+        another_end_time = datetime(2020, 7, 12, 23, 30, 0)
+        another_is_work_time = False
+
+        sub_tests_data = {
+            'Different wm classes':
+                Activity(another_wm_class, window_name, start_time, is_work_time).set_end_time(end_time),
+            'Different window names':
+                Activity(wm_class, another_window_name, start_time, is_work_time).set_end_time(end_time),
+            'Different start times':
+                Activity(wm_class, window_name, another_start_time, is_work_time).set_end_time(end_time),
+            'Different end times':
+                Activity(wm_class, window_name, start_time, is_work_time).set_end_time(another_end_time),
+            'Different is work status':
+                Activity(wm_class, window_name, start_time, another_is_work_time).set_end_time(end_time),
+        }
+
+        for sub_test, another_activity in sub_tests_data.items():
+            with self.subTest(name=sub_test):
+                self.assertNotEqual(activity, another_activity)
+
 
 if __name__ == '__main__':
     unittest.main()

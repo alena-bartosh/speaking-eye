@@ -23,7 +23,6 @@ class Activity:
     def has_finished(self) -> bool:
         return self.end_time is not None
 
-    # TODO: add unittests
     def __eq__(self, other: 'Activity') -> bool:
         """
         Overrides the default implementation
