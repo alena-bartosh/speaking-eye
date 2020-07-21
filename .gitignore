@@ -130,3 +130,6 @@ dmypy.json
 
 # JetBrains stuff
 .idea/
+
+# Speaking Eye related stuff
+dest/
