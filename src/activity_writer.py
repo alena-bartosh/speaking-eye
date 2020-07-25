@@ -13,9 +13,11 @@ class ActivityWriter:
         if not output_dir.is_dir():
             raise ValueError(f'Path [{output_dir}] does not exist or it is not a dir!')
 
+        if '{date}' not in file_mask:
+            raise ValueError(f'file_mask [{file_mask}] should contain [date] string argument!')
+
         self.__time_provider = time_provider
         self.__output_dir = output_dir
-        # TODO: check mask for date argument
         self.__file_mask = file_mask
         self.__current_file: Optional[TextIO] = None
 
