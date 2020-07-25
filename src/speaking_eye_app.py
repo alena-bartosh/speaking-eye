@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta
 from enum import Enum
 from functools import reduce
+from pathlib import Path
 from random import choice
 from types import FrameType
 from typing import Any, Dict, List
@@ -15,13 +16,17 @@ from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
 from pydash import get
 import pandas as pd
 
+from activity import Activity
+from activity_writer import ActivityWriter
 from gtk_extras import get_window_name
+from time_provider import TimeProvider
 from timer import Timer
 from tray_icon import TrayIcon
 from x_helpers import get_wm_class
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-RAW_DATA_TSV_FMT = os.path.join(SRC_DIR, '../dest/{date}_speaking_eye_raw_data.tsv')
+OUTPUT_TSV_FILE_DIR = Path(SRC_DIR) / '..' / 'dest'
+OUTPUT_TSV_FILE_MASK = '{date}_speaking_eye_raw_data.tsv'
 
 BREAK_TIME_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
                      '🙇', '🙋', '🚣', '🤸', '🧟', '🐙',
@@ -76,8 +81,8 @@ class SpeakingEyeApp(Gtk.Application):
         self.user_work_time_hour_limit = get(self.config, 'time_limits.work_time_hours') or 9
         self.user_breaks_interval_hours = get(self.config, 'time_limits.breaks_interval_hours') or 3
         self.last_lock_screen_time = None
-        self.tsv_file = None
         self.is_lock_screen_activated = False
+        self.writer = ActivityWriter(TimeProvider(), OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
 
         self.logger.debug(f'Set user work time limit to [{self.user_work_time_hour_limit}] hours')
         self.logger.debug(f'Set user user breaks interval to [{self.user_breaks_interval_hours}] hours')
@@ -368,32 +373,14 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.last_break_notification = notification
 
-    def save_activity_line_to_file(self, start_time: datetime, end_time: datetime, work_time: timedelta) -> None:
-        self.open_tsv_file_if_needed()
+    def save_activity_line_to_file(self, start_time: datetime, end_time: datetime) -> None:
+        # TODO: create self.activity only for current activities
+        activity = \
+            Activity(self.wm_class, self.active_window_name, start_time, self.is_work_time).set_end_time(end_time)
 
-        line = \
-            f'{start_time}\t{end_time}\t{work_time}\t{self.wm_class}\t{self.active_window_name}\t{self.is_work_time}\n'
-        self.tsv_file.write(line)
-        self.tsv_file.flush()
+        self.writer.write(activity)
 
-    def open_tsv_file_if_needed(self) -> None:
-        tsv_file_path = self.get_tsv_file_path()
-
-        if self.tsv_file is None:
-            self.tsv_file = open(tsv_file_path, 'a')
-            return
-
-        if self.tsv_file.name == tsv_file_path:
-            return
-
-        # TODO: if app work time from 23:00 to 01:00
-        #  then split between old and new file: [23:00; 00:00] U [00:00; 01:00]
-        self.tsv_file.close()
-
-        self.tsv_file = open(tsv_file_path, 'a')
-
-        self.on_new_day_started()
-
+    # TODO: use this method!
     def on_new_day_started(self) -> None:
         self.work_apps_time = {}
         open_new_file_msg = 'New file was opened and apps work time was reset'
@@ -420,7 +407,7 @@ class SpeakingEyeApp(Gtk.Application):
         return dict(zip(list(df['application']), list(df['work_time'])))
 
     def get_tsv_file_path(self) -> str:
-        return RAW_DATA_TSV_FMT.format(date=date.today())
+        return str(OUTPUT_TSV_FILE_DIR / OUTPUT_TSV_FILE_MASK.format(date=date.today()))
 
     def get_user_work_time(self) -> timedelta:
         return reduce(operator.add, self.work_apps_time.values(), timedelta())
@@ -431,7 +418,7 @@ class SpeakingEyeApp(Gtk.Application):
         activity_work_time = now - activity_start_time
 
         self.save_activity_time_if_needed(activity_work_time)
-        self.save_activity_line_to_file(activity_start_time, now, activity_work_time)
+        self.save_activity_line_to_file(activity_start_time, now)
 
         self.active_tab_start_time = now
         self.active_window_start_time = now
