@@ -20,9 +20,14 @@ class ActivityWriter:
         self.__output_dir = output_dir
         self.__file_mask = file_mask
         self.__current_file: Optional[TextIO] = None
+        self.__current_file_path: Optional[Path] = None
 
     def __get_file(self) -> Path:
         return self.__output_dir / self.__file_mask.format(date=self.__time_provider.today())
+
+    def __open_file(self, file: Path) -> None:
+        self.__current_file_path = file
+        self.__current_file = open(str(file), self.FILE_MODE)
 
     def __write_and_flush(self, activity: Activity) -> None:
         if self.__current_file is None:
@@ -39,11 +44,11 @@ class ActivityWriter:
         file = self.__get_file()
 
         if self.__current_file is None:
-            self.__current_file = open(str(file), self.FILE_MODE)
+            self.__open_file(file)
             self.__write_and_flush(activity)
             return
 
-        if self.__current_file == str(file):
+        if self.__current_file_path == file:
             self.__write_and_flush(activity)
             return
 
@@ -51,7 +56,7 @@ class ActivityWriter:
 
         # TODO: if app work time from 23:00 to 01:00
         #  then split between old and new file: [23:00; 00:00] U [00:00; 01:00]
-        self.__current_file = open(str(file), self.FILE_MODE)
+        self.__open_file(file)
         self.__write_and_flush(activity)
 
         # TODO: emit on_new_file_open
