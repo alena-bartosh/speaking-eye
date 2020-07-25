@@ -32,7 +32,10 @@ class ActivityWriter:
         self.__current_file.flush()
 
     def write(self, activity: Activity) -> None:
-        # TODO: activity should be finished
+        if not activity.has_finished():
+            raise ValueError(f'Activity [{ActivityConverter.to_string(activity)}] should be finished '
+                             f'before writing into the file!')
+
         file = self.__get_file()
 
         if self.__current_file is None:
