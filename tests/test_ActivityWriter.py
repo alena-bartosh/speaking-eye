@@ -38,3 +38,9 @@ class ActivityWriterTestCase(unittest.TestCase):
             ActivityWriter(TimeProvider(), Path('/output_dir/'), '{ugly_file_mask}.tsv')
 
         mock_is_dir_res.assert_called_once()
+
+    def test_when_output_dir_does_not_exist(self) -> None:
+        with self.assertRaisesRegex(
+                ValueError,
+                expected_regex='Path \\[/non_existent_output_dir\\] does not exist or it is not a dir!'):
+            ActivityWriter(TimeProvider(), Path('/non_existent_output_dir/'), '{date}.tsv')
