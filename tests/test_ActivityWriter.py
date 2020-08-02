@@ -30,9 +30,12 @@ class ActivityWriterTestCase(unittest.TestCase):
         mock_is_dir_res.assert_called_once()
         mock_today_res.assert_called_once()
         mock_open_res.assert_called_once_with('/output_dir/2020-07-21.tsv', 'a')
-        mock_open_res.return_value.write.assert_called_once_with(
+
+        mock_file = mock_open_res.return_value
+
+        mock_file.write.assert_called_once_with(
             '2020-07-21 20:30:00.000001\t2020-07-21 21:30:00.000002\t1:00:00.000001\twm_class1\twindow_name1\tTrue\n')
-        mock_open_res.return_value.flush.assert_called_once()
+        mock_file.flush.assert_called_once()
 
         second_activity = Activity('wm_class2',
                                    'window_name2',
@@ -44,12 +47,12 @@ class ActivityWriterTestCase(unittest.TestCase):
         mock_is_dir_res.assert_called_once()
         self.assertEqual(2, mock_today_res.call_count)
         mock_open_res.assert_called_once_with('/output_dir/2020-07-21.tsv', 'a')
-        self.assertEqual(2, mock_open_res.return_value.write.call_count)
+        self.assertEqual(2, mock_file.write.call_count)
         self.assertEqual(
             call('2020-07-21 22:30:00.000002\t2020-07-21 22:30:00.000008\t'
                  '0:00:00.000006\twm_class2\twindow_name2\tTrue\n'),
-            mock_open_res.return_value.write.call_args)
-        self.assertEqual(2, mock_open_res.return_value.flush.call_count)
+            mock_file.write.call_args)
+        self.assertEqual(2, mock_file.flush.call_count)
         handle_new_day_event.assert_not_called()
 
     @patch('pathlib.Path.is_dir', return_value=True)
@@ -91,8 +94,11 @@ class ActivityWriterTestCase(unittest.TestCase):
 
         mock_today_res.assert_not_called()
         mock_open_res.assert_not_called()
-        mock_open_res.return_value.write.assert_not_called()
-        mock_open_res.return_value.flush.assert_not_called()
+
+        mock_file = mock_open_res.return_value
+
+        mock_file.write.assert_not_called()
+        mock_file.flush.assert_not_called()
         handle_new_day_event.assert_not_called()
 
     @patch('builtins.open', return_value=None)
