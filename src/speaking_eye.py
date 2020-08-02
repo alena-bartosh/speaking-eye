@@ -7,16 +7,16 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
 
-import argparse
-import coloredlogs
-import fcntl
-import logging
-import os
-import sys
-import tempfile
-import yaml
+import argparse     # noqa: E402
+import coloredlogs  # noqa: E402
+import fcntl        # noqa: E402
+import logging      # noqa: E402
+import os           # noqa: E402
+import sys          # noqa: E402
+import tempfile     # noqa: E402
+import yaml         # noqa: E402
 
-from speaking_eye_app import SpeakingEyeApp
+from speaking_eye_app import SpeakingEyeApp  # noqa: E402
 
 APP_ID = 'speaking-eye'
 
