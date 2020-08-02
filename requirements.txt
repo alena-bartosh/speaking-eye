@@ -9,6 +9,7 @@ numpy==1.18.3
 pandas==1.0.3
 pycairo==1.19.1
 pydash==4.8.0
+pyee==7.0.2
 PyGObject==3.36.0
 python-dateutil==2.8.1
 pytz==2020.1
