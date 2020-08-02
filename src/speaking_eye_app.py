@@ -84,6 +84,8 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_lock_screen_activated = False
         self.writer = ActivityWriter(TimeProvider(), OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
 
+        self.writer.event.on(ActivityWriter.NEW_DAY_EVENT, self.on_new_day_started)
+
         self.logger.debug(f'Set user work time limit to [{self.user_work_time_hour_limit}] hours')
         self.logger.debug(f'Set user user breaks interval to [{self.user_breaks_interval_hours}] hours')
 
@@ -380,7 +382,6 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.writer.write(activity)
 
-    # TODO: use this method!
     def on_new_day_started(self) -> None:
         self.work_apps_time = {}
         open_new_file_msg = 'New file was opened and apps work time was reset'
