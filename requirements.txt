@@ -3,13 +3,18 @@ chardet==3.0.4
 codecov==2.1.7
 coloredlogs==14.0
 coverage==5.2
+flake8==3.8.3
 humanfriendly==8.2
 idna==2.10
+importlib-metadata==1.7.0
+mccabe==0.6.1
 numpy==1.18.3
 pandas==1.0.3
 pycairo==1.19.1
+pycodestyle==2.6.0
 pydash==4.8.0
 pyee==7.0.2
+pyflakes==2.2.0
 PyGObject==3.36.0
 python-dateutil==2.8.1
 pytz==2020.1
@@ -21,3 +26,4 @@ six==1.14.0
 urllib3==1.25.9
 vext==0.7.3
 vext.gi==0.7.0
+zipp==3.1.0
