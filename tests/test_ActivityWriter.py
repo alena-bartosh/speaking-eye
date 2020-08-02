@@ -1,7 +1,7 @@
 import unittest
 from datetime import date, datetime
 from pathlib import Path
-from unittest.mock import call, patch, mock_open
+from unittest.mock import call, patch, Mock, mock_open
 
 from activity import Activity
 from activity_writer import ActivityWriter
@@ -21,6 +21,10 @@ class ActivityWriterTestCase(unittest.TestCase):
     @patch('pathlib.Path.is_dir', return_value=True)
     def test_when_record_first_activities_of_the_day(self, mock_is_dir_res, mock_today_res, mock_open_res) -> None:
         writer = ActivityWriter(TimeProvider(), Path('/output_dir/'), '{date}.tsv')
+        handle_new_day_event = Mock()
+
+        writer.event.on(ActivityWriter.NEW_DAY_EVENT, handle_new_day_event)
+
         writer.write(self.activity)
 
         mock_is_dir_res.assert_called_once()
@@ -46,6 +50,7 @@ class ActivityWriterTestCase(unittest.TestCase):
                  '0:00:00.000006\twm_class2\twindow_name2\tTrue\n'),
             mock_open_res.return_value.write.call_args)
         self.assertEqual(2, mock_open_res.return_value.flush.call_count)
+        handle_new_day_event.assert_not_called()
 
     @patch('pathlib.Path.is_dir', return_value=True)
     def test_when_date_not_in_file_mask(self, mock_is_dir_res) -> None:
@@ -72,6 +77,9 @@ class ActivityWriterTestCase(unittest.TestCase):
                                          is_work_time=True)
 
         writer = ActivityWriter(TimeProvider(), Path('/output_dir/'), '{date}.tsv')
+        handle_new_day_event = Mock()
+
+        writer.event.on(ActivityWriter.NEW_DAY_EVENT, handle_new_day_event)
 
         with self.assertRaisesRegex(
                 ValueError,
@@ -85,17 +93,23 @@ class ActivityWriterTestCase(unittest.TestCase):
         mock_open_res.assert_not_called()
         mock_open_res.return_value.write.assert_not_called()
         mock_open_res.return_value.flush.assert_not_called()
+        handle_new_day_event.assert_not_called()
 
     @patch('builtins.open', return_value=None)
     @patch('time_provider.TimeProvider.today', return_value=date(2020, 7, 21))
     @patch('pathlib.Path.is_dir', return_value=True)
     def test_try_write_when_file_is_not_opened(self, mock_is_dir_res, mock_today_res, mock_open_res) -> None:
+        handle_new_day_event = Mock()
+
         with self.assertRaisesRegex(
                 Exception,
                 expected_regex='current_file should be opened!'):
             writer = ActivityWriter(TimeProvider(), Path('/output_dir/'), '{date}.tsv')
+
+            writer.event.on(ActivityWriter.NEW_DAY_EVENT, handle_new_day_event)
             writer.write(self.activity)
 
         mock_is_dir_res.assert_called_once()
         mock_today_res.assert_called_once()
         mock_open_res.assert_called_once_with('/output_dir/2020-07-21.tsv', 'a')
+        handle_new_day_event.assert_not_called()

@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Optional, TextIO
+from pyee import BaseEventEmitter
 
 from activity import Activity
 from activity_converter import ActivityConverter
@@ -8,6 +9,7 @@ from time_provider import TimeProvider
 
 class ActivityWriter:
     FILE_MODE = 'a'
+    NEW_DAY_EVENT = 'new-day-event'
 
     def __init__(self, time_provider: TimeProvider, output_dir: Path, file_mask: str) -> None:
         if not output_dir.is_dir():
@@ -21,6 +23,7 @@ class ActivityWriter:
         self.__file_mask = file_mask
         self.__current_file: Optional[TextIO] = None
         self.__current_file_path: Optional[Path] = None
+        self.event = BaseEventEmitter()
 
     def __get_file(self) -> Path:
         return self.__output_dir / self.__file_mask.format(date=self.__time_provider.today())
@@ -59,4 +62,4 @@ class ActivityWriter:
         self.__open_file(file)
         self.__write_and_flush(activity)
 
-        # TODO: emit on_new_file_open
+        self.event.emit(ActivityWriter.NEW_DAY_EVENT)
