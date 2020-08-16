@@ -14,6 +14,52 @@
 - [x] time to take a break
 - [ ] distracting apps if you spend a lot of time there
 
+### Installation and use
+
+1. [Install system dependencies](https://github.com/alena-bartosh/speaking-eye#system-dependencies)
+2. [Install requirements](https://github.com/alena-bartosh/speaking-eye#setup)
+3. [Set auto start](https://github.com/alena-bartosh/speaking-eye#set-auto-start)
+4. [Manually run at first time](https://github.com/alena-bartosh/speaking-eye#one-time-start) or reboot the system
+
+#### Basics
+
+After successful installation and start, you will see a tray icon. A running Speaking Eye (**SE**) has two states: 
+   * [active](https://github.com/alena-bartosh/speaking-eye/blob/master/icon/light/active.png) (open; for working time);
+   * [disabled](https://github.com/alena-bartosh/speaking-eye/blob/master/icon/light/disabled.png) (crossed out; for free time).
+
+Use the active SE to track your work. For this check the box *'Work Time'* in the context menu.
+Eye is open: it thinks you are working. It will tell you about breaks, overtime and distracting activities. 
+Use the computer as usual and show what you are capable of!
+
+***Break*** in SE terminology — is ***a locked screen***. So when you get tired, just lock the screen for a while.
+After finishing work at the end of the day, change the status to *disabled*. 
+Eye is crossed out: it thinks you are not working. It will not talk to you, but will continue to collect information about your activity.
+
+You also can close SE with *'Close'* in the context menu. Eye is closed: your activity is still tracked by ISP and Google. 🙃
+
+#### Config
+
+For a comfortable interaction with SE, please fill in [the config](https://github.com/alena-bartosh/speaking-eye/blob/master/config/config.yaml). 
+Here you can choose the color theme of the icon and set time limits for notifications. 
+Also choose which activity you want to track (set 'all' for all) and which apps are considered harmful or distracting ('none' if no such apps).
+
+*'work_time_hours'* — is recommended to count with lunch. If *work_time* = 8 hours and *lunch* = 1 hour then it's better to set *work_time_hours: 9*. 
+
+To track a specific group of applications, follow this pattern:
+
+```
+- Reading about my favorite project:        # save selected windows activity under this name
+    wm_name: Chromium|Firefox|Opera         # x11 window manager names
+    tab: speaking-eye                       # look only at a specific tab in the window
+
+# Chromium: https://github.com/alena-bartosh/speaking-eye/actions
+# Firefox:  https://speaking-eye.ua/whats-new
+# Opera:    https://www.google.com/search?q=speaking-eye
+
+# In this case SE will save all these activities as 'Reading about my favorite project'
+```
+[Additional config example.](https://github.com/alena-bartosh/speaking-eye/blob/master/config/config_example.yaml)
+
 ### System dependencies
 ```sh
 sudo apt-get install \
