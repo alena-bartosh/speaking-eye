@@ -1,11 +1,10 @@
 import unittest
-from datetime import date, datetime
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import call, patch, Mock, mock_open
 
 from activity import Activity
 from activity_writer import ActivityWriter
-from time_provider import TimeProvider
 
 
 class ActivityWriterTestCase(unittest.TestCase):
@@ -17,10 +16,9 @@ class ActivityWriterTestCase(unittest.TestCase):
                                  is_work_time=True).set_end_time(datetime(2020, 7, 21, 21, 30, 0, 2))
 
     @patch('builtins.open', new_callable=mock_open)
-    @patch('time_provider.TimeProvider.today', return_value=date(2020, 7, 21))
     @patch('pathlib.Path.is_dir', return_value=True)
-    def test_when_record_first_activities_of_the_day(self, mock_is_dir_res, mock_today_res, mock_open_res) -> None:
-        writer = ActivityWriter(TimeProvider(), Path('/output_dir/'), '{date}.tsv')
+    def test_when_record_first_activities_of_the_day(self, mock_is_dir_res, mock_open_res) -> None:
+        writer = ActivityWriter(Path('/output_dir/'), '{date}.tsv')
         handle_new_day_event = Mock()
 
         writer.event.on(ActivityWriter.NEW_DAY_EVENT, handle_new_day_event)
@@ -28,7 +26,6 @@ class ActivityWriterTestCase(unittest.TestCase):
         writer.write(self.activity)
 
         mock_is_dir_res.assert_called_once()
-        mock_today_res.assert_called_once()
         mock_open_res.assert_called_once_with('/output_dir/2020-07-21.tsv', 'a')
 
         mock_file = mock_open_res.return_value
@@ -46,7 +43,6 @@ class ActivityWriterTestCase(unittest.TestCase):
         writer.write(second_activity)
 
         mock_is_dir_res.assert_called_once()
-        self.assertEqual(2, mock_today_res.call_count)
         mock_open_res.assert_called_once_with('/output_dir/2020-07-21.tsv', 'a')
         self.assertEqual(2, mock_file.write.call_count)
         self.assertEqual(
@@ -63,7 +59,7 @@ class ActivityWriterTestCase(unittest.TestCase):
         with self.assertRaisesRegex(
                 ValueError,
                 expected_regex='file_mask \\[{ugly_file_mask}.tsv\\] should contain \\[date\\] string argument!'):
-            ActivityWriter(TimeProvider(), Path('/output_dir/'), '{ugly_file_mask}.tsv')
+            ActivityWriter(Path('/output_dir/'), '{ugly_file_mask}.tsv')
 
         mock_is_dir_res.assert_called_once()
 
@@ -71,18 +67,17 @@ class ActivityWriterTestCase(unittest.TestCase):
         with self.assertRaisesRegex(
                 ValueError,
                 expected_regex='Path \\[/non_existent_output_dir\\] does not exist or it is not a dir!'):
-            ActivityWriter(TimeProvider(), Path('/non_existent_output_dir/'), '{date}.tsv')
+            ActivityWriter(Path('/non_existent_output_dir/'), '{date}.tsv')
 
     @patch('builtins.open', new_callable=mock_open)
-    @patch('time_provider.TimeProvider.today', return_value=date(2020, 7, 21))
     @patch('pathlib.Path.is_dir', return_value=True)
-    def test_when_activity_has_not_finished(self, mock_is_dir_res, mock_today_res, mock_open_res) -> None:
+    def test_when_activity_has_not_finished(self, mock_is_dir_res, mock_open_res) -> None:
         not_finished_activity = Activity('wm_class1',
                                          'window_name1',
                                          datetime(2020, 7, 21, 20, 30, 0),
                                          is_work_time=True)
 
-        writer = ActivityWriter(TimeProvider(), Path('/output_dir/'), '{date}.tsv')
+        writer = ActivityWriter(Path('/output_dir/'), '{date}.tsv')
         handle_new_day_event = Mock()
 
         writer.event.on(ActivityWriter.NEW_DAY_EVENT, handle_new_day_event)
@@ -95,7 +90,6 @@ class ActivityWriterTestCase(unittest.TestCase):
 
         mock_is_dir_res.assert_called_once()
 
-        mock_today_res.assert_not_called()
         mock_open_res.assert_not_called()
 
         mock_file = mock_open_res.return_value
@@ -106,29 +100,26 @@ class ActivityWriterTestCase(unittest.TestCase):
         handle_new_day_event.assert_not_called()
 
     @patch('builtins.open', return_value=None)
-    @patch('time_provider.TimeProvider.today', return_value=date(2020, 7, 21))
     @patch('pathlib.Path.is_dir', return_value=True)
-    def test_try_write_when_file_is_not_opened(self, mock_is_dir_res, mock_today_res, mock_open_res) -> None:
+    def test_try_write_when_file_is_not_opened(self, mock_is_dir_res, mock_open_res) -> None:
         handle_new_day_event = Mock()
 
         with self.assertRaisesRegex(
                 Exception,
                 expected_regex='current_file should be opened!'):
-            writer = ActivityWriter(TimeProvider(), Path('/output_dir/'), '{date}.tsv')
+            writer = ActivityWriter(Path('/output_dir/'), '{date}.tsv')
 
             writer.event.on(ActivityWriter.NEW_DAY_EVENT, handle_new_day_event)
             writer.write(self.activity)
 
         mock_is_dir_res.assert_called_once()
-        mock_today_res.assert_called_once()
         mock_open_res.assert_called_once_with('/output_dir/2020-07-21.tsv', 'a')
         handle_new_day_event.assert_not_called()
 
     @patch('builtins.open', new_callable=mock_open)
-    @patch('time_provider.TimeProvider.today', side_effect=[date(2020, 7, 21), date(2020, 7, 22)])
     @patch('pathlib.Path.is_dir', return_value=True)
-    def test_when_new_day_started(self, mock_is_dir_res, mock_today_res, mock_open_res) -> None:
-        writer = ActivityWriter(TimeProvider(), Path('/output_dir/'), '{date}.tsv')
+    def test_when_new_day_started(self, mock_is_dir_res, mock_open_res) -> None:
+        writer = ActivityWriter(Path('/output_dir/'), '{date}.tsv')
         handle_new_day_event = Mock()
 
         writer.event.on(ActivityWriter.NEW_DAY_EVENT, handle_new_day_event)
@@ -136,7 +127,6 @@ class ActivityWriterTestCase(unittest.TestCase):
         writer.write(self.activity)
 
         mock_is_dir_res.assert_called_once()
-        mock_today_res.assert_called_once()
         mock_open_res.assert_called_once_with('/output_dir/2020-07-21.tsv', 'a')
 
         mock_file = mock_open_res.return_value
@@ -157,7 +147,6 @@ class ActivityWriterTestCase(unittest.TestCase):
         handle_new_day_event.assert_called_once()
         mock_file.close.assert_called_once()
 
-        self.assertEqual(2, mock_today_res.call_count)
         self.assertEqual(call('/output_dir/2020-07-22.tsv', 'a'), mock_open_res.call_args)
         self.assertEqual(2, mock_file.write.call_count)
         self.assertEqual(
