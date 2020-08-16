@@ -1,5 +1,11 @@
-from datetime import date, timedelta
-from typing import List
+from datetime import date, timedelta, datetime
+from typing import List, Tuple
+
+
+DateRange = Tuple[
+    datetime,  # start
+    datetime,  # end
+]
 
 
 class DatetimeHelper:
@@ -14,3 +20,10 @@ class DatetimeHelper:
         delta = end - start
 
         return [start + timedelta(days=i) for i in range(delta.days + 1)]
+
+    @staticmethod
+    def get_date_range(date_: date) -> DateRange:
+        start = datetime(date_.year, date_.month, date_.day)
+        end = start + timedelta(days=1) - timedelta(microseconds=1)
+
+        return start, end

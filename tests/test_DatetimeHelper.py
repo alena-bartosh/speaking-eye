@@ -1,5 +1,5 @@
 import unittest
-from datetime import date
+from datetime import date, datetime
 
 from datetime_helper import DatetimeHelper
 
@@ -21,3 +21,10 @@ class DatetimeHelperTestCase(unittest.TestCase):
             start = date(2020, 7, 21)
             end_less_than_start = date(2020, 7, 20)
             DatetimeHelper.get_dates_between(start, end_less_than_start)
+
+    def test_get_date_range(self):
+        for (date_, expected) in [
+            (date(2020, 9, 15), (datetime(2020, 9, 15), datetime(2020, 9, 15, 23, 59, 59, 999_999))),
+            (date(2020, 1, 27), (datetime(2020, 1, 27), datetime(2020, 1, 27, 23, 59, 59, 999_999))),
+        ]:
+            self.assertEqual(expected, DatetimeHelper.get_date_range(date_))
