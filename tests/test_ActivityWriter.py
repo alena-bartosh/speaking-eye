@@ -154,3 +154,40 @@ class ActivityWriterTestCase(unittest.TestCase):
                  '0:30:00.000006\twm_class2\twindow_name2\tTrue\n'),
             mock_file.write.call_args)
         self.assertEqual(2, mock_file.flush.call_count)
+
+    @patch('builtins.open', new_callable=mock_open)
+    @patch('pathlib.Path.is_dir', return_value=True)
+    def test_when_tree_day_activity(self, mock_is_dir_res, mock_open_res) -> None:
+        writer = ActivityWriter(Path('/output_dir/'), '{date}.tsv')
+
+        mock_is_dir_res.assert_called_once()
+
+        handle_new_day_event = Mock()
+
+        writer.event.on(ActivityWriter.NEW_DAY_EVENT, handle_new_day_event)
+
+        three_days_activity = Activity('wm_class2',
+                                       'window_name2',
+                                       datetime(2020, 7, 31, 12, 5),
+                                       is_work_time=True).set_end_time(datetime(2020, 8, 2, 11, 30))
+
+        writer.write(three_days_activity)
+
+        mock_open_res.assert_has_calls([
+            call('/output_dir/2020-07-31.tsv', 'a'),
+            call().write('2020-07-31 12:05:00\t2020-07-31 23:59:59.999999\t'
+                         '11:54:59.999999\twm_class2\twindow_name2\tTrue\n'),
+            call().flush(),
+            call().close(),
+            call('/output_dir/2020-08-01.tsv', 'a'),
+            call().write('2020-08-01 00:00:00\t2020-08-01 23:59:59.999999\t'
+                         '23:59:59.999999\twm_class2\twindow_name2\tTrue\n'),
+            call().flush(),
+            call().close(),
+            call('/output_dir/2020-08-02.tsv', 'a'),
+            call().write('2020-08-02 00:00:00\t2020-08-02 11:30:00\t'
+                         '11:30:00\twm_class2\twindow_name2\tTrue\n'),
+            call().flush()
+        ])
+
+        self.assertEqual(2, handle_new_day_event.call_count)
