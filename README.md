@@ -35,7 +35,7 @@ Use the computer as usual and show what you are capable of!
 After finishing work at the end of the day, change the status to *disabled*. 
 Eye is crossed out: it thinks you are not working. It will not talk to you, but will continue to collect information about your activity.
 
-You also can close SE with *'Close'* in the context menu. Eye is closed: your activity is still tracked by ISP and Google. 🙃
+You also can close SE with *'Close'* in the context menu. Eye is closed: your browser activity is still tracked by ISP and Google. 🙃
 
 #### Config
 
@@ -51,6 +51,8 @@ To track a specific group of applications, follow this pattern:
 - Reading about my favorite project:        # save selected windows activity under this name
     wm_name: Chromium|Firefox|Opera         # x11 window manager names
     tab: speaking-eye                       # look only at a specific tab in the window
+
+# E.g. let's open 3 links in 3 different browsers: 
 
 # Chromium: https://github.com/alena-bartosh/speaking-eye/actions
 # Firefox:  https://speaking-eye.ua/whats-new
