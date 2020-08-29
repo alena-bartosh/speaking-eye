@@ -391,7 +391,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.set_work_time_state(False)
 
     def try_load_work_apps_time(self) -> Dict[str, timedelta]:
-        tsv_file_path = self.get_tsv_file_path()
+        tsv_file_path = str(self.get_tsv_file_path())
 
         if not os.path.exists(tsv_file_path):
             return {}
@@ -406,8 +406,8 @@ class SpeakingEyeApp(Gtk.Application):
 
         return dict(zip(list(df['application']), list(df['work_time'])))
 
-    def get_tsv_file_path(self) -> str:
-        return str(OUTPUT_TSV_FILE_DIR / OUTPUT_TSV_FILE_MASK.format(date=date.today()))
+    def get_tsv_file_path(self) -> Path:
+        return OUTPUT_TSV_FILE_DIR / OUTPUT_TSV_FILE_MASK.format(date=date.today())
 
     def get_user_work_time(self) -> timedelta:
         return reduce(operator.add, self.work_apps_time.values(), timedelta())
