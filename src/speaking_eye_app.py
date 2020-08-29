@@ -19,7 +19,6 @@ import pandas as pd
 from activity import Activity
 from activity_writer import ActivityWriter
 from gtk_extras import get_window_name
-from time_provider import TimeProvider
 from timer import Timer
 from tray_icon import TrayIcon
 from x_helpers import get_wm_class
@@ -82,7 +81,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.user_breaks_interval_hours = get(self.config, 'time_limits.breaks_interval_hours') or 3
         self.last_lock_screen_time = None
         self.is_lock_screen_activated = False
-        self.writer = ActivityWriter(TimeProvider(), OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
+        self.writer = ActivityWriter(OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
 
         self.writer.event.on(ActivityWriter.NEW_DAY_EVENT, self.on_new_day_started)
 
