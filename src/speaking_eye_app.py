@@ -1,3 +1,9 @@
+import json
+import logging
+import operator
+import os
+import re
+import signal
 from datetime import date, datetime, timedelta
 from enum import Enum
 from functools import reduce
@@ -5,16 +11,10 @@ from pathlib import Path
 from random import choice
 from types import FrameType
 from typing import Any, Dict, List
-import json
-import logging
-import operator
-import os
-import re
-import signal
 
+import pandas as pd
 from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
 from pydash import get
-import pandas as pd
 
 from activity import Activity
 from activity_writer import ActivityWriter
