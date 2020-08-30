@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import List
 
 from activity import Activity
@@ -14,10 +15,18 @@ class ActivityStatHolder(dict):
     def __init__(self, activities: List[Activity]) -> None:
         super().__init__()
 
+        self.total_work_time = timedelta()
+        self.total_off_time = timedelta()
+
         for activity in activities:
             self.update_stat(activity)
 
     def update_stat(self, activity: Activity) -> None:
+        if activity.is_work_time:
+            self.total_work_time += activity.activity_time
+        else:
+            self.total_off_time += activity.activity_time
+
         if activity.app_name not in self:
             self[activity.app_name] = ActivityStat(activity)
 
