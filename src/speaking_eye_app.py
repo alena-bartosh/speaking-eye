@@ -158,7 +158,7 @@ class SpeakingEyeApp(Gtk.Application):
             self.wm_class = self.previous_wm_class
             self.active_window_name = self.previous_active_window_name
 
-        self.on_open_window()
+        self.on_open_window(self.wm_class, self.active_window_name, now)
 
     def __dbus_get_screen_saver_bus_names(self) -> List[str]:
         bus_names = self.__dbus_get_all_bus_names()
@@ -207,10 +207,14 @@ class SpeakingEyeApp(Gtk.Application):
             self.wm_class = SpecialWmClass.DESKTOP.value
             self.active_window_name = ''
 
-        self.on_open_window()
+        self.on_open_window(self.wm_class, self.active_window_name, now)
 
-    def on_open_window(self) -> None:
+    def on_open_window(self, wm_class: str, window_name: str, now: datetime) -> None:
         self.logger.debug(f'OPEN {self.wm_class}')
+
+        new_activity = Activity(wm_class, window_name, now, self.is_work_time)
+
+        self.__on_activity_changed(self.current_activity, new_activity)
 
     def on_close_window(self, now: datetime) -> None:
         active_window_work_time = now - self.active_window_start_time
@@ -235,12 +239,29 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.active_window_name = get_window_name(window)
 
+        new_activity = Activity(self.wm_class, self.active_window_name, now, self.is_work_time)
+
+        self.__on_activity_changed(self.current_activity, new_activity)
+
     def on_close_tab(self, now: datetime) -> None:
         active_tab_start_time = \
             self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
 
         active_tab_work_time = now - active_tab_start_time
         self.logger.debug(f'\t[{active_tab_work_time}]\t{self.active_window_name}')
+
+    def __on_activity_changed(self, previous_activity: Optional[Activity], next_activity: Activity) -> None:
+        is_first_activity_change = previous_activity is None
+        now = datetime.now()
+
+        if not is_first_activity_change:
+            previous_activity.set_end_time(now)
+            self.writer.write(previous_activity)
+
+        previous_activity_app_name = '' if is_first_activity_change else previous_activity.app_name
+        self.logger.debug(f'{now}: {previous_activity_app_name} -> {next_activity.app_name}')
+
+        self.current_activity = next_activity
 
     def start_main_loop(self) -> None:
         try:
