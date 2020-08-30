@@ -46,35 +46,42 @@ class SpeakingEyeApp(Gtk.Application):
         super().__init__()
         self.config = config
         self.logger = logger
+
         self.connection = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         self.screen_saver_bus_names = self.__dbus_get_screen_saver_bus_names()
+
         self.theme = get(self.config, 'theme') or 'dark'
         self.active_icon = self.get_icon(IconState.ACTIVE)
         self.disabled_icon = self.get_icon(IconState.DISABLED)
         self.tray_icon = TrayIcon(app_id, self.disabled_icon, self.create_tray_menu())
+
         self.screen = None
         self.main_loop = None
         self.name_changed_handler_id = None
-        self.start_time = datetime.now()
+
         self.active_window_name = None
         self.previous_active_window_name = None
         self.wm_class = None
         self.previous_wm_class = None
+
         self.reminder_timer = \
-            Timer('reminder_timer', handler=self.show_overtime_notification, interval_ms=15*60*1000, repeat=False)
+            Timer('reminder_timer', handler=self.show_overtime_notification, interval_ms=15 * 60 * 1000, repeat=False)
         self.overtime_timer = \
-            Timer('overtime_timer', handler=self.overtime_timer_handler, interval_ms=1*60*1000, repeat=True)
+            Timer('overtime_timer', handler=self.overtime_timer_handler, interval_ms=1 * 60 * 1000, repeat=True)
         self.break_timer = \
-            Timer('break_timer', handler=self.break_timer_handler, interval_ms=1*60*1000, repeat=True)
+            Timer('break_timer', handler=self.break_timer_handler, interval_ms=1 * 60 * 1000, repeat=True)
+
+        self.start_time = datetime.now()
         self.last_break_reminder_time = None
         self.is_work_time = False
         self.is_work_time_update_time = self.start_time
         self.last_overtime_notification = None
         self.last_break_notification = None
-        self.user_work_time_hour_limit = get(self.config, 'time_limits.work_time_hours') or 9
-        self.user_breaks_interval_hours = get(self.config, 'time_limits.breaks_interval_hours') or 3
         self.last_lock_screen_time = None
         self.is_lock_screen_activated = False
+
+        self.user_work_time_hour_limit = get(self.config, 'time_limits.work_time_hours') or 9
+        self.user_breaks_interval_hours = get(self.config, 'time_limits.breaks_interval_hours') or 3
 
         self.writer = ActivityWriter(OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
         self.reader = ActivityReader(logger)
