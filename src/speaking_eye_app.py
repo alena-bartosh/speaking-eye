@@ -1,18 +1,14 @@
-import json
 import logging
-import operator
 import os
 import re
 import signal
 from datetime import date, datetime, timedelta
 from enum import Enum
-from functools import reduce
 from pathlib import Path
 from random import choice
 from types import FrameType
 from typing import Any, Dict, List, Optional
 
-import pandas as pd
 from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
 from pydash import get
 
@@ -64,7 +60,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.previous_active_window_name = None
         self.wm_class = None
         self.previous_wm_class = None
-        self.work_apps_time = self.try_load_work_apps_time()
         self.reminder_timer = \
             Timer('reminder_timer', handler=self.show_overtime_notification, interval_ms=15*60*1000, repeat=False)
         self.overtime_timer = \
@@ -242,8 +237,6 @@ class SpeakingEyeApp(Gtk.Application):
         work_time_msg = f'Work time: [{work_time}]'
 
         self.logger.debug(f'{finish_msg}\n{work_time_msg}')
-        self.logger.debug(f'Apps time: {json.dumps(self.work_apps_time, indent=2, default=str)}')
-
         self.show_notification(msg=f'{finish_msg}; {work_time_msg}')
         Notify.uninit()
 
@@ -363,7 +356,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.last_break_notification = notification
 
     def on_new_day_started(self) -> None:
-        self.work_apps_time = {}
         open_new_file_msg = 'New file was opened and apps work time was reset'
 
         self.logger.debug(open_new_file_msg)
@@ -371,27 +363,8 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.set_work_time_state(False)
 
-    def try_load_work_apps_time(self) -> Dict[str, timedelta]:
-        tsv_file_path = str(self.get_tsv_file_path())
-
-        if not os.path.exists(tsv_file_path):
-            return {}
-
-        col_names = ['start_time', 'end_time', 'work_time', 'wm_class', 'active_window_name', 'is_work_time']
-
-        df = pd.read_csv(tsv_file_path, names=col_names, sep='\t')
-        df = df.loc[df['is_work_time'].astype(bool).eq(True)]
-        df['application'] = df['wm_class'] + ' | ' + df['active_window_name']
-        df['work_time'] = pd.to_timedelta(df['work_time'])
-        df = df.groupby('application')['work_time'].sum().reset_index()
-
-        return dict(zip(list(df['application']), list(df['work_time'])))
-
     def get_tsv_file_path(self) -> Path:
         return OUTPUT_TSV_FILE_DIR / OUTPUT_TSV_FILE_MASK.format(date=date.today())
-
-    def get_user_work_time(self) -> timedelta:
-        return reduce(operator.add, self.work_apps_time.values(), timedelta())
 
     def handle_sigterm(self, signal_number: int, frame: FrameType) -> None:
         self.stop()
@@ -400,7 +373,7 @@ class SpeakingEyeApp(Gtk.Application):
         if not self.is_work_time:
             return
 
-        is_overtime_started = self.get_user_work_time().total_seconds() >= self.user_work_time_hour_limit * 60 * 60
+        is_overtime_started = self.holder.total_work_time.total_seconds() >= self.user_work_time_hour_limit * 60 * 60
 
         if not is_overtime_started:
             return
