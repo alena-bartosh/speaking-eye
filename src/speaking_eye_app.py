@@ -65,7 +65,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.wm_class = None
         self.previous_wm_class = None
         self.work_apps_time = self.try_load_work_apps_time()
-        self.save_timer = Timer('save_timer', handler=self.save_timer_handler, interval_ms=10*60*1000, repeat=True)
         self.reminder_timer = \
             Timer('reminder_timer', handler=self.show_overtime_notification, interval_ms=15*60*1000, repeat=False)
         self.overtime_timer = \
@@ -176,7 +175,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.screen = Wnck.Screen.get_default()
         self.screen.connect('active-window-changed', self.on_active_window_changed)
         self.main_loop = GObject.MainLoop()
-        self.save_timer.start()
         self.overtime_timer.start()
         self.break_timer.start()
 
@@ -252,8 +250,6 @@ class SpeakingEyeApp(Gtk.Application):
             self.stop()
 
     def stop(self) -> None:
-        self.save_timer.stop()
-
         now = datetime.now()
 
         self.on_close_tab(now)
@@ -420,9 +416,6 @@ class SpeakingEyeApp(Gtk.Application):
 
     def handle_sigterm(self, signal_number: int, frame: FrameType) -> None:
         self.stop()
-
-    def save_timer_handler(self) -> None:
-        pass
 
     def overtime_timer_handler(self) -> None:
         is_overtime_started = self.get_user_work_time().total_seconds() >= self.user_work_time_hour_limit * 60 * 60
