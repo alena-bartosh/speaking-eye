@@ -59,9 +59,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.main_loop = None
         self.name_changed_handler_id = None
 
-        self.active_window_name = None
         self.previous_active_window_name = None
-        self.wm_class = None
         self.previous_wm_class = None
 
         self.reminder_timer = \
@@ -142,19 +140,19 @@ class SpeakingEyeApp(Gtk.Application):
         now = datetime.now()
 
         if self.is_lock_screen_activated:
-            self.previous_wm_class = self.wm_class
-            self.previous_active_window_name = self.active_window_name
+            self.previous_wm_class = self.current_activity.wm_class
+            self.previous_active_window_name = self.current_activity.window_name
 
-            self.wm_class = SpecialWmClass.LOCK_SCREEN.value
-            self.active_window_name = ''
+            wm_class = SpecialWmClass.LOCK_SCREEN.value
+            window_name = ''
         else:
             if self.is_work_time:
                 self.last_lock_screen_time = now
 
-            self.wm_class = self.previous_wm_class
-            self.active_window_name = self.previous_active_window_name
+            wm_class = self.previous_wm_class
+            window_name = self.previous_active_window_name
 
-        self.on_open_window(self.wm_class, self.active_window_name, now)
+        self.on_open_window(wm_class, window_name, now)
 
     def __dbus_get_screen_saver_bus_names(self) -> List[str]:
         bus_names = self.__dbus_get_all_bus_names()
@@ -189,17 +187,15 @@ class SpeakingEyeApp(Gtk.Application):
 
         if active_window:
             self.name_changed_handler_id = active_window.connect('name-changed', self.on_name_changed)
-            self.wm_class = get_wm_class(active_window.get_xid())
-            self.active_window_name = get_window_name(active_window)
+            wm_class = get_wm_class(active_window.get_xid())
+            window_name = get_window_name(active_window)
         else:
-            self.wm_class = SpecialWmClass.DESKTOP.value
-            self.active_window_name = ''
+            wm_class = SpecialWmClass.DESKTOP.value
+            window_name = ''
 
-        self.on_open_window(self.wm_class, self.active_window_name, now)
+        self.on_open_window(wm_class, window_name, now)
 
     def on_open_window(self, wm_class: str, window_name: str, now: datetime) -> None:
-        self.logger.debug(f'OPEN {self.wm_class}')
-
         new_activity = Activity(wm_class, window_name, now, self.is_work_time)
 
         self.__on_activity_changed(self.current_activity, new_activity)
@@ -207,9 +203,9 @@ class SpeakingEyeApp(Gtk.Application):
     def on_name_changed(self, window: Wnck.Window) -> None:
         now = datetime.now()
 
-        self.active_window_name = get_window_name(window)
+        window_name = get_window_name(window)
 
-        new_activity = Activity(self.wm_class, self.active_window_name, now, self.is_work_time)
+        new_activity = Activity(self.current_activity.wm_class, window_name, now, self.current_activity.is_work_time)
 
         self.__on_activity_changed(self.current_activity, new_activity)
 
