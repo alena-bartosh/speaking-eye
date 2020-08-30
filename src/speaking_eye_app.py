@@ -139,8 +139,6 @@ class SpeakingEyeApp(Gtk.Application):
 
         now = datetime.now()
 
-        self.on_close_window(now)
-
         if self.is_lock_screen_activated:
             self.previous_wm_class = self.wm_class
             self.previous_active_window_name = self.active_window_name
@@ -206,20 +204,12 @@ class SpeakingEyeApp(Gtk.Application):
 
     def on_name_changed(self, window: Wnck.Window) -> None:
         now = datetime.now()
-        self.on_close_tab(now)
 
         self.active_window_name = get_window_name(window)
 
         new_activity = Activity(self.wm_class, self.active_window_name, now, self.is_work_time)
 
         self.__on_activity_changed(self.current_activity, new_activity)
-
-    def on_close_tab(self, now: datetime) -> None:
-        active_tab_start_time = \
-            self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
-
-        active_tab_work_time = now - active_tab_start_time
-        self.logger.debug(f'\t[{active_tab_work_time}]\t{self.active_window_name}')
 
     def __on_activity_changed(self, previous_activity: Optional[Activity], next_activity: Activity) -> None:
         is_first_activity_change = previous_activity is None
@@ -243,8 +233,6 @@ class SpeakingEyeApp(Gtk.Application):
 
     def stop(self) -> None:
         now = datetime.now()
-
-        self.on_close_tab(now)
 
         finish_time = now
         work_time = finish_time - self.start_time
