@@ -60,8 +60,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.main_loop = None
         self.name_changed_handler_id = None
         self.start_time = datetime.now()
-        self.active_window_start_time = self.start_time
-        self.active_tab_start_time = None
         self.active_window_name = None
         self.previous_active_window_name = None
         self.wm_class = None
@@ -143,7 +141,6 @@ class SpeakingEyeApp(Gtk.Application):
         now = datetime.now()
 
         self.on_close_window(now)
-        self.save_app_work_time(now)
 
         if self.is_lock_screen_activated:
             self.previous_wm_class = self.wm_class
@@ -188,10 +185,6 @@ class SpeakingEyeApp(Gtk.Application):
 
         if self.wm_class:
             self.on_close_window(now)
-            self.save_app_work_time(now)
-        else:
-            # self.wm_class is None only for Speaking Eye start (only for the first check)
-            self.active_window_start_time = now
 
         # to prevent double handler connections
         if previously_active_window and self.name_changed_handler_id:
@@ -224,7 +217,6 @@ class SpeakingEyeApp(Gtk.Application):
     def on_name_changed(self, window: Wnck.Window) -> None:
         now = datetime.now()
         self.on_close_tab(now)
-        self.save_app_work_time(now)
 
         self.active_window_name = get_window_name(window)
 
@@ -266,7 +258,6 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.on_close_tab(now)
         self.on_close_window(now)
-        self.save_app_work_time(now)
 
         finish_time = now
         work_time = finish_time - self.start_time
@@ -300,8 +291,6 @@ class SpeakingEyeApp(Gtk.Application):
                                 self.is_work_time)
 
         self.__on_activity_changed(self.current_activity, new_activity)
-
-        self.save_app_work_time(now)
 
         self.is_work_time_update_time = now
 
@@ -429,16 +418,11 @@ class SpeakingEyeApp(Gtk.Application):
     def get_user_work_time(self) -> timedelta:
         return reduce(operator.add, self.work_apps_time.values(), timedelta())
 
-    def save_app_work_time(self, now: datetime) -> None:
-        self.active_tab_start_time = now
-        self.active_window_start_time = now
-
     def handle_sigterm(self, signal_number: int, frame: FrameType) -> None:
         self.stop()
 
     def save_timer_handler(self) -> None:
-        now = datetime.now()
-        self.save_app_work_time(now)
+        pass
 
     def overtime_timer_handler(self) -> None:
         is_overtime_started = self.get_user_work_time().total_seconds() >= self.user_work_time_hour_limit * 60 * 60
