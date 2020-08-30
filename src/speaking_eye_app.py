@@ -181,9 +181,6 @@ class SpeakingEyeApp(Gtk.Application):
     def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
         now = datetime.now()
 
-        if self.wm_class:
-            self.on_close_window(now)
-
         # to prevent double handler connections
         if previously_active_window and self.name_changed_handler_id:
             previously_active_window.disconnect(self.name_changed_handler_id)
@@ -206,11 +203,6 @@ class SpeakingEyeApp(Gtk.Application):
         new_activity = Activity(wm_class, window_name, now, self.is_work_time)
 
         self.__on_activity_changed(self.current_activity, new_activity)
-
-    def on_close_window(self, now: datetime) -> None:
-        active_window_work_time = now - self.active_window_start_time
-
-        self.logger.debug(f'CLOSE {self.wm_class} [{active_window_work_time}]')
 
     def on_name_changed(self, window: Wnck.Window) -> None:
         now = datetime.now()
@@ -253,7 +245,6 @@ class SpeakingEyeApp(Gtk.Application):
         now = datetime.now()
 
         self.on_close_tab(now)
-        self.on_close_window(now)
 
         finish_time = now
         work_time = finish_time - self.start_time
