@@ -257,6 +257,7 @@ class SpeakingEyeApp(Gtk.Application):
         if not is_first_activity_change:
             previous_activity.set_end_time(now)
             self.writer.write(previous_activity)
+            self.holder.update_stat(previous_activity)
 
         previous_activity_app_name = '' if is_first_activity_change else previous_activity.app_name
         self.logger.debug(f'{now}: {previous_activity_app_name} -> {next_activity.app_name}')
