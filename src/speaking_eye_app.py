@@ -297,15 +297,22 @@ class SpeakingEyeApp(Gtk.Application):
         self.stop()
 
     def set_work_time_state(self, value: bool) -> None:
-        # TODO: correct write to file when change work state while do the same
         if value == self.is_work_time:
             self.logger.debug('Trying to change is_work_time to the same value')
             return
 
+        self.is_work_time = value
+
         now = datetime.now()
+        new_activity = Activity(self.current_activity.wm_class,
+                                self.current_activity.window_name,
+                                now,
+                                self.is_work_time)
+
+        self.__on_activity_changed(self.current_activity, new_activity)
+
         self.save_app_work_time(now)
 
-        self.is_work_time = value
         self.is_work_time_update_time = now
 
         self.logger.debug(f'Set Work Time to [{self.is_work_time}]')
