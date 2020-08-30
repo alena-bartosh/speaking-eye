@@ -221,17 +221,6 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.logger.debug(f'CLOSE {self.wm_class} [{active_window_work_time}]')
 
-    def save_activity_time_if_needed(self, work_time: timedelta) -> None:
-        if not self.is_work_time:
-            return
-
-        app = f'{self.wm_class} | {self.active_window_name}'
-
-        if app in self.work_apps_time:
-            self.work_apps_time[app] += work_time
-        else:
-            self.work_apps_time[app] = work_time
-
     def on_name_changed(self, window: Wnck.Window) -> None:
         now = datetime.now()
         self.on_close_tab(now)
@@ -450,9 +439,7 @@ class SpeakingEyeApp(Gtk.Application):
     def save_app_work_time(self, now: datetime) -> None:
         activity_start_time = \
             self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
-        activity_work_time = now - activity_start_time
 
-        self.save_activity_time_if_needed(activity_work_time)
         self.save_activity_line_to_file(activity_start_time, now)
 
         self.active_tab_start_time = now
