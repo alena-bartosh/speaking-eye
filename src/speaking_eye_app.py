@@ -398,13 +398,6 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.last_break_notification = notification
 
-    def save_activity_line_to_file(self, start_time: datetime, end_time: datetime) -> None:
-        # TODO: create self.activity only for current activities
-        activity = \
-            Activity(self.wm_class, self.active_window_name, start_time, self.is_work_time).set_end_time(end_time)
-
-        self.writer.write(activity)
-
     def on_new_day_started(self) -> None:
         self.work_apps_time = {}
         open_new_file_msg = 'New file was opened and apps work time was reset'
@@ -437,11 +430,6 @@ class SpeakingEyeApp(Gtk.Application):
         return reduce(operator.add, self.work_apps_time.values(), timedelta())
 
     def save_app_work_time(self, now: datetime) -> None:
-        activity_start_time = \
-            self.active_tab_start_time if self.active_tab_start_time else self.active_window_start_time
-
-        self.save_activity_line_to_file(activity_start_time, now)
-
         self.active_tab_start_time = now
         self.active_window_start_time = now
 
