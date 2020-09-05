@@ -7,6 +7,7 @@ from activity_converter import ActivityConverter
 
 
 class ActivityReader:
+    """Read line by line activities from file with raw data"""
 
     def __init__(self, logger: logging.Logger) -> None:
         self.logger = logger

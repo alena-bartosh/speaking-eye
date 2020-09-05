@@ -9,6 +9,11 @@ from activity_splitter import ActivitySplitter
 
 
 class ActivityWriter:
+    """
+    Open file that contains date in its name and write activity at string format to this file.
+    If the activity lasted for several days, then it will be written in several files
+    """
+
     FILE_MODE = 'a'
     NEW_DAY_EVENT = 'new-day-event'
 

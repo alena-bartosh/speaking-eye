@@ -1,4 +1,8 @@
 class BoolParser:
+    """
+    Parse string True/False to boolean.
+    Raise exception otherwise
+    """
 
     @staticmethod
     def parse(value: str) -> bool:

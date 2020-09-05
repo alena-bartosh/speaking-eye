@@ -7,6 +7,8 @@ from datetime_helper import DatetimeHelper
 
 
 class ActivitySplitter:
+    """Split activity lasting several days into several activities"""
+
     @staticmethod
     def split_by_day(activity: Activity) -> List[Tuple[date, Activity]]:
         days = activity.get_days()

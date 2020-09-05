@@ -5,6 +5,8 @@ from bool_parser import BoolParser
 
 
 class ActivityConverter:
+    """Сonvert activity from/to string format"""
+
     EXPECTED_COLUMNS_NUMBER = 6
 
     @staticmethod

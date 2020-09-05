@@ -11,6 +11,7 @@ ItemType = ActivityStat
 # TODO: replace app_name with title
 
 class ActivityStatHolder(dict):
+    """Store ActivityStat objects and compute total time spent in all activities"""
 
     def __init__(self, activities: List[Activity]) -> None:
         super().__init__()
