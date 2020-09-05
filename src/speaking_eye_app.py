@@ -132,8 +132,8 @@ class SpeakingEyeApp(Gtk.Application):
 
             self.__dbus_method_call(bus, interface_name, bus, 'Lock')
 
-    def on_screen_saver_active_changed(self, connection: Gio.DBusConnection, sender_name: str, object_path: str,
-                                       interface_name: str, signal_name: str, parameters: GLib.Variant) -> None:
+    def __on_screen_saver_active_changed(self, connection: Gio.DBusConnection, sender_name: str, object_path: str,
+                                         interface_name: str, signal_name: str, parameters: GLib.Variant) -> None:
         is_activated, = parameters
         self.is_lock_screen_activated = is_activated
 
@@ -166,7 +166,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         for bus_name in self.screen_saver_bus_names:
             self.connection.signal_subscribe(None, bus_name, 'ActiveChanged', None, None,
-                                             Gio.DBusSignalFlags.NONE, self.on_screen_saver_active_changed)
+                                             Gio.DBusSignalFlags.NONE, self.__on_screen_saver_active_changed)
 
     def do_activate(self) -> None:
         signal.signal(signal.SIGTERM, self.handle_sigterm)
