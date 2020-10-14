@@ -33,9 +33,9 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
 
         result = reader.try_read(correct_data, False)
         expected = [
-            ApplicationInfo(title='App name 1', wm_name_re='wm1|wm2', tab='t1', is_distracting=False),
-            ApplicationInfo(title='App name 2', wm_name_re='wm3', tab='t2', is_distracting=False),
-            ApplicationInfo(title='App name 3', wm_name_re='wm4', tab='t3|t4', is_distracting=False)
+            ApplicationInfo(title='App name 1', wm_name_re='wm1|wm2', tab_re='t1', is_distracting=False),
+            ApplicationInfo(title='App name 2', wm_name_re='wm3', tab_re='t2', is_distracting=False),
+            ApplicationInfo(title='App name 3', wm_name_re='wm4', tab_re='t3|t4', is_distracting=False)
         ]
 
         self.assertListEqual(result, expected)
@@ -45,7 +45,7 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
         correct_data_without_wm_name = [{'App name': {'tab': 't1'}}]
 
         result = reader.try_read(correct_data_without_wm_name, False)
-        expected = [ApplicationInfo(title='App name', wm_name_re='', tab='t1', is_distracting=False)]
+        expected = [ApplicationInfo(title='App name', wm_name_re='', tab_re='t1', is_distracting=False)]
 
         self.assertListEqual(result, expected)
 
@@ -54,7 +54,7 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
         correct_data_without_tab = [{'App name': {'wm_name': 'wm1'}}]
 
         result = reader.try_read(correct_data_without_tab, False)
-        expected = [ApplicationInfo(title='App name', wm_name_re='wm1', tab='', is_distracting=False)]
+        expected = [ApplicationInfo(title='App name', wm_name_re='wm1', tab_re='', is_distracting=False)]
 
         self.assertListEqual(result, expected)
 
@@ -89,8 +89,8 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
     def test_when_only_special_application_info_used(self):
         reader = ApplicationInfoReader()
         sub_tests_data = {
-            'only all': (['all'], [ApplicationInfo(title='all', wm_name_re='', tab='', is_distracting=False)]),
-            'only none': (['none'], [ApplicationInfo(title='none', wm_name_re='', tab='', is_distracting=False)])
+            'only all': (['all'], [ApplicationInfo(title='all', wm_name_re='', tab_re='', is_distracting=False)]),
+            'only none': (['none'], [ApplicationInfo(title='none', wm_name_re='', tab_re='', is_distracting=False)])
         }
 
         for sub_test, sub_test_data in sub_tests_data.items():
