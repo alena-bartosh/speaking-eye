@@ -93,9 +93,9 @@ class SpeakingEyeApp(Gtk.Application):
         app_info_reader = ApplicationInfoReader()
         self.detailed_app_infos = self.__read_application_list(app_info_reader, config, ConfigKey.DETAILED_NODE)
         self.distracting_app_infos = self.__read_application_list(app_info_reader, config, ConfigKey.DISTRACTING_NODE)
-        self.matcher = ApplicationInfoMatcher(self.detailed_app_infos, self.distracting_app_infos)
+        self.app_info_matcher = ApplicationInfoMatcher(self.detailed_app_infos, self.distracting_app_infos)
 
-        self.reader = ActivityReader(logger, self.matcher)
+        self.reader = ActivityReader(logger, self.app_info_matcher)
         self.holder = ActivityStatHolder(self.reader.read(self.get_tsv_file_path()))
         self.current_activity: Optional[Activity] = None
 
@@ -247,7 +247,7 @@ class SpeakingEyeApp(Gtk.Application):
         previous_activity_app_name = '' if is_first_activity_change else previous_activity.app_name
         self.logger.debug(f'{now}: {previous_activity_app_name} -> {next_activity.app_name}')
 
-        self.matcher.set_if_matched(next_activity)
+        self.app_info_matcher.set_if_matched(next_activity)
 
         self.current_activity = next_activity
 
