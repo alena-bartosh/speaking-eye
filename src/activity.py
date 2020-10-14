@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta
 from typing import List, Optional
 
+from application_info import ApplicationInfo
 from datetime_helper import DatetimeHelper
 
 
@@ -13,6 +14,7 @@ class Activity:
         self.activity_time: Optional[timedelta] = None
         self.is_work_time = is_work_time
         self.app_name = f'{self.wm_class} | {self.window_name}'
+        self.application_info: Optional[ApplicationInfo] = None
 
     def set_end_time(self, end_time: datetime) -> 'Activity':
         if end_time < self.start_time:
@@ -49,7 +51,13 @@ class Activity:
         if self.activity_time != other.activity_time:  # pragma: no cover
             return False
 
-        return self.is_work_time == other.is_work_time
+        if self.is_work_time != other.is_work_time:
+            return False
+
+        return self.application_info == other.application_info
 
     def get_days(self) -> List[date]:
         return DatetimeHelper.get_dates_between(self.start_time.date(), self.end_time.date())
+
+    def set_application_info(self, value: ApplicationInfo) -> None:
+        self.application_info = value
