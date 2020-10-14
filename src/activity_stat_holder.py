@@ -26,10 +26,7 @@ class ActivityStatHolder(dict):
         else:
             self.total_off_time += activity.activity_time
 
-        if activity.application_info is None:
-            return
-
-        title_from_config = activity.application_info.title
+        title_from_config = activity.application_info.title if activity.application_info is not None else 'Others'
 
         if title_from_config not in self:
             self[title_from_config] = ActivityStat(activity)
