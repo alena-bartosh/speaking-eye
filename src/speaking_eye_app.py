@@ -7,13 +7,14 @@ from enum import Enum
 from pathlib import Path
 from random import choice
 from types import FrameType
-from typing import Any, Dict, List, Optional
+from typing import Any, cast, Dict, List, Optional, Tuple
 
 from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
 from pydash import get
 
 from activity import Activity
 from activity_reader import ActivityReader
+from activity_stat import ActivityStat
 from activity_stat_holder import ActivityStatHolder
 from activity_writer import ActivityWriter
 from application_info import ApplicationInfo
@@ -270,6 +271,19 @@ class SpeakingEyeApp(Gtk.Application):
         work_time_msg = f'Work time: [{work_time}]'
 
         self.logger.debug(f'{finish_msg}\n{work_time_msg}')
+
+        self.logger.info(f'              title |          work_time |            off_time')
+        self.logger.info(f'--------------------------------------------------------------')
+
+        for holder_item in self.holder.items():
+            # cast untyped title and stat to str and ActivityStat
+            title, stat = cast(Tuple[str, ActivityStat], holder_item)
+
+            padded_title = title.rjust(19, ' ')
+            padded_work_time = f'{stat.work_time}'.rjust(19, ' ')
+            padded_off_time = f'{stat.off_time}'.rjust(20, ' ')
+            self.logger.info(f'{padded_title} |{padded_work_time} |{padded_off_time}')
+
         self.show_notification(msg=f'{finish_msg}; {work_time_msg}')
         Notify.uninit()
 
