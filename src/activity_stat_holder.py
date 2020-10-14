@@ -8,8 +8,6 @@ KeyType = str
 ItemType = ActivityStat
 
 
-# TODO: replace app_name with title
-
 class ActivityStatHolder(dict):
     """Store ActivityStat objects and compute total time spent in all activities"""
 
@@ -28,12 +26,17 @@ class ActivityStatHolder(dict):
         else:
             self.total_off_time += activity.activity_time
 
-        if activity.app_name not in self:
-            self[activity.app_name] = ActivityStat(activity)
+        if activity.application_info is None:
+            return
+
+        title_from_config = activity.application_info.name
+
+        if title_from_config not in self:
+            self[title_from_config] = ActivityStat(activity)
 
             return
 
-        activity_stat = self[activity.app_name]
+        activity_stat = self[title_from_config]
         activity_stat.update(activity)
 
     # NOTE: override the default implementations just to use our typing
