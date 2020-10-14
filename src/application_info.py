@@ -1,8 +1,8 @@
 class ApplicationInfo:
 
-    def __init__(self, title: str, wm_name: str, tab: str, is_distracting: bool) -> None:
+    def __init__(self, title: str, wm_name_re: str, tab: str, is_distracting: bool) -> None:
         self.title = title
-        self.wm_name = wm_name
+        self.wm_name_re = wm_name_re
         self.tab = tab
         self.is_distracting = is_distracting
 
@@ -17,7 +17,7 @@ class ApplicationInfo:
         if self.title != other.title:
             return False
 
-        if self.wm_name != other.wm_name:
+        if self.wm_name_re != other.wm_name_re:
             return False
 
         if self.tab != other.tab:

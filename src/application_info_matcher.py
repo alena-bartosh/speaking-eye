@@ -21,7 +21,7 @@ class ApplicationInfoMatcher:
         for app_info in app_infos:
             # tab can be empty str, it means that we are considering all tabs
             # search('', whatever) always return SRE_Match object
-            if search(app_info.wm_name, activity.wm_class) and search(app_info.tab, activity.window_name):
+            if search(app_info.wm_name_re, activity.wm_class) and search(app_info.tab, activity.window_name):
                 return app_info
 
         return None
