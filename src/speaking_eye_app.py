@@ -247,6 +247,8 @@ class SpeakingEyeApp(Gtk.Application):
         previous_activity_app_name = '' if is_first_activity_change else previous_activity.app_name
         self.logger.debug(f'{now}: {previous_activity_app_name} -> {next_activity.app_name}')
 
+        self.matcher.set_if_matched(next_activity)
+
         self.current_activity = next_activity
 
     def start_main_loop(self) -> None:
