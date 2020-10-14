@@ -29,8 +29,8 @@ class ApplicationInfoMatcher:
     def set_if_matched(self, activity: Activity) -> None:
         """Set ApplicationInfo to Activity if matched"""
 
-        application_info = self.__try_find_app_info_in(self.distracting_app_infos, activity) or \
-                           self.__try_find_app_info_in(self.detailed_app_infos, activity)
+        application_info = self.__try_find_app_info_in(
+            self.distracting_app_infos, activity) or self.__try_find_app_info_in(self.detailed_app_infos, activity)
 
         if application_info is None:
             return
