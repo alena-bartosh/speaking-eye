@@ -95,7 +95,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.distracting_app_infos = self.__read_application_list(app_info_reader, config, ConfigKey.DISTRACTING_NODE)
         self.matcher = ApplicationInfoMatcher(self.detailed_app_infos, self.distracting_app_infos)
 
-        self.reader = ActivityReader(logger)
+        self.reader = ActivityReader(logger, self.matcher)
         self.holder = ActivityStatHolder(self.reader.read(self.get_tsv_file_path()))
         self.current_activity: Optional[Activity] = None
 
