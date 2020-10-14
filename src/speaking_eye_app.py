@@ -272,8 +272,8 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.logger.debug(f'{finish_msg}\n{work_time_msg}')
 
-        self.logger.info(f'              title |          work_time |            off_time')
-        self.logger.info(f'--------------------------------------------------------------')
+        self.logger.info('              title |          work_time |            off_time')
+        self.logger.info('--------------------------------------------------------------')
 
         for holder_item in self.holder.items():
             # cast untyped title and stat to str and ActivityStat
