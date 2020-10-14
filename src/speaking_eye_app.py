@@ -17,6 +17,7 @@ from activity_reader import ActivityReader
 from activity_stat_holder import ActivityStatHolder
 from activity_writer import ActivityWriter
 from application_info import ApplicationInfo
+from application_info_matcher import ApplicationInfoMatcher
 from application_info_reader import ApplicationInfoReader
 from gtk_extras import get_window_name
 from timer import Timer
@@ -88,13 +89,15 @@ class SpeakingEyeApp(Gtk.Application):
         self.user_breaks_interval_hours = get(config, 'time_limits.breaks_interval_hours') or 3
 
         self.writer = ActivityWriter(OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
-        self.reader = ActivityReader(logger)
-        self.holder = ActivityStatHolder(self.reader.read(self.get_tsv_file_path()))
-        self.current_activity: Optional[Activity] = None
 
         app_info_reader = ApplicationInfoReader()
         self.detailed_app_infos = self.__read_application_list(app_info_reader, config, ConfigKey.DETAILED_NODE)
         self.distracting_app_infos = self.__read_application_list(app_info_reader, config, ConfigKey.DISTRACTING_NODE)
+        self.matcher = ApplicationInfoMatcher(self.detailed_app_infos, self.distracting_app_infos)
+
+        self.reader = ActivityReader(logger)
+        self.holder = ActivityStatHolder(self.reader.read(self.get_tsv_file_path()))
+        self.current_activity: Optional[Activity] = None
 
         self.writer.event.on(ActivityWriter.NEW_DAY_EVENT, self.on_new_day_started)
 
