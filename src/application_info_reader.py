@@ -18,10 +18,10 @@ class SpecialApplicationInfo(Enum):
 
 class ApplicationInfoReader:
 
-    def __handle_special_case(self, special_case: SpecialApplicationInfo) -> ApplicationInfo:
-        return ApplicationInfo(special_case.value, '', '')
+    def __handle_special_case(self, special_case: SpecialApplicationInfo, is_distracting: bool) -> ApplicationInfo:
+        return ApplicationInfo(special_case.value, '', '', is_distracting)
 
-    def __handle_regular_case(self, data_item: Dict[str, Dict]) -> ApplicationInfo:
+    def __handle_regular_case(self, data_item: Dict[str, Dict], is_distracting: bool) -> ApplicationInfo:
         raw_app_info, = data_item.items()
         app_name, app_info = raw_app_info
 
@@ -36,9 +36,9 @@ class ApplicationInfoReader:
         if not wm_name and not tab:
             raise ValueError(f'Application [{app_name}] has empty wm_name and tab!')
 
-        return ApplicationInfo(app_name, wm_name, tab)
+        return ApplicationInfo(app_name, wm_name, tab, is_distracting)
 
-    def try_read(self, data: List) -> List[ApplicationInfo]:
+    def try_read(self, data: List, is_distracting: bool) -> List[ApplicationInfo]:
         if not isinstance(data, list):
             raise ValueError(f'Incorrect data type [{type(data)}]!')
 
@@ -61,8 +61,8 @@ class ApplicationInfoReader:
                 if has_other_application_infos:
                     raise ValueError(f'Special case [{special_case.value}] must be the only one in a list!')
 
-                result.append(self.__handle_special_case(special_case))
+                result.append(self.__handle_special_case(special_case, is_distracting))
             else:
-                result.append(self.__handle_regular_case(data_item))
+                result.append(self.__handle_regular_case(data_item, is_distracting))
 
         return result

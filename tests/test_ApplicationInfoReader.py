@@ -21,7 +21,7 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
         for sub_test, (incorrect_data, expected_error_msg) in sub_tests_incorrect_data.items():
             with self.subTest(name=sub_test):
                 with self.assertRaisesRegex(ValueError, expected_regex=expected_error_msg):
-                    reader.try_read(incorrect_data)
+                    reader.try_read(incorrect_data, False)
 
     def test_when_correct_data(self):
         reader = ApplicationInfoReader()
@@ -31,11 +31,11 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
             {'App name 3': {'wm_name': 'wm4', 'tab': 't3|t4'}},
         ]
 
-        result = reader.try_read(correct_data)
+        result = reader.try_read(correct_data, False)
         expected = [
-            ApplicationInfo(name='App name 1', wm_name='wm1|wm2', tab='t1'),
-            ApplicationInfo(name='App name 2', wm_name='wm3', tab='t2'),
-            ApplicationInfo(name='App name 3', wm_name='wm4', tab='t3|t4')
+            ApplicationInfo(name='App name 1', wm_name='wm1|wm2', tab='t1', is_distracting=False),
+            ApplicationInfo(name='App name 2', wm_name='wm3', tab='t2', is_distracting=False),
+            ApplicationInfo(name='App name 3', wm_name='wm4', tab='t3|t4', is_distracting=False)
         ]
 
         self.assertListEqual(result, expected)
@@ -44,8 +44,8 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
         reader = ApplicationInfoReader()
         correct_data_without_wm_name = [{'App name': {'tab': 't1'}}]
 
-        result = reader.try_read(correct_data_without_wm_name)
-        expected = [ApplicationInfo(name='App name', wm_name='', tab='t1')]
+        result = reader.try_read(correct_data_without_wm_name, False)
+        expected = [ApplicationInfo(name='App name', wm_name='', tab='t1', is_distracting=False)]
 
         self.assertListEqual(result, expected)
 
@@ -53,8 +53,8 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
         reader = ApplicationInfoReader()
         correct_data_without_tab = [{'App name': {'wm_name': 'wm1'}}]
 
-        result = reader.try_read(correct_data_without_tab)
-        expected = [ApplicationInfo(name='App name', wm_name='wm1', tab='')]
+        result = reader.try_read(correct_data_without_tab, False)
+        expected = [ApplicationInfo(name='App name', wm_name='wm1', tab='', is_distracting=False)]
 
         self.assertListEqual(result, expected)
 
@@ -70,7 +70,7 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
             with self.subTest(name=sub_test):
                 with self.assertRaisesRegex(ValueError,
                                             expected_regex=r'Special case \[all\] must be the only one in a list!'):
-                    reader.try_read(incorrect_data)
+                    reader.try_read(incorrect_data, False)
 
     def test_when_none_special_application_info_used_with_others(self):
         reader = ApplicationInfoReader()
@@ -84,20 +84,20 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
             with self.subTest(name=sub_test):
                 with self.assertRaisesRegex(ValueError,
                                             expected_regex=r'Special case \[none\] must be the only one in a list!'):
-                    reader.try_read(incorrect_data)
+                    reader.try_read(incorrect_data, False)
 
     def test_when_only_special_application_info_used(self):
         reader = ApplicationInfoReader()
         sub_tests_data = {
-            'only all': (['all'], [ApplicationInfo(name='all', wm_name='', tab='')]),
-            'only none': (['none'], [ApplicationInfo(name='none', wm_name='', tab='')])
+            'only all': (['all'], [ApplicationInfo(name='all', wm_name='', tab='', is_distracting=False)]),
+            'only none': (['none'], [ApplicationInfo(name='none', wm_name='', tab='', is_distracting=False)])
         }
 
         for sub_test, sub_test_data in sub_tests_data.items():
             with self.subTest(name=sub_test):
                 data, expected = sub_test_data
 
-                result = reader.try_read(data)
+                result = reader.try_read(data, False)
 
                 self.assertListEqual(result, expected)
 
@@ -108,7 +108,7 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,
                                     expected_regex=r"Only special cases \[\['all', 'none'\]\] can be here or "
                                                    r"list of apps with wm_name and tab!"):
-            reader.try_read(incorrect_data)
+            reader.try_read(incorrect_data, False)
 
     def test_when_special_application_info_not_lowercase(self):
         reader = ApplicationInfoReader()
@@ -124,7 +124,7 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,
                                             expected_regex=r"Only special cases \[\['all', 'none'\]\] can be here or "
                                                            r"list of apps with wm_name and tab!"):
-                    reader.try_read(incorrect_data)
+                    reader.try_read(incorrect_data, False)
 
     def test_when_special_application_info_is_object(self):
         reader = ApplicationInfoReader()
@@ -138,4 +138,4 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,
                                             expected_regex=r"Special cases \[\['all', 'none'\]\] "
                                                            r"with \":\" are not supported!"):
-                    reader.try_read(incorrect_data)
+                    reader.try_read(incorrect_data, False)

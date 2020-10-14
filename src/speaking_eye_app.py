@@ -187,7 +187,9 @@ class SpeakingEyeApp(Gtk.Application):
         if app_list is None:
             raise RuntimeError(f'Path [{apps_list_node}] should be set in config!')
 
-        return reader.try_read(app_list)
+        is_distracting = config_key == ConfigKey.DISTRACTING_NODE
+
+        return reader.try_read(app_list, is_distracting)
 
     def do_activate(self) -> None:
         signal.signal(signal.SIGTERM, self.handle_sigterm)

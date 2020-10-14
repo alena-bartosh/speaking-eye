@@ -9,9 +9,10 @@ class ApplicationInfoTestCase(unittest.TestCase):
         name = 'name'
         wm_name = 'wm_name'
         tab = 'tab'
+        is_distracting = True
 
-        left = ApplicationInfo(name, wm_name, tab)
-        right = ApplicationInfo(name, wm_name, tab)
+        left = ApplicationInfo(name, wm_name, tab, is_distracting)
+        right = ApplicationInfo(name, wm_name, tab, is_distracting)
 
         self.assertEqual(left, right)
 
@@ -19,17 +20,20 @@ class ApplicationInfoTestCase(unittest.TestCase):
         name = 'name'
         wm_name = 'wm_name'
         tab = 'tab'
+        is_distracting = True
 
-        app_info = ApplicationInfo(name, wm_name, tab)
+        app_info = ApplicationInfo(name, wm_name, tab, is_distracting)
 
         another_name = 'another_name'
         another_wm_name = 'another_wm_name'
         another_tab = 'another_tab'
+        another_is_distracting = False
 
         sub_tests_data = {
-            'Different names': ApplicationInfo(another_name, wm_name, tab),
-            'Different wm names': ApplicationInfo(name, another_wm_name, tab),
-            'Different tabs': ApplicationInfo(name, wm_name, another_tab),
+            'Different names': ApplicationInfo(another_name, wm_name, tab, is_distracting),
+            'Different wm names': ApplicationInfo(name, another_wm_name, tab, is_distracting),
+            'Different tabs': ApplicationInfo(name, wm_name, another_tab, is_distracting),
+            'Different distracting states': ApplicationInfo(name, wm_name, tab, another_is_distracting),
             'Different types': 'I am not an ApplicationInfo',
         }
 

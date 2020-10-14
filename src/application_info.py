@@ -1,9 +1,10 @@
 class ApplicationInfo:
 
-    def __init__(self, name: str, wm_name: str, tab: str) -> None:
+    def __init__(self, name: str, wm_name: str, tab: str, is_distracting: bool) -> None:
         self.name = name
         self.wm_name = wm_name
         self.tab = tab
+        self.is_distracting = is_distracting
 
     def __eq__(self, other: 'ApplicationInfo') -> bool:
         """
@@ -19,4 +20,7 @@ class ApplicationInfo:
         if self.wm_name != other.wm_name:
             return False
 
-        return self.tab == other.tab
+        if self.tab != other.tab:
+            return False
+
+        return self.is_distracting == other.is_distracting
