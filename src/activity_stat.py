@@ -4,9 +4,6 @@ from activity import Activity
 from activity_converter import ActivityConverter
 
 
-# TODO: replace app_name with title
-
-
 class ActivityStat:
     """Store and update the amount of time spent in a certain activity"""
 
@@ -15,7 +12,7 @@ class ActivityStat:
             raise ValueError(f'Activity [{ActivityConverter.to_string(activity)}] should be finished '
                              f'before creating ActivityStat!')
 
-        self.app_name = activity.app_name
+        # NOTE: for distracting activity work_time is distracting time
 
         if activity.is_work_time:
             self.work_time = activity.activity_time

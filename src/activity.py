@@ -13,7 +13,6 @@ class Activity:
         self.end_time: Optional[datetime] = None
         self.activity_time: Optional[timedelta] = None
         self.is_work_time = is_work_time
-        self.app_name = f'{self.wm_class} | {self.window_name}'
         self.application_info: Optional[ApplicationInfo] = None
 
     def set_end_time(self, end_time: datetime) -> 'Activity':
