@@ -6,7 +6,7 @@
 ### :eyes: Looking at
 - [x] your working hours/breaks
 - [x] activity in any apps (IDE, browser tabs, terminal, etc.)
-- [ ] distracting activity (custom list of apps/time limits)
+- [x] distracting activity (custom list of apps/time limits)
 
 ### :postal_horn: Speaking about
 - [x] your activity on the computer
@@ -48,7 +48,7 @@ Also choose which activity you want to track (set 'all' for all) and which apps 
 To track a specific group of applications, follow this pattern:
 
 ```
-- Reading about my favorite project:        # save selected windows activity under this name
+- Reading about my favorite project:        # save selected windows activity under this title
     wm_name: Chromium|Firefox|Opera         # x11 window manager names
     tab: speaking-eye                       # look only at a specific tab in the window
 

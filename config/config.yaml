@@ -2,7 +2,8 @@
 theme: dark
 
 # speaking-eye analyzes activity only for detailed_apps and distracting_apps
-# app names are looked up with a regular expression so you can specify only part of the name
+# wm_name/tab are looked up with a regular expression so you can specify only part of the name
+# speaking-eye takes first match for app info so write more specific apps higher
 
 apps:
   detailed:
