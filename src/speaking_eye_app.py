@@ -34,6 +34,23 @@ BREAK_TIME_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
                      '🙇', '🙋', '🚣', '🤸', '🧟', '🐙',
                      '🐧', '☕', '🍌', '🥐', '🆓', '🔮']
 
+# TODO: new emojis
+DISTRACTING_NOTIFICATION_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
+                                   '🙇', '🙋', '🚣', '🤸', '🧟', '🐙',
+                                   '🐧', '☕', '🍌', '🥐', '🆓', '🔮']
+
+DISTRACTING_NOTIFICATION_TEXTS = ['Time for fun is up!',
+                                  'Please keep working ...',
+                                  'Distracted again?',
+                                  'Time to ventilate the room, it\'s too hot here because of breaking the rules!',
+                                  'Just a friendly reminder: you always can back to this after work.',
+                                  '<b>Fun fact:</b> people spend an average of two hours a day on social media.'
+                                  'Also a fact: it\'s time to get back to work!',
+                                  'Don\'t forget to do eye exercises.',
+                                  'You promised yourself not to be distracted at work, remember?',
+                                  'Maybe tea is the best choice?',
+                                  'Wow!']
+
 
 class IconState(Enum):
     ACTIVE = 'active'
@@ -399,8 +416,13 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.last_overtime_notification = notification
 
-    def show_distracting_app_overtime_notification(self) -> None:
-        self.new_notification('show_distracting_app_overtime_notification').show()
+    def show_distracting_app_overtime_notification(self, title: str, total_time: timedelta) -> None:
+        distracting_minutes = total_time.total_seconds() // 60
+        text = choice(DISTRACTING_NOTIFICATION_TEXTS)
+        emoji = choice(DISTRACTING_NOTIFICATION_EMOJIS)
+        msg = f'Spend in {title}: {distracting_minutes:.0f} mins. | {text} {emoji} |'
+
+        self.new_notification(msg).show()
 
     def show_break_notification(self) -> None:
         emoji = choice(BREAK_TIME_EMOJIS)
@@ -499,7 +521,7 @@ class SpeakingEyeApp(Gtk.Application):
         if total_distracting_time.total_seconds() < self.user_distracting_apps_mins * 60:
             return
 
-        self.event.emit(ApplicationEvent.DISTRACTING_APP_OVERTIME.value)
+        self.event.emit(ApplicationEvent.DISTRACTING_APP_OVERTIME.value, application_info.title, total_distracting_time)
 
         self.has_distracting_app_overtime_notification_shown = True
 
