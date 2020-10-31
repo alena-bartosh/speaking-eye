@@ -11,6 +11,7 @@ from typing import Any, cast, Dict, List, Optional, Tuple
 
 from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
 from pydash import get
+from pyee import BaseEventEmitter
 
 from activity import Activity
 from activity_reader import ActivityReader
@@ -49,6 +50,10 @@ class ConfigKey(Enum):
     DISTRACTING_NODE = 'distracting'
 
 
+class ApplicationEvent(Enum):
+    DISTRACTING_APP_OVERTIME = 'distracting_app_overtime'
+
+
 class SpeakingEyeApp(Gtk.Application):
 
     def __init__(self, app_id: str, config: Dict, logger: logging.Logger) -> None:
@@ -79,6 +84,10 @@ class SpeakingEyeApp(Gtk.Application):
         self.distracting_app_timer = \
             Timer('distracting_app_timer', handler=self.distracting_app_timer_handler, interval_ms=1 * 60 * 1000,
                   repeat=True)
+
+        self.event = BaseEventEmitter()
+
+        self.event.on(ApplicationEvent.DISTRACTING_APP_OVERTIME.value, self.show_distracting_app_overtime_notification)
 
         self.start_time = datetime.now()
         self.last_break_reminder_time = None
@@ -387,6 +396,9 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.last_overtime_notification = notification
 
+    def show_distracting_app_overtime_notification(self) -> None:
+        self.new_notification('show_distracting_app_overtime_notification').show()
+
     def show_break_notification(self) -> None:
         emoji = choice(BREAK_TIME_EMOJIS)
         msg = f'It\'s time to take a break {emoji}'
@@ -481,8 +493,7 @@ class SpeakingEyeApp(Gtk.Application):
         if total_distracting_time.total_seconds() < self.user_distracting_apps_mins * 60:
             return
 
-        # TODO: emit event distracting_app_overtime
-        print('distracting_app_timer_handler: need to emit distracting_app_overtime')
+        self.event.emit(ApplicationEvent.DISTRACTING_APP_OVERTIME.value)
 
     def get_icon(self, icon_state: IconState) -> str:
         if not self.theme:
