@@ -97,6 +97,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.last_break_notification = None
         self.last_lock_screen_time = None
         self.is_lock_screen_activated = False
+        self.has_distracting_app_overtime_notification_shown = False
 
         self.user_work_time_hour_limit = get(config, 'time_limits.work_time_hours') or 9
         self.user_breaks_interval_hours = get(config, 'time_limits.breaks_interval_hours') or 3
@@ -271,6 +272,8 @@ class SpeakingEyeApp(Gtk.Application):
         self.app_info_matcher.set_if_matched(next_activity)
 
         self.current_activity = next_activity
+        # NOTE: for reshowing notification when open distracting app once more time
+        self.has_distracting_app_overtime_notification_shown = False
 
     def start_main_loop(self) -> None:
         try:
@@ -471,6 +474,9 @@ class SpeakingEyeApp(Gtk.Application):
         if not self.is_work_time:
             return
 
+        if self.has_distracting_app_overtime_notification_shown:
+            return
+
         if self.current_activity is None:
             self.logger.warning('distracting_app_timer_handler(): current_activity is None!')
 
@@ -494,6 +500,8 @@ class SpeakingEyeApp(Gtk.Application):
             return
 
         self.event.emit(ApplicationEvent.DISTRACTING_APP_OVERTIME.value)
+
+        self.has_distracting_app_overtime_notification_shown = True
 
     def get_icon(self, icon_state: IconState) -> str:
         if not self.theme:
