@@ -34,17 +34,16 @@ BREAK_TIME_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
                      '🙇', '🙋', '🚣', '🤸', '🧟', '🐙',
                      '🐧', '☕', '🍌', '🥐', '🆓', '🔮']
 
-# TODO: new emojis
-DISTRACTING_NOTIFICATION_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
-                                   '🙇', '🙋', '🚣', '🤸', '🧟', '🐙',
-                                   '🐧', '☕', '🍌', '🥐', '🆓', '🔮']
+DISTRACTING_NOTIFICATION_EMOJIS = ['🧐', '🌓', '🥤', '💼', '🐘', '🥴',
+                                   '🤖', '💭', '🧠', '🤵', '🤹', '🏤',
+                                   '🦊', '🦁', '🎡', '🐰', '🍩', '🐞']
 
 DISTRACTING_NOTIFICATION_TEXTS = ['Time for fun is up!',
                                   'Please keep working ...',
                                   'Distracted again?',
                                   'Time to ventilate the room, it\'s too hot here because of breaking the rules!',
                                   'Just a friendly reminder: you always can back to this after work.',
-                                  '<b>Fun fact:</b> people spend an average of two hours a day on social media.'
+                                  'Fun fact: people spend an average of two hours a day on social media.'
                                   'Also a fact: it\'s time to get back to work!',
                                   'Don\'t forget to do eye exercises.',
                                   'You promised yourself not to be distracted at work, remember?',
@@ -143,7 +142,7 @@ class SpeakingEyeApp(Gtk.Application):
         Notify.init(app_id)
         self.__dbus_subscribe_to_screen_saver_signals()
 
-        start_msg = f'Start time: [{self.start_time.strftime("%H:%M:%S")}]'
+        start_msg = f'<b>Start time</b>: [{self.start_time.strftime("%H:%M:%S")}]'
         self.logger.debug(start_msg)
         self.new_notification(msg=start_msg).show()
 
@@ -305,7 +304,7 @@ class SpeakingEyeApp(Gtk.Application):
         work_time = finish_time - self.start_time
         work_time -= timedelta(microseconds=work_time.microseconds)
 
-        finish_msg = f'Finish time: [{finish_time.strftime("%H:%M:%S")}]'
+        finish_msg = f'<b>Finish time</b>: [{finish_time.strftime("%H:%M:%S")}]'
         work_time_msg = f'Work time: [{work_time}]'
 
         self.logger.debug(f'{finish_msg}\n{work_time_msg}')
@@ -420,7 +419,7 @@ class SpeakingEyeApp(Gtk.Application):
         distracting_minutes = total_time.total_seconds() // 60
         text = choice(DISTRACTING_NOTIFICATION_TEXTS)
         emoji = choice(DISTRACTING_NOTIFICATION_EMOJIS)
-        msg = f'Spend in {title}: {distracting_minutes:.0f} mins. | {text} {emoji} |'
+        msg = f'Spend in <b>{title}</b>: {distracting_minutes:.0f} mins. | {text} {emoji} |'
 
         self.new_notification(msg).show()
 
