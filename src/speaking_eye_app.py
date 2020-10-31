@@ -76,6 +76,9 @@ class SpeakingEyeApp(Gtk.Application):
             Timer('overtime_timer', handler=self.overtime_timer_handler, interval_ms=1 * 60 * 1000, repeat=True)
         self.break_timer = \
             Timer('break_timer', handler=self.break_timer_handler, interval_ms=1 * 60 * 1000, repeat=True)
+        self.distracting_app_timer = \
+            Timer('distracting_app_timer', handler=self.distracting_app_timer_handler, interval_ms=1 * 60 * 1000,
+                  repeat=True)
 
         self.start_time = datetime.now()
         self.last_break_reminder_time = None
@@ -202,6 +205,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.main_loop = GObject.MainLoop()
         self.overtime_timer.start()
         self.break_timer.start()
+        self.distracting_app_timer.start()
 
     def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
         now = datetime.now()
@@ -444,6 +448,12 @@ class SpeakingEyeApp(Gtk.Application):
         if need_to_show_break_notification:
             self.show_break_notification()
             self.last_break_reminder_time = now
+
+    def distracting_app_timer_handler(self) -> None:
+        # TODO: read interval from config
+        # TODO: implement distracting_app detection logic
+        # TODO: emit event distracting_app_overtime
+        print('distracting_app_timer_handler')
 
     def get_icon(self, icon_state: IconState) -> str:
         if not self.theme:
