@@ -451,6 +451,10 @@ class SpeakingEyeApp(Gtk.Application):
             self.last_break_reminder_time = now
 
     def distracting_app_timer_handler(self) -> None:
+        # TODO: ⚡️ run this timer only if work started
+        if not self.is_work_time:
+            return
+
         if self.current_activity is None:
             self.logger.warning('distracting_app_timer_handler(): current_activity is None!')
 
