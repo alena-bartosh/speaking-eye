@@ -118,7 +118,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         start_msg = f'Start time: [{self.start_time.strftime("%H:%M:%S")}]'
         self.logger.debug(start_msg)
-        self.show_notification(msg=start_msg)
+        self.new_notification(msg=start_msg).show()
 
     def __dbus_method_call(self, bus_name: str, object_path: str, interface_name: str, method_name: str) -> Any:
         if not self.connection:
@@ -293,7 +293,7 @@ class SpeakingEyeApp(Gtk.Application):
             padded_off_time = f'{stat.off_time}'.rjust(20, ' ')
             self.logger.info(f'{padded_title} |{padded_work_time} |{padded_off_time}')
 
-        self.show_notification(msg=f'{finish_msg}; {work_time_msg}')
+        self.new_notification(msg=f'{finish_msg}; {work_time_msg}').show()
         Notify.uninit()
 
         self.main_loop.quit()
@@ -359,8 +359,8 @@ class SpeakingEyeApp(Gtk.Application):
     def on_take_break_clicked(self, notification: Notify.Notification, action_id: str, arg: Any) -> None:
         self.__dbus_lock_screen()
 
-    def show_notification(self, msg: str) -> None:
-        Notify.Notification.new('Speaking Eye', msg, self.active_icon).show()
+    def new_notification(self, msg: str) -> Notify.Notification:
+        return Notify.Notification.new('Speaking Eye', msg, self.active_icon)
 
     def show_overtime_notification(self) -> None:
         msg = f'You have already worked {self.user_work_time_hour_limit} hours.\n' \
@@ -415,7 +415,7 @@ class SpeakingEyeApp(Gtk.Application):
         open_new_file_msg = 'New file was opened and apps work time was reset'
 
         self.logger.debug(open_new_file_msg)
-        self.show_notification(msg=open_new_file_msg)
+        self.new_notification(msg=open_new_file_msg).show()
 
         self.set_work_time_state(False)
 
