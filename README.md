@@ -12,7 +12,7 @@
 - [x] your activity on the computer
 - [x] overtime
 - [x] time to take a break
-- [ ] distracting apps if you spend a lot of time there
+- [x] distracting apps if you spend a lot of time there
 
 ### Installation and use
 
