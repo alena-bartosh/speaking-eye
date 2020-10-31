@@ -102,6 +102,10 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.reader = ActivityReader(logger, self.app_info_matcher)
         self.holder = ActivityStatHolder(self.reader.read(self.get_tsv_file_path()))
+
+        self.holder.initialize_stats(self.detailed_app_infos)
+        self.holder.initialize_stats(self.distracting_app_infos)
+
         self.current_activity: Optional[Activity] = None
 
         self.writer.event.on(ActivityWriter.NEW_DAY_EVENT, self.on_new_day_started)

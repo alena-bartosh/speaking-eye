@@ -3,6 +3,7 @@ from typing import List
 
 from activity import Activity
 from activity_stat import ActivityStat
+from application_info import ApplicationInfo
 
 KeyType = str
 ItemType = ActivityStat
@@ -19,6 +20,13 @@ class ActivityStatHolder(dict):
 
         for activity in activities:
             self.update_stat(activity)
+
+    def initialize_stats(self, application_infos: List[ApplicationInfo]) -> None:
+        for application_info in application_infos:
+            if application_info.title in self:
+                continue
+
+            self[application_info.title] = ActivityStat()
 
     def update_stat(self, activity: Activity) -> None:
         if activity.is_work_time:
