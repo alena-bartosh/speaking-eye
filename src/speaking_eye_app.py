@@ -91,6 +91,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.user_work_time_hour_limit = get(config, 'time_limits.work_time_hours') or 9
         self.user_breaks_interval_hours = get(config, 'time_limits.breaks_interval_hours') or 3
+        self.user_distracting_apps_mins = get(config, 'time_limits.distracting_apps_mins') or 15
 
         self.writer = ActivityWriter(OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
 
@@ -450,10 +451,30 @@ class SpeakingEyeApp(Gtk.Application):
             self.last_break_reminder_time = now
 
     def distracting_app_timer_handler(self) -> None:
-        # TODO: read interval from config
-        # TODO: implement distracting_app detection logic
+        if self.current_activity is None:
+            self.logger.warning('distracting_app_timer_handler(): current_activity is None!')
+
+            return
+
+        application_info = self.current_activity.application_info
+
+        if application_info is None:
+            # NOTE: It is None if detailed/distracting lists do not contain such activity
+            #       See more in ApplicationInfoMatcher.set_if_matched()
+            return
+
+        if not application_info.is_distracting:
+            return
+
+        now = datetime.now()
+        current_stats = self.holder[application_info.title]
+        total_distracting_time = now - self.current_activity.start_time + current_stats.work_time
+
+        if total_distracting_time.total_seconds() < self.user_distracting_apps_mins * 60:
+            return
+
         # TODO: emit event distracting_app_overtime
-        print('distracting_app_timer_handler')
+        print('distracting_app_timer_handler: need to emit distracting_app_overtime')
 
     def get_icon(self, icon_state: IconState) -> str:
         if not self.theme:
