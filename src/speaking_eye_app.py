@@ -366,7 +366,7 @@ class SpeakingEyeApp(Gtk.Application):
         msg = f'You have already worked {self.user_work_time_hour_limit} hours.\n' \
               f'It\'s time to finish working and start living.'
 
-        notification = Notify.Notification.new('Speaking Eye', msg, self.active_icon)
+        notification = self.new_notification(msg)
         notification.connect('closed', self.on_overtime_notification_closed)
 
         notification.add_action(
@@ -391,7 +391,7 @@ class SpeakingEyeApp(Gtk.Application):
         emoji = choice(BREAK_TIME_EMOJIS)
         msg = f'It\'s time to take a break {emoji}'
 
-        notification = Notify.Notification.new('Speaking Eye', msg, self.active_icon)
+        notification = self.new_notification(msg)
 
         notification.add_action(
             'take_break',
