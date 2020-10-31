@@ -29,7 +29,7 @@ class ActivityStatHolder(dict):
         title_from_config = activity.application_info.title if activity.application_info is not None else 'Others'
 
         if title_from_config not in self:
-            self[title_from_config] = ActivityStat(activity)
+            self[title_from_config] = ActivityStat.from_activity(activity)
 
             return
 

@@ -24,13 +24,13 @@ class ActivityStatTestCase(unittest.TestCase):
                 ValueError,
                 expected_regex='Activity \\[2020-07-21 20:30:00\tNone\tNone\twm_class1\twindow_name1\tTrue\n\\] '
                                'should be finished before creating ActivityStat!'):
-            ActivityStat(not_finished_activity)
+            ActivityStat.from_activity(not_finished_activity)
 
         with self.assertRaisesRegex(
                 ValueError,
                 expected_regex='Activity \\[2020-07-21 20:30:00\tNone\tNone\twm_class1\twindow_name1\tTrue\n\\] '
                                'should be finished before updating ActivityStat!'):
-            ActivityStat(self.activity).update(not_finished_activity)
+            ActivityStat.from_activity(self.activity).update(not_finished_activity)
 
     def test_when_update_time(self) -> None:
         not_working_activity = Activity('wm_class1',
@@ -53,7 +53,7 @@ class ActivityStatTestCase(unittest.TestCase):
 
         for sub_test, (activity, same_activity_with_diff_time, work_time, off_time) in sub_tests_data.items():
             with self.subTest(name=sub_test):
-                activity_stat = ActivityStat(activity)
+                activity_stat = ActivityStat.from_activity(activity)
                 activity_stat.update(same_activity_with_diff_time)
 
                 self.assertEqual(activity_stat.work_time, work_time)
