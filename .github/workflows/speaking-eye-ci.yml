@@ -15,23 +15,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      run: |
-        sudo apt install -y libgirepository1.0-dev
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install flake8
-    - name: Lint with flake8
-      run: |
-        flake8 . --show-source --statistics
-    - name: Test with unittest
-      run: |
-        PYTHONPATH=src coverage run --source=./src -m unittest discover ./tests
-        coverage report -m
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1.0.10
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          sudo apt install -y libgirepository1.0-dev
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8
+      - name: Lint with flake8
+        run: |
+          flake8 . --show-source --statistics
+      - name: Test with unittest
+        run: |
+          PYTHONPATH=src coverage run --source=./src -m unittest discover ./tests
+          coverage report -m
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1.0.10
