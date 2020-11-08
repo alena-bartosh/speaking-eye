@@ -85,7 +85,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.tray_icon = TrayIcon(app_id, self.disabled_icon, self.create_tray_menu())
 
         self.screen = None
-        self.main_loop = None
+        self.main_loop: Optional[GObject.MainLoop] = None
         self.name_changed_handler_id = None
 
         self.previous_active_window_name = None
@@ -293,7 +293,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def start_main_loop(self) -> None:
         try:
-            self.main_loop.run()
+            self.main_loop.run()  # type: ignore[union-attr]
         except KeyboardInterrupt:
             self.stop()
 
@@ -324,7 +324,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.new_notification(msg=f'{finish_msg}; {work_time_msg}').show()
         Notify.uninit()
 
-        self.main_loop.quit()
+        self.main_loop.quit()  # type: ignore[union-attr]
 
     def on_close_item_click(self, menu_item: Gtk.MenuItem) -> None:
         self.stop()
