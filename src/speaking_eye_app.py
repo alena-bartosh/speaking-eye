@@ -84,7 +84,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.disabled_icon = self.get_icon(IconState.DISABLED)
         self.tray_icon = TrayIcon(app_id, self.disabled_icon, self.create_tray_menu())
 
-        self.screen = None
+        self.screen: Optional[Wnck.Screen] = None
         self.main_loop: Optional[GObject.MainLoop] = None
         self.name_changed_handler_id = None
 
