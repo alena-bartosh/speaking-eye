@@ -272,10 +272,11 @@ class SpeakingEyeApp(Gtk.Application):
         self.__on_activity_changed(self.current_activity, new_activity)
 
     def __on_activity_changed(self, previous_activity: Optional[Activity], next_activity: Activity) -> None:
-        is_first_activity_change = previous_activity is None
+        is_first_activity_change = True
         now = datetime.now()
 
-        if not is_first_activity_change:
+        if previous_activity is not None:
+            is_first_activity_change = False
             previous_activity.set_end_time(now)
             self.writer.write(previous_activity)
             self.holder.update_stat(previous_activity)
