@@ -189,8 +189,10 @@ class SpeakingEyeApp(Gtk.Application):
         now = datetime.now()
 
         if self.is_lock_screen_activated:
-            self.previous_wm_class = Value.get_or_raise(self.current_activity, 'current_activity').wm_class
-            self.previous_active_window_name = Value.get_or_raise(self.current_activity, 'current_activity').window_name
+            current_activity = Value.get_or_raise(self.current_activity, 'current_activity')
+
+            self.previous_wm_class = current_activity.wm_class
+            self.previous_active_window_name = current_activity.window_name
 
             wm_class = SpecialWmClass.LOCK_SCREEN.value
             window_name = ''
