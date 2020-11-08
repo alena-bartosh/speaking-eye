@@ -1,6 +1,6 @@
 from datetime import date
 from pathlib import Path
-from typing import Optional, TextIO
+from typing import cast, Optional, TextIO
 
 from pyee import BaseEventEmitter
 
@@ -37,7 +37,8 @@ class ActivityWriter:
 
     def __open_file(self, file: Path) -> None:
         self.__current_file_path = file
-        self.__current_file = open(str(file), self.FILE_MODE)
+        # cast open() result to TextIO to fix mypy warnings
+        self.__current_file = cast(TextIO, open(str(file), self.FILE_MODE))
 
     def __write_and_flush(self, activity: Activity) -> None:
         if self.__current_file is None:
