@@ -200,8 +200,8 @@ class SpeakingEyeApp(Gtk.Application):
             if self.is_work_time:
                 self.last_lock_screen_time = now
 
-            wm_class = self.previous_wm_class
-            window_name = self.previous_active_window_name
+            wm_class = Value.get_or_raise(self.previous_wm_class, 'previous_wm_class')
+            window_name = Value.get_or_raise(self.previous_active_window_name, 'previous_active_window_name')
 
         self.on_open_window(wm_class, window_name, now)
 
@@ -268,24 +268,24 @@ class SpeakingEyeApp(Gtk.Application):
     def on_name_changed(self, window: Wnck.Window) -> None:
         now = datetime.now()
 
+        current_activity = Value.get_or_raise(self.current_activity, 'current_activity')
         window_name = get_window_name(window)
 
-        new_activity = Activity(self.current_activity.wm_class, window_name, now, self.current_activity.is_work_time)
+        new_activity = Activity(current_activity.wm_class, window_name, now, current_activity.is_work_time)
 
-        self.__on_activity_changed(self.current_activity, new_activity)
+        self.__on_activity_changed(current_activity, new_activity)
 
     def __on_activity_changed(self, previous_activity: Optional[Activity], next_activity: Activity) -> None:
-        is_first_activity_change = True
         now = datetime.now()
 
         if previous_activity is not None:
-            is_first_activity_change = False
             previous_activity.set_end_time(now)
             self.writer.write(previous_activity)
             self.holder.update_stat(previous_activity)
 
+        # NOTE: previous_activity is None when it is the first activity after starting
         previous_activity_app_name = \
-            '' if is_first_activity_change else f'{previous_activity.wm_class}|{previous_activity.window_name}'
+            '' if previous_activity is None else f'{previous_activity.wm_class}|{previous_activity.window_name}'
         self.logger.debug(f'{now}: {previous_activity_app_name} -> '
                           f'{next_activity.wm_class}|{next_activity.window_name}')
 
@@ -340,13 +340,14 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.is_work_time = value
 
+        current_activity = Value.get_or_raise(self.current_activity, 'current_activity')
         now = datetime.now()
-        new_activity = Activity(self.current_activity.wm_class,
-                                self.current_activity.window_name,
+        new_activity = Activity(current_activity.wm_class,
+                                current_activity.window_name,
                                 now,
                                 self.is_work_time)
 
-        self.__on_activity_changed(self.current_activity, new_activity)
+        self.__on_activity_changed(current_activity, new_activity)
 
         self.is_work_time_update_time = now
 
