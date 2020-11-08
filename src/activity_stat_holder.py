@@ -53,5 +53,5 @@ class ActivityStatHolder(dict):
     def __getitem__(self, app_name: KeyType) -> ItemType:
         return super().__getitem__(app_name)
 
-    def __contains__(self, app_name: KeyType) -> bool:
+    def __contains__(self, app_name: KeyType) -> bool:  # type: ignore[override]
         return super().__contains__(app_name)
