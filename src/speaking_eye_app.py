@@ -24,6 +24,7 @@ from application_info_reader import ApplicationInfoReader
 from gtk_extras import get_window_name
 from timer import Timer
 from tray_icon import TrayIcon
+from value import Value
 from x_helpers import get_wm_class
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -188,7 +189,7 @@ class SpeakingEyeApp(Gtk.Application):
         now = datetime.now()
 
         if self.is_lock_screen_activated:
-            self.previous_wm_class = self.current_activity.wm_class
+            self.previous_wm_class = Value.get_or_raise(self.current_activity, 'current_activity').wm_class
             self.previous_active_window_name = self.current_activity.window_name
 
             wm_class = SpecialWmClass.LOCK_SCREEN.value
