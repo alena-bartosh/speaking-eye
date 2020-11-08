@@ -88,7 +88,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.main_loop: Optional[GObject.MainLoop] = None
         self.name_changed_handler_id = None
 
-        self.previous_active_window_name = None
+        self.previous_active_window_name: Optional[str] = None
         self.previous_wm_class = None
 
         self.reminder_timer = \
