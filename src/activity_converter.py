@@ -30,10 +30,10 @@ class ActivityConverter:
                              f'!= {ActivityConverter.EXPECTED_COLUMNS_NUMBER} in string [{value}]!')
 
         try:
-            start_time, end_time, activity_time, wm_class, window_name, is_work_time = columns
-            start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S.%f')
-            end_time = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S.%f')
-            is_work_time = BoolParser.parse(is_work_time.replace('\n', ''))
+            start_time_str, end_time_str, activity_time, wm_class, window_name, is_work_time_str = columns
+            start_time = datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S.%f')
+            end_time = datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S.%f')
+            is_work_time = BoolParser.parse(is_work_time_str.replace('\n', ''))
         except Exception as e:
             raise ValueError(f'Incorrect string [{value}]! {e}')
 
