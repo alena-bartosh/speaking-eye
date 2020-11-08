@@ -15,7 +15,7 @@ class ActivityReader:
         self.matcher = matcher
 
     def read(self, raw_data_file: Path) -> List[Activity]:
-        activities = []
+        activities: List[Activity] = []
 
         if not raw_data_file.exists():
             self.logger.debug(f'File with raw data [{raw_data_file}] does not exist for this day')
