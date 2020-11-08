@@ -26,7 +26,7 @@ class Activity:
     def has_finished(self) -> bool:
         return self.end_time is not None
 
-    def __eq__(self, other: 'Activity') -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         Overrides the default implementation
         to use the object values instead of identifiers for comparison
