@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 from activity import Activity
 from activity_builder import ActivityBuilder
+from activity_helper import ActivityHelper
 from datetime_helper import DatetimeHelper
 
 
@@ -11,7 +12,7 @@ class ActivitySplitter:
 
     @staticmethod
     def split_by_day(activity: Activity) -> List[Tuple[date, Activity]]:
-        days = activity.get_days()
+        days = ActivityHelper.get_days(activity)
         first_day, last_day = days[0], days[-1]
 
         if first_day == last_day:

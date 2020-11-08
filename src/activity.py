@@ -1,8 +1,7 @@
-from datetime import date, datetime, timedelta
-from typing import List, Optional
+from datetime import datetime, timedelta
+from typing import Optional
 
 from application_info import ApplicationInfo
-from datetime_helper import DatetimeHelper
 
 
 class Activity:
@@ -54,9 +53,6 @@ class Activity:
             return False
 
         return self.application_info == other.application_info
-
-    def get_days(self) -> List[date]:
-        return DatetimeHelper.get_dates_between(self.start_time.date(), self.end_time.date())
 
     def set_application_info(self, value: ApplicationInfo) -> None:
         self.application_info = value
