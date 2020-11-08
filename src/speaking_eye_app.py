@@ -106,7 +106,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.event.on(ApplicationEvent.DISTRACTING_APP_OVERTIME.value, self.show_distracting_app_overtime_notification)
 
         self.start_time = datetime.now()
-        self.last_break_reminder_time = None
+        self.last_break_reminder_time: Optional[datetime] = None
         self.is_work_time = False
         self.is_work_time_update_time = self.start_time
         self.last_overtime_notification = None
