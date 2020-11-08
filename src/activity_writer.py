@@ -1,10 +1,12 @@
 from datetime import date
 from pathlib import Path
 from typing import Optional, TextIO
+
 from pyee import BaseEventEmitter
 
 from activity import Activity
 from activity_converter import ActivityConverter
+from activity_helper import ActivityHelper
 from activity_splitter import ActivitySplitter
 
 
@@ -45,9 +47,7 @@ class ActivityWriter:
         self.__current_file.flush()
 
     def write(self, original_activity: Activity) -> None:
-        if not original_activity.has_finished():
-            raise ValueError(f'Activity [{ActivityConverter.to_string(original_activity)}] should be finished '
-                             f'before writing into the file!')
+        ActivityHelper.raise_if_not_finished(original_activity)
 
         activities_with_days = ActivitySplitter.split_by_day(original_activity)
 

@@ -85,7 +85,7 @@ class ActivityWriterTestCase(unittest.TestCase):
         with self.assertRaisesRegex(
                 ValueError,
                 expected_regex='Activity \\[2020-07-21 20:30:00\tNone\tNone\twm_class1\twindow_name1\tTrue\n\\] '
-                               'should be finished before writing into the file!'):
+                               'should be finished!'):
             writer.write(not_finished_activity)
 
         mock_is_dir_res.assert_called_once()

@@ -23,13 +23,13 @@ class ActivityStatTestCase(unittest.TestCase):
         with self.assertRaisesRegex(
                 ValueError,
                 expected_regex='Activity \\[2020-07-21 20:30:00\tNone\tNone\twm_class1\twindow_name1\tTrue\n\\] '
-                               'should be finished before creating ActivityStat!'):
+                               'should be finished!'):
             ActivityStat.from_activity(not_finished_activity)
 
         with self.assertRaisesRegex(
                 ValueError,
                 expected_regex='Activity \\[2020-07-21 20:30:00\tNone\tNone\twm_class1\twindow_name1\tTrue\n\\] '
-                               'should be finished before updating ActivityStat!'):
+                               'should be finished!'):
             ActivityStat.from_activity(self.activity).update(not_finished_activity)
 
     def test_when_update_time(self) -> None:

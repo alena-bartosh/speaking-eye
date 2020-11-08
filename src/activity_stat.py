@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from activity import Activity
-from activity_converter import ActivityConverter
+from activity_helper import ActivityHelper
 
 
 class ActivityStat:
@@ -18,9 +18,7 @@ class ActivityStat:
     def from_activity(activity: Activity) -> 'ActivityStat':
         """For creating ActivityStat when Activity has already started"""
 
-        if not activity.has_finished():
-            raise ValueError(f'Activity [{ActivityConverter.to_string(activity)}] should be finished '
-                             f'before creating ActivityStat!')
+        ActivityHelper.raise_if_not_finished(activity)
 
         # NOTE: for distracting activity work_time is distracting time
 
@@ -35,9 +33,7 @@ class ActivityStat:
 
     # TODO: check whether activity the same as in from_activity()
     def update(self, activity: Activity) -> None:
-        if not activity.has_finished():
-            raise ValueError(f'Activity [{ActivityConverter.to_string(activity)}] should be finished '
-                             f'before updating ActivityStat!')
+        ActivityHelper.raise_if_not_finished(activity)
 
         if activity.is_work_time:
             self.work_time += activity.activity_time
