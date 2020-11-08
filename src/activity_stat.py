@@ -23,11 +23,11 @@ class ActivityStat:
         # NOTE: for distracting activity work_time is distracting time
 
         if activity.is_work_time:
-            work_time = activity.activity_time
+            work_time = ActivityHelper.get_activity_time(activity)
             off_time = timedelta()
         else:
             work_time = timedelta()
-            off_time = activity.activity_time
+            off_time = ActivityHelper.get_activity_time(activity)
 
         return ActivityStat(work_time, off_time)
 
@@ -36,6 +36,6 @@ class ActivityStat:
         ActivityHelper.raise_if_not_finished(activity)
 
         if activity.is_work_time:
-            self.work_time += activity.activity_time
+            self.work_time += ActivityHelper.get_activity_time(activity)
         else:
-            self.off_time += activity.activity_time
+            self.off_time += ActivityHelper.get_activity_time(activity)

@@ -2,6 +2,7 @@ from datetime import timedelta
 from typing import List
 
 from activity import Activity
+from activity_helper import ActivityHelper
 from activity_stat import ActivityStat
 from application_info import ApplicationInfo
 
@@ -30,9 +31,9 @@ class ActivityStatHolder(dict):
 
     def update_stat(self, activity: Activity) -> None:
         if activity.is_work_time:
-            self.total_work_time += activity.activity_time
+            self.total_work_time += ActivityHelper.get_activity_time(activity)
         else:
-            self.total_off_time += activity.activity_time
+            self.total_off_time += ActivityHelper.get_activity_time(activity)
 
         title_from_config = activity.application_info.title if activity.application_info is not None else 'Others'
 
