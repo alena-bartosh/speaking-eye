@@ -89,7 +89,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.name_changed_handler_id = None
 
         self.previous_active_window_name: Optional[str] = None
-        self.previous_wm_class = None
+        self.previous_wm_class: Optional[str] = None
 
         self.reminder_timer = \
             Timer('reminder_timer', handler=self.show_overtime_notification, interval_ms=15 * 60 * 1000, repeat=False)
