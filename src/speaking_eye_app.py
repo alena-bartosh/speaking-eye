@@ -111,7 +111,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_work_time_update_time = self.start_time
         self.last_overtime_notification = None
         self.last_break_notification = None
-        self.last_lock_screen_time = None
+        self.last_lock_screen_time: Optional[datetime] = None
         self.is_lock_screen_activated = False
         self.has_distracting_app_overtime_notification_shown = False
 
