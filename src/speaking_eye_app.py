@@ -465,6 +465,14 @@ class SpeakingEyeApp(Gtk.Application):
         self.stop()
 
     def __need_to_show_overtime_notification(self) -> bool:
+        if not self.is_work_time:
+            return False
+
+        is_overtime_started = self.holder.total_work_time.total_seconds() >= self.user_work_time_hour_limit * 60 * 60
+
+        if not is_overtime_started:
+            return False
+
         if self.last_overtime_notification_time is None:
             return True
 
@@ -478,14 +486,6 @@ class SpeakingEyeApp(Gtk.Application):
         return seconds_from_last_notification >= interval_seconds
 
     def overtime_timer_handler(self) -> None:
-        if not self.is_work_time:
-            return
-
-        is_overtime_started = self.holder.total_work_time.total_seconds() >= self.user_work_time_hour_limit * 60 * 60
-
-        if not is_overtime_started:
-            return
-
         if not self.__need_to_show_overtime_notification():
             return
 
