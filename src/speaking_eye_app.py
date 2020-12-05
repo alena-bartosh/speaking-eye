@@ -494,8 +494,6 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.show_overtime_notification()
 
-        self.last_overtime_notification_time = datetime.now()
-
     def break_timer_handler(self) -> None:
         if not self.is_work_time or self.is_lock_screen_activated:
             return
