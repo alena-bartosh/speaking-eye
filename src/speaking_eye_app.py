@@ -495,21 +495,32 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.show_overtime_notification()
 
-    def break_timer_handler(self) -> None:
-        if not self.is_work_time or self.is_lock_screen_activated:
-            return
+    def __need_to_show_break_notification(self) -> bool:
+        if not self.is_work_time:
+            return False
+
+        if self.is_lock_screen_activated:
+            return False
 
         now = datetime.now()
         start_work_time = self.is_work_time_update_time
         last_break_time = self.last_lock_screen_time if self.last_lock_screen_time else start_work_time
+
+        if (now - last_break_time).total_seconds() < self.user_breaks_interval_hours * 60 * 60:
+            return False
+
         last_break_reminder_time = self.last_break_reminder_time if self.last_break_reminder_time else start_work_time
 
-        need_to_show_break_notification = \
-            (now - last_break_time).total_seconds() >= self.user_breaks_interval_hours * 60 * 60 \
-            and (now - last_break_reminder_time).total_seconds() >= 15 * 60
+        if (now - last_break_reminder_time).total_seconds() < 15 * 60:
+            return False
 
-        if need_to_show_break_notification:
-            self.show_break_notification()
+        return True
+
+    def break_timer_handler(self) -> None:
+        if not self.__need_to_show_break_notification():
+            return
+
+        self.show_break_notification()
 
     def distracting_app_timer_handler(self) -> None:
         # TODO: ⚡️ run this timer only if work started
