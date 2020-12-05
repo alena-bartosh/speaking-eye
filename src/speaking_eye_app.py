@@ -115,6 +115,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.has_distracting_app_overtime_notification_shown = False
         self.last_overtime_notification_time: Optional[datetime] = None
         self.is_overtime_notification_allowed_to_show = True
+        self.is_break_notification_allowed_to_show = True
 
         self.user_work_time_hour_limit = get(config, 'time_limits.work_time_hours') or 9
         self.user_breaks_interval_hours = get(config, 'time_limits.breaks_interval_hours') or 3
@@ -426,11 +427,16 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.new_notification(msg).show()
 
+    def __on_break_notification_closed(self, notification: Notify.Notification) -> None:
+        self.is_break_notification_allowed_to_show = True
+
     def show_break_notification(self) -> None:
         emoji = choice(BREAK_TIME_EMOJIS)
         msg = f'It\'s time to take a break {emoji}'
 
         notification = self.new_notification(msg)
+
+        notification.connect('closed', self.__on_break_notification_closed)
 
         notification.add_action(
             'take_break',
@@ -450,6 +456,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.last_break_notification = notification
         self.last_break_reminder_time = datetime.now()
+        self.is_break_notification_allowed_to_show = False
 
     def on_new_day_started(self) -> None:
         open_new_file_msg = 'New file was opened and apps work time was reset'
@@ -500,6 +507,9 @@ class SpeakingEyeApp(Gtk.Application):
             return False
 
         if self.is_lock_screen_activated:
+            return False
+
+        if not self.is_break_notification_allowed_to_show:
             return False
 
         now = datetime.now()
