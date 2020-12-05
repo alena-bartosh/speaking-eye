@@ -449,6 +449,7 @@ class SpeakingEyeApp(Gtk.Application):
         notification.show()
 
         self.last_break_notification = notification
+        self.last_break_reminder_time = datetime.now()
 
     def on_new_day_started(self) -> None:
         open_new_file_msg = 'New file was opened and apps work time was reset'
@@ -509,7 +510,6 @@ class SpeakingEyeApp(Gtk.Application):
 
         if need_to_show_break_notification:
             self.show_break_notification()
-            self.last_break_reminder_time = now
 
     def distracting_app_timer_handler(self) -> None:
         # TODO: ⚡️ run this timer only if work started
