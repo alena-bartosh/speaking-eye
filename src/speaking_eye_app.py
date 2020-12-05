@@ -483,7 +483,8 @@ class SpeakingEyeApp(Gtk.Application):
             return False
 
         now = datetime.now()
-        seconds_in_current_activity = (now - self.current_activity.start_time).total_seconds()
+        current_activity = Value.get_or_raise(self.current_activity, 'current_activity')
+        seconds_in_current_activity = (now - current_activity.start_time).total_seconds()
         total_work_time_seconds = seconds_in_current_activity + self.holder.total_work_time.total_seconds()
         is_overtime_started = total_work_time_seconds >= self.user_work_time_hour_limit * 60 * 60
 
