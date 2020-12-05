@@ -92,8 +92,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.previous_active_window_name: Optional[str] = None
         self.previous_wm_class: Optional[str] = None
 
-        self.reminder_timer = \
-            Timer('reminder_timer', handler=self.show_overtime_notification, interval_ms=15 * 60 * 1000, repeat=False)
         self.overtime_timer = \
             Timer('overtime_timer', handler=self.overtime_timer_handler, interval_ms=1 * 60 * 1000, repeat=True)
         self.break_timer = \
@@ -383,12 +381,8 @@ class SpeakingEyeApp(Gtk.Application):
     def on_overtime_notification_closed(self, notification: Notify.Notification) -> None:
         if not self.is_work_time:
             self.logger.debug('Do not run timer because of end of the work')
-            return
-
-        self.reminder_timer.start()
 
     def on_finish_work_action_clicked(self, notification: Notify.Notification, action_id: str, arg: Any) -> None:
-        self.reminder_timer.stop()
         self.set_work_time_state(False)
 
     def on_take_break_clicked(self, notification: Notify.Notification, action_id: str, arg: Any) -> None:
