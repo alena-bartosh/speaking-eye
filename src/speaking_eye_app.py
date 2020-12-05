@@ -174,13 +174,16 @@ class SpeakingEyeApp(Gtk.Application):
 
     def __dbus_lock_screen(self) -> None:
         for bus in self.screen_saver_bus_names:
-            # TODO: think about 'try-except' here
             if bus == 'org.freedesktop.ScreenSaver':
+                # NOTE: that server is just interface without implementation
                 continue
 
             interface_name = f'/{bus.replace(".", "/")}'
 
-            self.__dbus_method_call(bus, interface_name, bus, 'Lock')
+            try:
+                self.__dbus_method_call(bus, interface_name, bus, 'Lock')
+            except Exception as e:
+                self.logger.warning(f'Please ignore it if lock screen works well. Lock screen error: [{e}]')
 
     def __on_screen_saver_active_changed(self, connection: Gio.DBusConnection, sender_name: str, object_path: str,
                                          interface_name: str, signal_name: str, parameters: GLib.Variant) -> None:
