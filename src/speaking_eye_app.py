@@ -360,6 +360,7 @@ class SpeakingEyeApp(Gtk.Application):
         if self.is_work_time:
             self.last_lock_screen_time = now
             self.last_break_reminder_time = now
+            self.has_overtime_notification_shown = False
 
     def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
         self.set_work_time_state(not self.is_work_time)
