@@ -114,6 +114,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_lock_screen_activated = False
         self.has_distracting_app_overtime_notification_shown = False
         self.last_overtime_notification_time: Optional[datetime] = None
+        self.is_overtime_notification_allowed_to_show = True
 
         self.user_work_time_hour_limit = get(config, 'time_limits.work_time_hours') or 9
         self.user_breaks_interval_hours = get(config, 'time_limits.breaks_interval_hours') or 3
@@ -379,8 +380,7 @@ class SpeakingEyeApp(Gtk.Application):
         return menu
 
     def on_overtime_notification_closed(self, notification: Notify.Notification) -> None:
-        if not self.is_work_time:
-            self.logger.debug('Do not run timer because of end of the work')
+        self.is_overtime_notification_allowed_to_show = True
 
     def on_finish_work_action_clicked(self, notification: Notify.Notification, action_id: str, arg: Any) -> None:
         self.set_work_time_state(False)
@@ -416,6 +416,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.last_overtime_notification = notification
         self.last_overtime_notification_time = datetime.now()
+        self.is_overtime_notification_allowed_to_show = False
 
     def show_distracting_app_overtime_notification(self, title: str, total_time: timedelta) -> None:
         distracting_minutes = total_time.total_seconds() // 60
@@ -466,6 +467,9 @@ class SpeakingEyeApp(Gtk.Application):
     def __need_to_show_overtime_notification(self) -> bool:
         if self.last_overtime_notification_time is None:
             return True
+
+        if not self.is_overtime_notification_allowed_to_show:
+            return False
 
         now = datetime.now()
         seconds_from_last_notification = (now - self.last_overtime_notification_time).total_seconds()
