@@ -468,6 +468,9 @@ class SpeakingEyeApp(Gtk.Application):
         if not self.is_work_time:
             return False
 
+        if self.is_lock_screen_activated:
+            return False
+
         is_overtime_started = self.holder.total_work_time.total_seconds() >= self.user_work_time_hour_limit * 60 * 60
 
         if not is_overtime_started:
