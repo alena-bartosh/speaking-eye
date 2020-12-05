@@ -482,7 +482,10 @@ class SpeakingEyeApp(Gtk.Application):
         if self.is_lock_screen_activated:
             return False
 
-        is_overtime_started = self.holder.total_work_time.total_seconds() >= self.user_work_time_hour_limit * 60 * 60
+        now = datetime.now()
+        seconds_in_current_activity = (now - self.current_activity.start_time).total_seconds()
+        total_work_time_seconds = seconds_in_current_activity + self.holder.total_work_time.total_seconds()
+        is_overtime_started = total_work_time_seconds >= self.user_work_time_hour_limit * 60 * 60
 
         if not is_overtime_started:
             return False
@@ -493,7 +496,6 @@ class SpeakingEyeApp(Gtk.Application):
         if not self.is_overtime_notification_allowed_to_show:
             return False
 
-        now = datetime.now()
         seconds_from_last_notification = (now - self.last_overtime_notification_time).total_seconds()
         interval_seconds = 15 * 60
 
