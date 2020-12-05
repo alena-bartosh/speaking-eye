@@ -546,12 +546,8 @@ class SpeakingEyeApp(Gtk.Application):
         if self.has_distracting_app_overtime_notification_shown:
             return
 
-        if self.current_activity is None:
-            self.logger.warning('distracting_app_timer_handler(): current_activity is None!')
-
-            return
-
-        application_info = self.current_activity.application_info
+        current_activity = Value.get_or_raise(self.current_activity, 'current_activity')
+        application_info = current_activity.application_info
 
         if application_info is None:
             # NOTE: It is None if detailed/distracting lists do not contain such activity
@@ -563,7 +559,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         now = datetime.now()
         current_stats = self.holder[application_info.title]
-        total_distracting_time = now - self.current_activity.start_time + current_stats.work_time
+        total_distracting_time = now - current_activity.start_time + current_stats.work_time
 
         if total_distracting_time.total_seconds() < self.user_distracting_apps_mins * 60:
             return
