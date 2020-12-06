@@ -31,7 +31,7 @@ jobs:
           make typecheck
       - name: Lint with flake8
         run: |
-          flake8 . --show-source --statistics
+          make lint
       - name: Test with unittest
         run: |
           make test coverage

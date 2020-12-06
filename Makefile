@@ -4,6 +4,7 @@ default:
 	@echo "make coverage"
 	@echo "make start"
 	@echo "make typecheck"
+	@echo "make lint"
 
 test:
 	@echo "=== Run unit tests ==="
@@ -20,3 +21,7 @@ start:
 typecheck:
 	@echo "=== Type checking with mypy ==="
 	@mypy --show-error-codes --warn-unused-ignores ./src/speaking_eye.py
+
+lint:
+	@echo "=== Lint with flake8 ==="
+	@flake8 . --show-source --statistics
