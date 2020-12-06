@@ -60,9 +60,11 @@ To track a specific group of applications, follow this pattern:
 
 # In this case SE will save all these activities as 'Reading about my favorite project'
 ```
+
 [Additional config example.](https://github.com/alena-bartosh/speaking-eye/blob/master/config/config_example.yaml)
 
 ### System dependencies
+
 ```sh
 sudo apt-get install \
     python3-dev \
@@ -80,10 +82,7 @@ sudo apt-get install \
 ```sh
 git clone https://github.com/alena-bartosh/speaking-eye.git && \
 cd speaking-eye && \
-python3 -m venv .env && \
-source .env/bin/activate && \
-pip install --upgrade pip && \
-pip install -r requirements.txt
+make install
 ```
 
 ### Usage
@@ -101,18 +100,18 @@ optional arguments:
 
 ### One-time start
 ```sh
-./start.sh
+make start
 ```
 
 ### Set auto start
 Speaking Eye will automatically turn on after system startup
 ```sh
- ./install_systemd.sh 
+make install/systemd
 ```
 
 ### Run unittests
 ```sh
-./run_unittests.sh
+make test covarage
 ```
 
 ### Code conduction
