@@ -28,7 +28,7 @@ jobs:
           pip install flake8
       - name: Type checking with mypy
         run: |
-          mypy --show-error-codes --warn-unused-ignores ./src/speaking_eye.py
+          make typecheck
       - name: Lint with flake8
         run: |
           flake8 . --show-source --statistics
