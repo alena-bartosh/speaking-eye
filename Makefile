@@ -21,7 +21,7 @@ coverage:
 
 start:
 	@echo "=== One-time start ==="
-	@$(ACTIVATE_VENV) && python3 ./src/speaking_eye.py
+	@$(ACTIVATE_VENV) && python3 ./src/speaking_eye.py $(SE_ARGS)
 
 typecheck:
 	@echo "=== Type checking with mypy ==="

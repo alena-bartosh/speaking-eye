@@ -87,7 +87,10 @@ make install
 
 ### Usage
 ```sh
-python3 speaking_eye.py --help
+SE_ARGS=--help make start
+```
+
+```
 usage: speaking_eye.py [-h] [--log-level] [-c]
 
 [speaking-eye] Track & analyze your computer activity
