@@ -9,6 +9,7 @@ default:
 	@echo "make typecheck"
 	@echo "make lint"
 	@echo "make install"
+	@echo "make install/systemd"
 
 test:
 	@echo "=== Run unit tests ==="
@@ -31,8 +32,12 @@ lint:
 	@$(ACTIVATE_VENV) && flake8 . --show-source --statistics
 
 env/create:
-	@echo "=== Setup virtual env and install requirements ==="
+	@echo "=== Setup virtual env & install requirements ==="
 	@test -d $(VENV_DIR) || python3 -m venv $(VENV_DIR)
 	@$(ACTIVATE_VENV) && pip install --upgrade pip && pip install -r requirements.txt
 
 install: env/create
+
+install/systemd:
+	@echo "=== Create systemd user unit & reload systemd ==="
+	@./scripts/install_systemd.sh
