@@ -9,14 +9,14 @@ set -e
 
 mkdir -p ~/.local/share/systemd/user
 
-REPO_DIR="$(dirname "$(readlink -f "$0")")"
+SCRIPTS_DIR="$(dirname "$(readlink -f "$0")")"
 
 cat > ~/.local/share/systemd/user/speaking-eye.service <<EOL
 [Unit]
 Description=Speaking Eye App
 
 [Service]
-ExecStart=${REPO_DIR}/start.sh
+ExecStart=${SCRIPTS_DIR}/start.sh
 Restart=on-failure
 RestartSec=5s
 
