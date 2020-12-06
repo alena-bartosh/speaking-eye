@@ -24,7 +24,7 @@ test:
 	@echo
 	@$(ACTIVATE_VENV) && PYTHONPATH=src coverage run --source=./src -m unittest discover ./tests
 	@echo
-	@echo "  $(GREEN)🤖👍 All good!$(NC)"
+	@echo "  $(GREEN)🤖 👍 All good!$(NC)"
 	@echo
 
 coverage:
@@ -33,7 +33,7 @@ coverage:
 	@echo
 	@$(ACTIVATE_VENV) && coverage report -m
 	@echo
-	@echo "  $(GREEN)🤖👍 All good!$(NC)"
+	@echo "  $(GREEN)🤖 👍 All good!$(NC)"
 	@echo
 
 start:
@@ -48,7 +48,7 @@ typecheck:
 	@echo
 	@$(ACTIVATE_VENV) && mypy --show-error-codes --warn-unused-ignores ./src/speaking_eye.py
 	@echo
-	@echo "  $(GREEN)🤖👍 All good!$(NC)"
+	@echo "  $(GREEN)🤖 👍 All good!$(NC)"
 	@echo
 
 lint:
@@ -57,7 +57,7 @@ lint:
 	@echo
 	@$(ACTIVATE_VENV) && flake8 . --show-source --statistics
 	@echo
-	@echo "  $(GREEN)🤖👍 All good!$(NC)"
+	@echo "  $(GREEN)🤖 👍 All good!$(NC)"
 	@echo
 
 env/create:
