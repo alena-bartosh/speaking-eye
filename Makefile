@@ -8,6 +8,7 @@ default:
 	@echo "make start"
 	@echo "make typecheck"
 	@echo "make lint"
+	@echo "make env/create"
 
 test:
 	@echo "=== Run unit tests ==="
@@ -28,3 +29,8 @@ typecheck:
 lint:
 	@echo "=== Lint with flake8 ==="
 	@$(ACTIVATE_VENV) && flake8 . --show-source --statistics
+
+env/create:
+	@echo "=== Setup virtual env and install requirements ==="
+	@test -d $(VENV_DIR) || python3 -m venv $(VENV_DIR)
+	@$(ACTIVATE_VENV) && pip install --upgrade pip && pip install -r requirements.txt
