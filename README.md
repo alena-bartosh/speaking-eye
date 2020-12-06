@@ -114,6 +114,18 @@ make install/systemd
 make test covarage
 ```
 
+### Run type checking
+
+```sh
+make typecheck
+```
+
+### Run linter
+
+```sh
+make lint
+```
+
 ### Code conduction
 * Use [Gitmoji](https://gitmoji.carloscuesta.me) for commit messages
 
