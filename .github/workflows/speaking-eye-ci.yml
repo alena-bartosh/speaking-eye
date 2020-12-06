@@ -34,7 +34,7 @@ jobs:
           flake8 . --show-source --statistics
       - name: Test with unittest
         run: |
-          PYTHONPATH=src coverage run --source=./src -m unittest discover ./tests
+          make test
           coverage report -m
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1.0.10

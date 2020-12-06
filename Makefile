@@ -1,3 +1,3 @@
 test:
 	@echo "=== Run unit tests ==="
-	@./run_unittests.sh
+	@PYTHONPATH=src coverage run --source=./src -m unittest discover ./tests
