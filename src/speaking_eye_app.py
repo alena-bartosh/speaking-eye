@@ -437,7 +437,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def show_break_notification(self) -> None:
         emoji = choice(BREAK_TIME_EMOJIS)
-        msg = f'It\'s time to take a break {emoji}'
+        msg = i18n.t('local.break', emoji=emoji)
 
         notification = self.new_notification(msg)
 
