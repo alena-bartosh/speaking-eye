@@ -400,9 +400,7 @@ class SpeakingEyeApp(Gtk.Application):
         return Notify.Notification.new('Speaking Eye', msg, self.active_icon)
 
     def show_overtime_notification(self) -> None:
-        msg = f'You have already worked {self.user_work_time_hour_limit} hours.\n' \
-              f'It\'s time to finish working and start living.'
-
+        msg = i18n.t('local.overtime', hours=self.user_work_time_hour_limit)
         notification = self.new_notification(msg)
         notification.connect('closed', self.on_overtime_notification_closed)
 
