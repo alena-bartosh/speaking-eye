@@ -464,7 +464,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_break_notification_allowed_to_show = False
 
     def on_new_day_started(self) -> None:
-        open_new_file_msg = 'New file was opened and apps work time was reset'
+        open_new_file_msg = i18n.t('local.new_day')
 
         self.logger.debug(open_new_file_msg)
         self.new_notification(msg=open_new_file_msg).show()
