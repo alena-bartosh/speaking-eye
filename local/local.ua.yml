@@ -1,0 +1,4 @@
+ua:
+  start: '<b>Початок роботи</b>: [%{start_time}]'
+  finish: '<b>Кінець роботи</b>: [%{finish_time}]'
+  work_time: 'Робочий час: [%{work_time}]'

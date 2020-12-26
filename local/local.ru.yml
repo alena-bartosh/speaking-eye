@@ -1,0 +1,4 @@
+ru:
+  start: '<b>Начало работы</b>: [%{start_time}]'
+  finish: '<b>Конец работы</b>: [%{finish_time}]'
+  work_time: 'Рабочее время: [%{work_time}]'

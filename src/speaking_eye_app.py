@@ -148,7 +148,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.set_notification_language(config)
 
-        start_msg = f'<b>Start time</b>: [{self.start_time.strftime("%H:%M:%S")}]'
+        start_msg = i18n.t('local.start', start_time=self.start_time.strftime("%H:%M:%S"))
         self.logger.debug(start_msg)
         self.new_notification(msg=start_msg).show()
 
@@ -316,8 +316,8 @@ class SpeakingEyeApp(Gtk.Application):
         work_time = finish_time - self.start_time
         work_time -= timedelta(microseconds=work_time.microseconds)
 
-        finish_msg = f'<b>Finish time</b>: [{finish_time.strftime("%H:%M:%S")}]'
-        work_time_msg = f'Work time: [{work_time}]'
+        finish_msg = i18n.t('local.finish', finish_time=finish_time.strftime("%H:%M:%S"))
+        work_time_msg = i18n.t('local.work_time', work_time=work_time)
 
         self.logger.debug(f'{finish_msg}\n{work_time_msg}')
 

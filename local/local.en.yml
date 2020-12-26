@@ -1,0 +1,4 @@
+en:
+  start: '<b>Start time</b>: [%{start_time}]'
+  finish: '<b>Finish time</b>: [%{finish_time}]'
+  work_time: 'Work time: [%{work_time}]'
