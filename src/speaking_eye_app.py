@@ -9,6 +9,7 @@ from random import choice
 from types import FrameType
 from typing import Any, cast, Dict, List, Optional, Tuple
 
+import i18n
 from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
 from pydash import get
 from pyee import BaseEventEmitter
@@ -28,6 +29,7 @@ from value import Value
 from x_helpers import get_wm_class
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+LOCAL_DIR = Path(SRC_DIR) / '..' / 'local'
 OUTPUT_TSV_FILE_DIR = Path(SRC_DIR) / '..' / 'dest'
 OUTPUT_TSV_FILE_MASK = '{date}_speaking_eye_raw_data.tsv'
 
@@ -143,6 +145,8 @@ class SpeakingEyeApp(Gtk.Application):
 
         Notify.init(app_id)
         self.__dbus_subscribe_to_screen_saver_signals()
+
+        self.set_notification_language(config)
 
         start_msg = f'<b>Start time</b>: [{self.start_time.strftime("%H:%M:%S")}]'
         self.logger.debug(start_msg)
@@ -578,3 +582,12 @@ class SpeakingEyeApp(Gtk.Application):
             self.logger.warning(f'Icon [{full_path}] not found')
 
         return full_path
+
+    def set_notification_language(self, config: Dict) -> None:
+        if not LOCAL_DIR.is_dir():
+            raise ValueError(f'Path [{LOCAL_DIR}] does not exist or it is not a dir!')
+
+        i18n.load_path.append(LOCAL_DIR)
+        language = get(config, 'language') or 'en'
+        i18n.set('locale', language)
+        i18n.set('fallback', 'en')  # default value if language was not found
