@@ -15,7 +15,7 @@
 - [x] distracting apps if you spend a lot of time there
 
 ### Installation and use
-
+[Quick installation guide (video)](https://github.com/alena-bartosh/speaking-eye#quick-installation-guide)
 1. [Install system dependencies](https://github.com/alena-bartosh/speaking-eye#system-dependencies)
 2. [Install requirements](https://github.com/alena-bartosh/speaking-eye#setup)
 3. [Set auto start](https://github.com/alena-bartosh/speaking-eye#set-auto-start)
@@ -128,6 +128,10 @@ make typecheck
 ```sh
 make lint
 ```
+
+### Quick installation guide
+
+[![speaking-eye installation](https://img.youtube.com/vi/x2HaQlQTiTM/0.jpg)](https://youtu.be/x2HaQlQTiTM)
 
 ### Code conduction
 * Use [Gitmoji](https://gitmoji.carloscuesta.me) for commit messages
