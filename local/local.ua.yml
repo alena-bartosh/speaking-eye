@@ -5,3 +5,4 @@ ua:
   overtime: 'Ви працюєте %{hours} годин. Чимпошвидше закінчуйте та йдіть насолоджуватися життям.'  # TODO: break line
   new_day: 'Новий файл відкрито. Час роботи програм скинуто'
   break: 'Ходімо на перерву? %{emoji}'
+  distracting: 'Проведено в <b>%{app_title}</b>: %{distracting_minutes} хв. | %{text} %{emoji} |'

@@ -428,7 +428,8 @@ class SpeakingEyeApp(Gtk.Application):
         distracting_minutes = total_time.total_seconds() // 60
         text = choice(DISTRACTING_NOTIFICATION_TEXTS)
         emoji = choice(DISTRACTING_NOTIFICATION_EMOJIS)
-        msg = f'Spend in <b>{title}</b>: {distracting_minutes:.0f} mins. | {text} {emoji} |'
+        msg = i18n.t('local.distracting', app_title=title, distracting_minutes=int(distracting_minutes),
+                     text=text, emoji=emoji)
 
         self.new_notification(msg).show()
 

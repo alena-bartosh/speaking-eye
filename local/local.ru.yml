@@ -5,3 +5,4 @@ ru:
   overtime: 'Вы работаете уже %{hours} часов. Поскорее заканчивайте работать и идите отдыхать.'  # TODO: break line
   new_day: 'Открыт новый файл. Время работы программ скинуто'
   break: 'Пора бы уже сделать паузу %{emoji}'
+  distracting: 'Проведено в <b>%{app_title}</b>: %{distracting_minutes} мин. | %{text} %{emoji} |'
