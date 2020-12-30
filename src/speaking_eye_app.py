@@ -148,7 +148,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.set_notification_language(config)
 
-        start_msg = i18n.t('local.start', start_time=self.start_time.strftime("%H:%M:%S"))
+        start_msg = i18n.t('start', start_time=self.start_time.strftime("%H:%M:%S"))
         self.logger.debug(start_msg)
         self.new_notification(msg=start_msg).show()
 
@@ -316,8 +316,8 @@ class SpeakingEyeApp(Gtk.Application):
         work_time = finish_time - self.start_time
         work_time -= timedelta(microseconds=work_time.microseconds)
 
-        finish_msg = i18n.t('local.finish', finish_time=finish_time.strftime("%H:%M:%S"))
-        work_time_msg = i18n.t('local.work_time', work_time=work_time)
+        finish_msg = i18n.t('finish', finish_time=finish_time.strftime("%H:%M:%S"))
+        work_time_msg = i18n.t('work_time', work_time=work_time)
 
         self.logger.debug(f'{finish_msg}\n{work_time_msg}')
 
@@ -400,7 +400,7 @@ class SpeakingEyeApp(Gtk.Application):
         return Notify.Notification.new('Speaking Eye', msg, self.active_icon)
 
     def show_overtime_notification(self) -> None:
-        msg = i18n.t('local.overtime', hours=self.user_work_time_hour_limit)
+        msg = i18n.t('overtime', hours=self.user_work_time_hour_limit)
         notification = self.new_notification(msg)
         notification.connect('closed', self.on_overtime_notification_closed)
 
@@ -428,7 +428,7 @@ class SpeakingEyeApp(Gtk.Application):
         distracting_minutes = total_time.total_seconds() // 60
         text = choice(DISTRACTING_NOTIFICATION_TEXTS)
         emoji = choice(DISTRACTING_NOTIFICATION_EMOJIS)
-        msg = i18n.t('local.distracting', app_title=title, distracting_minutes=int(distracting_minutes),
+        msg = i18n.t('distracting', app_title=title, distracting_minutes=int(distracting_minutes),
                      text=text, emoji=emoji)
 
         self.new_notification(msg).show()
@@ -438,7 +438,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def show_break_notification(self) -> None:
         emoji = choice(BREAK_TIME_EMOJIS)
-        msg = i18n.t('local.break', emoji=emoji)
+        msg = i18n.t('break', emoji=emoji)
 
         notification = self.new_notification(msg)
 
@@ -465,7 +465,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_break_notification_allowed_to_show = False
 
     def on_new_day_started(self) -> None:
-        open_new_file_msg = i18n.t('local.new_day')
+        open_new_file_msg = i18n.t('new_day')
 
         self.logger.debug(open_new_file_msg)
         self.new_notification(msg=open_new_file_msg).show()
@@ -591,3 +591,4 @@ class SpeakingEyeApp(Gtk.Application):
         i18n.set('locale', language)
         i18n.set('fallback', 'en')  # default value if language was not found
         i18n.set('enable_memoization', True)  # cache loaded strings in memory
+        i18n.set('filename_format', '{locale}.{format}')
