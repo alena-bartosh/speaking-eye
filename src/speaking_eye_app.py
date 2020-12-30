@@ -590,3 +590,4 @@ class SpeakingEyeApp(Gtk.Application):
         language = get(config, 'language') or 'en'
         i18n.set('locale', language)
         i18n.set('fallback', 'en')  # default value if language was not found
+        i18n.set('enable_memoization', True)  # cache loaded strings in memory
