@@ -137,7 +137,7 @@ class SpeakingEyeApp(Gtk.Application):
         Notify.init(app_id)
         self.__dbus_subscribe_to_screen_saver_signals()
 
-        start_msg = self.localizator.get('start', start_time=self.start_time.strftime("%H:%M:%S"))
+        start_msg = self.localizator.get('notification.start', start_time=self.start_time.strftime("%H:%M:%S"))
         self.logger.debug(start_msg)
         self.new_notification(msg=start_msg).show()
 
@@ -305,8 +305,8 @@ class SpeakingEyeApp(Gtk.Application):
         work_time = finish_time - self.start_time
         work_time -= timedelta(microseconds=work_time.microseconds)
 
-        finish_msg = self.localizator.get('finish', finish_time=finish_time.strftime("%H:%M:%S"))
-        work_time_msg = self.localizator.get('work_time', work_time=work_time)
+        finish_msg = self.localizator.get('notification.finish', finish_time=finish_time.strftime("%H:%M:%S"))
+        work_time_msg = self.localizator.get('notification.work_time', work_time=work_time)
 
         self.logger.debug(f'{finish_msg}\n{work_time_msg}')
 
@@ -415,9 +415,10 @@ class SpeakingEyeApp(Gtk.Application):
 
     def show_distracting_app_overtime_notification(self, title: str, total_time: timedelta) -> None:
         distracting_minutes = total_time.total_seconds() // 60
-        text = self.localizator.get_random('distracting_texts', 10)
+        text = self.localizator.get_random('notification.distracting_texts', 10)
         emoji = choice(DISTRACTING_NOTIFICATION_EMOJIS)
-        msg = self.localizator.get('distracting', app_title=title, distracting_minutes=int(distracting_minutes),
+        msg = self.localizator.get('notification.distracting', app_title=title,
+                                   distracting_minutes=int(distracting_minutes),
                                    text=text, emoji=emoji)
 
         self.new_notification(msg).show()
@@ -454,7 +455,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_break_notification_allowed_to_show = False
 
     def on_new_day_started(self) -> None:
-        open_new_file_msg = self.localizator.get('new_day')
+        open_new_file_msg = self.localizator.get('notification.new_day')
 
         self.logger.debug(open_new_file_msg)
         self.new_notification(msg=open_new_file_msg).show()
