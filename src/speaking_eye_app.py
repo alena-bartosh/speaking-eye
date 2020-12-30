@@ -389,19 +389,19 @@ class SpeakingEyeApp(Gtk.Application):
         return Notify.Notification.new('Speaking Eye', msg, self.active_icon)
 
     def show_overtime_notification(self) -> None:
-        msg = self.localizator.get('overtime', hours=self.user_work_time_hour_limit)
+        msg = self.localizator.get('notification.overtime.text', hours=self.user_work_time_hour_limit)
         notification = self.new_notification(msg)
         notification.connect('closed', self.on_overtime_notification_closed)
 
         notification.add_action(
             'finish_work',
-            'Finish work',
+            self.localizator.get('notification.overtime.left_button'),
             self.on_finish_work_action_clicked,
             None
         )
         notification.add_action(
             'remind_later',
-            'Remind me after 15 mins',
+            self.localizator.get('notification.overtime.right_button'),
             lambda *args: None,
             None
         )

@@ -5,10 +5,14 @@ en:
       left_button: 'Take a break (lock screen)'
       right_button: 'Remind me after 15 mins'
 
+    overtime:
+      text: "You have already worked %{hours} hours.\nIt is time to finish working and start living."
+      left_button: 'Finish work'
+      right_button: 'Remind me after 15 mins'
+
   start: '<b>Start time</b>: [%{start_time}]'
   finish: '<b>Finish time</b>: [%{finish_time}]'
   work_time: 'Work time: [%{work_time}]'
-  overtime: "You have already worked %{hours} hours.\nIt is time to finish working and start living."
   new_day: 'New file was opened and apps work time was reset'
   distracting: 'Spend in <b>%{app_title}</b>: %{distracting_minutes} mins. | %{text} %{emoji} |'
   distracting_texts:
