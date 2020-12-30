@@ -427,7 +427,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def show_distracting_app_overtime_notification(self, title: str, total_time: timedelta) -> None:
         distracting_minutes = total_time.total_seconds() // 60
-        text = choice(DISTRACTING_NOTIFICATION_TEXTS)
+        text = self.localizator.get_random('distracting_texts', 10)
         emoji = choice(DISTRACTING_NOTIFICATION_EMOJIS)
         msg = self.localizator.get('distracting', app_title=title, distracting_minutes=int(distracting_minutes),
                                    text=text, emoji=emoji)

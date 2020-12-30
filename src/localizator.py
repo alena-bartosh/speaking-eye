@@ -1,4 +1,5 @@
 from pathlib import Path
+from random import randint
 
 import i18n
 
@@ -19,3 +20,9 @@ class Localizator:
 
     def get(self, key: str, **kwargs) -> str:
         return i18n.t(key, **kwargs)
+
+    def get_random(self, key: str, max_n: int, **kwargs) -> str:
+        variant = randint(1, max_n)
+        key_with_variant = key + i18n.get('namespace_delimiter') + str(variant)
+
+        return self.get(key_with_variant, **kwargs)
