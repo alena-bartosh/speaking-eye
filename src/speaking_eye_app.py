@@ -29,7 +29,7 @@ from value import Value
 from x_helpers import get_wm_class
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-LOCAL_DIR = Path(SRC_DIR) / '..' / 'local'
+I18N_DIR = Path(SRC_DIR) / '..' / 'i18n'
 OUTPUT_TSV_FILE_DIR = Path(SRC_DIR) / '..' / 'dest'
 OUTPUT_TSV_FILE_MASK = '{date}_speaking_eye_raw_data.tsv'
 
@@ -147,7 +147,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.__dbus_subscribe_to_screen_saver_signals()
 
         language = get(config, 'language') or 'en'
-        self.localizator = Localizator(LOCAL_DIR, language)
+        self.localizator = Localizator(I18N_DIR, language)
 
         start_msg = self.localizator.get('start', start_time=self.start_time.strftime("%H:%M:%S"))
         self.logger.debug(start_msg)
