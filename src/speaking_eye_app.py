@@ -41,18 +41,6 @@ DISTRACTING_NOTIFICATION_EMOJIS = ['🧐', '🌓', '🥤', '💼', '🐘', '🥴
                                    '🤖', '💭', '🧠', '🤵', '🤹', '🏤',
                                    '🦊', '🦁', '🎡', '🐰', '🍩', '🐞']
 
-DISTRACTING_NOTIFICATION_TEXTS = ['Time for fun is up!',
-                                  'Please keep working ...',
-                                  'Distracted again?',
-                                  'Time to ventilate the room, it\'s too hot here because of breaking the rules!',
-                                  'Just a friendly reminder: you always can back to this after work.',
-                                  'Fun fact: people spend an average of two hours a day on social media.'
-                                  'Also a fact: it\'s time to get back to work!',
-                                  'Don\'t forget to do eye exercises.',
-                                  'You promised yourself not to be distracted at work, remember?',
-                                  'Maybe tea is the best choice?',
-                                  'Wow!']
-
 
 class IconState(Enum):
     ACTIVE = 'active'
