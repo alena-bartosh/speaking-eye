@@ -70,6 +70,9 @@ class SpeakingEyeApp(Gtk.Application):
         self.connection = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         self.screen_saver_bus_names = self.__dbus_get_screen_saver_bus_names()
 
+        language = get(config, 'language') or 'en'
+        self.localizator = Localizator(I18N_DIR, language)
+
         self.theme = get(config, 'theme') or 'dark'
         self.active_icon = self.get_icon(IconState.ACTIVE)
         self.disabled_icon = self.get_icon(IconState.DISABLED)
@@ -133,9 +136,6 @@ class SpeakingEyeApp(Gtk.Application):
 
         Notify.init(app_id)
         self.__dbus_subscribe_to_screen_saver_signals()
-
-        language = get(config, 'language') or 'en'
-        self.localizator = Localizator(I18N_DIR, language)
 
         start_msg = self.localizator.get('start', start_time=self.start_time.strftime("%H:%M:%S"))
         self.logger.debug(start_msg)
@@ -364,11 +364,11 @@ class SpeakingEyeApp(Gtk.Application):
     def create_tray_menu(self) -> Gtk.Menu:
         menu = Gtk.Menu()
 
-        work_state_checkbox_item = Gtk.CheckMenuItem('Work Time')
+        work_state_checkbox_item = Gtk.CheckMenuItem(self.localizator.get('tray.work_time'))
         work_state_checkbox_item.connect('activate', self.on_work_state_checkbox_item_click)
         menu.append(work_state_checkbox_item)
 
-        close_item = Gtk.MenuItem('Close')
+        close_item = Gtk.MenuItem(self.localizator.get('tray.close'))
         close_item.connect('activate', self.on_close_item_click)
         menu.append(close_item)
 

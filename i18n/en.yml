@@ -17,3 +17,6 @@ en:
     '8': 'You promised yourself not to be distracted at work, remember?'
     '9': 'Maybe tea is the best choice?'
     '10': 'Wow!'
+  tray:
+    work_time: 'Work Time'
+    close: 'Close'
