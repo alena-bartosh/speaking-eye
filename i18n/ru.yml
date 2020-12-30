@@ -1,10 +1,15 @@
 ru:
+  notification:
+    break:
+      text: 'Пора бы уже сделать паузу %{emoji}'
+      left_button: 'Взять паузу (заблокировать экран)'
+      right_button: 'Напомнить через 15 мин'
+
   start: '<b>Начало работы</b>: [%{start_time}]'
   finish: '<b>Конец работы</b>: [%{finish_time}]'
   work_time: 'Рабочее время: [%{work_time}]'
   overtime: "Вы работаете уже %{hours} часов.\nПоскорее заканчивайте работать и идите отдыхать."
   new_day: 'Открыт новый файл. Время работы программ скинуто'
-  break: 'Пора бы уже сделать паузу %{emoji}'
   distracting: 'Проведено в <b>%{app_title}</b>: %{distracting_minutes} мин. | %{text} %{emoji} |'
   distracting_texts:
     '1': 'Время развлечений вышло!'

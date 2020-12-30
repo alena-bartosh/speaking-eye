@@ -1,10 +1,15 @@
 ua:
+  notification:
+    break:
+      text: 'Ходімо на перерву? %{emoji}'
+      left_button: 'Взяти паузу (заблокувати екран)'
+      right_button: 'Нагадати через 15 хв'
+
   start: '<b>Початок роботи</b>: [%{start_time}]'
   finish: '<b>Кінець роботи</b>: [%{finish_time}]'
   work_time: 'Робочий час: [%{work_time}]'
   overtime: "Ви працюєте %{hours} годин.\nЧимпошвидше закінчуйте та йдіть насолоджуватися життям."
   new_day: 'Новий файл відкрито. Час роботи програм скинуто'
-  break: 'Ходімо на перерву? %{emoji}'
   distracting: 'Проведено в <b>%{app_title}</b>: %{distracting_minutes} хв. | %{text} %{emoji} |'
   distracting_texts:
     '1': 'Час для розваг закінчився!'

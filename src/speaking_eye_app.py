@@ -427,7 +427,7 @@ class SpeakingEyeApp(Gtk.Application):
 
     def show_break_notification(self) -> None:
         emoji = choice(BREAK_TIME_EMOJIS)
-        msg = self.localizator.get('break', emoji=emoji)
+        msg = self.localizator.get('notification.break.text', emoji=emoji)
 
         notification = self.new_notification(msg)
 
@@ -435,13 +435,13 @@ class SpeakingEyeApp(Gtk.Application):
 
         notification.add_action(
             'take_break',
-            'Take a break (lock screen)',
+            self.localizator.get('notification.break.left_button'),
             self.on_take_break_clicked,
             None
         )
         notification.add_action(
             'remind_later',
-            'Remind me after 15 mins',
+            self.localizator.get('notification.break.right_button'),
             lambda *args: None,
             None
         )
