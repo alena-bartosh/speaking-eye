@@ -4,11 +4,13 @@
 [![codecov](https://codecov.io/gh/alena-bartosh/speaking-eye/branch/master/graph/badge.svg)](https://codecov.io/gh/alena-bartosh/speaking-eye)
 
 ### :eyes: Looking at
+
 - [x] your working hours/breaks
 - [x] activity in any apps (IDE, browser tabs, terminal, etc.)
 - [x] distracting activity (custom list of apps/time limits)
 
 ### :postal_horn: Speaking about
+
 - [x] your activity on the computer
 - [x] overtime
 - [x] time to take a break
@@ -23,7 +25,9 @@
 For other languages please feel free to make Pull Request :wink:
 
 ### Installation and use
+
 [Quick installation guide (video)](https://github.com/alena-bartosh/speaking-eye#quick-installation-guide)
+
 1. [Install system dependencies](https://github.com/alena-bartosh/speaking-eye#system-dependencies)
 2. [Install requirements](https://github.com/alena-bartosh/speaking-eye#setup)
 3. [Set auto start](https://github.com/alena-bartosh/speaking-eye#set-auto-start)
@@ -142,8 +146,10 @@ make lint
 [![speaking-eye installation](https://img.youtube.com/vi/x2HaQlQTiTM/0.jpg)](https://youtu.be/x2HaQlQTiTM)
 
 ### Code conduction
+
 * Use [Gitmoji](https://gitmoji.carloscuesta.me) for commit messages
 
 ### Special thanks
+
 * [@s373r](https://github.com/s373r) for mentoring and your love for me and typing
 * [@tarashypka](https://github.com/tarashypka) for becoming the first SE user among friends
