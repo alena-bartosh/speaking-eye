@@ -6,11 +6,12 @@ LOAD_TEXT_OUTPUT = . scripts/text_output.sh
 
 default:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Supported commands"
-	@$(LOAD_TEXT_OUTPUT); print_list_item "make test"
-	@$(LOAD_TEXT_OUTPUT); print_list_item "make coverage"
+	@$(LOAD_TEXT_OUTPUT); print_list_item "make checks" "# includes:"
+	@$(LOAD_TEXT_OUTPUT); print_list_item "  make typecheck"
+	@$(LOAD_TEXT_OUTPUT); print_list_item "  make lint"
+	@$(LOAD_TEXT_OUTPUT); print_list_item "  make test"
+	@$(LOAD_TEXT_OUTPUT); print_list_item "  make coverage"
 	@$(LOAD_TEXT_OUTPUT); print_list_item "make start"
-	@$(LOAD_TEXT_OUTPUT); print_list_item "make typecheck"
-	@$(LOAD_TEXT_OUTPUT); print_list_item "make lint"
 	@$(LOAD_TEXT_OUTPUT); print_list_item "make install"
 	@$(LOAD_TEXT_OUTPUT); print_list_item "make install/systemd"
 	@echo
@@ -63,3 +64,5 @@ install/ci:
 	make install
 	@pip install flake8
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Done!"
+
+checks: typecheck lint test coverage
