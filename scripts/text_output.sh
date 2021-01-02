@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-source ./assert.sh
-source ./colors.sh
+# Get absolute path for dir with scripts
+CURRENT_DIR="$(readlink -f "${BASH_SOURCE%/*}")"
+
+source "${CURRENT_DIR}/assert.sh"
+source "${CURRENT_DIR}/colors.sh"
 
 robot_says() {
   local emoji=${1}

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-source ./echo_error.sh
+CURRENT_DIR="$(readlink -f "${BASH_SOURCE%/*}")"
+
+source "${CURRENT_DIR}/echo_error.sh"
 
 assert_die() {
   echo_error "$@"

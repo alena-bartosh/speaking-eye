@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-source ./colors.sh
+CURRENT_DIR="$(readlink -f "${BASH_SOURCE%/*}")"
+
+source "${CURRENT_DIR}/colors.sh"
 
 echo_error() {
   echo >&2 -e "${RED}"
