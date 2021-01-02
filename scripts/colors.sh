@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
-DARK_GREY='\033[1;30m'
-GREEN='\033[1;32m'
-RED='\033[0;31m'
+DARK_GREY=$(tput setab 8)
+GREEN=$(tput setaf 10)
+RED=$(tput setaf 1)
 
-NC='\033[0m'
+BOLD=$(tput bold)
+NC=$(tput sgr0)
 
 export DARK_GREY
 export GREEN
 export RED
 
+export BOLD
 export NC

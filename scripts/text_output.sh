@@ -14,6 +14,6 @@ robot_says() {
   assert_argument_should_be_set "${text}" "text"
 
   echo
-  echo -e "  ${GREEN}🤖 ${emoji} ${text}${NC}"
+  echo "  ${BOLD}${GREEN}🤖 ${emoji} ${text}${NC}"
   echo
 }
