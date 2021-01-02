@@ -1,5 +1,8 @@
+SHELL = /usr/bin/env bash
+
 VENV_DIR = .env
 ACTIVATE_VENV = . $(VENV_DIR)/bin/activate
+LOAD_TEXT_OUTPUT = . scripts/text_output.sh
 
 DARK_GREY = \033[1;30m
 GREEN = \033[1;32m
@@ -28,13 +31,9 @@ test:
 	@echo
 
 coverage:
-	@echo
-	@echo "  $(GREEN)🤖 💬 Show test coverage$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Show test coverage"
 	@$(ACTIVATE_VENV) && coverage report -m
-	@echo
-	@echo "  $(GREEN)🤖 👍 All good!$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 start:
 	@echo
