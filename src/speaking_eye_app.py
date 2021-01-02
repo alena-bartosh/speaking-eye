@@ -23,6 +23,7 @@ from application_info_matcher import ApplicationInfoMatcher
 from application_info_reader import ApplicationInfoReader
 from gtk_extras import get_window_name
 from localizator import Localizator
+from notification import Notification, NotificationEvent
 from timer import Timer
 from tray_icon import TrayIcon
 from value import Value
@@ -101,8 +102,8 @@ class SpeakingEyeApp(Gtk.Application):
         self.last_break_reminder_time: Optional[datetime] = None
         self.is_work_time = False
         self.is_work_time_update_time = self.start_time
-        self.last_overtime_notification = None
-        self.last_break_notification = None
+        self.last_overtime_notification: Optional[Notification] = None
+        self.last_break_notification: Optional[Notification] = None
         self.last_lock_screen_time: Optional[datetime] = None
         self.is_lock_screen_activated = False
         self.has_distracting_app_overtime_notification_shown = False
@@ -376,40 +377,39 @@ class SpeakingEyeApp(Gtk.Application):
 
         return menu
 
-    def on_overtime_notification_closed(self, notification: Notify.Notification) -> None:
+    def on_overtime_notification_closed(self) -> None:
         self.is_overtime_notification_allowed_to_show = True
 
-    def on_finish_work_action_clicked(self, notification: Notify.Notification, action_id: str, arg: Any) -> None:
+    def on_finish_work_action_clicked(self) -> None:
         self.set_work_time_state(False)
 
-    def on_take_break_clicked(self, notification: Notify.Notification, action_id: str, arg: Any) -> None:
+    def on_take_break_clicked(self) -> None:
         self.__dbus_lock_screen()
 
-    def new_notification(self, msg: str) -> Notify.Notification:
-        return Notify.Notification.new('Speaking Eye', msg, self.active_icon)
+    def new_notification(self,
+                         msg: str,
+                         urgency: Optional[Notify.Urgency] = None,
+                         listen_closed_event: bool = False) -> Notification:
+        # TODO: replace with NotificationFactory (Factory Pattern)
+        return Notification('Speaking Eye', msg, self.active_icon, urgency, listen_closed_event)
 
     def show_overtime_notification(self) -> None:
         msg = self.localizator.get('notification.overtime.text', hours=self.user_work_time_hour_limit)
-        notification = self.new_notification(msg)
-        notification.connect('closed', self.on_overtime_notification_closed)
 
-        notification.add_action(
-            'finish_work',
-            self.localizator.get('notification.overtime.left_button'),
-            self.on_finish_work_action_clicked,
-            None
-        )
-        notification.add_action(
-            'remind_later',
-            self.localizator.get('notification.overtime.right_button'),
-            lambda *args: None,
-            None
-        )
+        notification = self.new_notification(msg, Notify.Urgency.CRITICAL, listen_closed_event=True)
 
-        notification.set_urgency(Notify.Urgency.CRITICAL)
+        notification.add_buttons((
+            self.localizator.get('notification.overtime.left_button'),  # finish_work
+            self.localizator.get('notification.overtime.right_button')  # remind_later
+        ))
+
+        notification.event.on(NotificationEvent.CLOSED.value, self.on_overtime_notification_closed)
+        notification.event.on(NotificationEvent.LEFT_BUTTON_CLICKED.value, self.on_finish_work_action_clicked)
+
         notification.show()
 
         self.last_overtime_notification = notification
+        # TODO: use last_overtime_notification.last_shown
         self.last_overtime_notification_time = datetime.now()
         self.is_overtime_notification_allowed_to_show = False
 
@@ -423,34 +423,27 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.new_notification(msg).show()
 
-    def __on_break_notification_closed(self, notification: Notify.Notification) -> None:
+    def __on_break_notification_closed(self) -> None:
         self.is_break_notification_allowed_to_show = True
 
     def show_break_notification(self) -> None:
         emoji = choice(BREAK_TIME_EMOJIS)
         msg = self.localizator.get('notification.break.text', emoji=emoji)
 
-        notification = self.new_notification(msg)
+        notification = self.new_notification(msg, Notify.Urgency.CRITICAL, listen_closed_event=True)
 
-        notification.connect('closed', self.__on_break_notification_closed)
+        notification.add_buttons((
+            self.localizator.get('notification.break.left_button'),  # take_break
+            self.localizator.get('notification.break.right_button')  # remind_later
+        ))
 
-        notification.add_action(
-            'take_break',
-            self.localizator.get('notification.break.left_button'),
-            self.on_take_break_clicked,
-            None
-        )
-        notification.add_action(
-            'remind_later',
-            self.localizator.get('notification.break.right_button'),
-            lambda *args: None,
-            None
-        )
+        notification.event.on(NotificationEvent.CLOSED.value, self.__on_break_notification_closed)
+        notification.event.on(NotificationEvent.LEFT_BUTTON_CLICKED.value, self.on_take_break_clicked)
 
-        notification.set_urgency(Notify.Urgency.CRITICAL)
         notification.show()
 
         self.last_break_notification = notification
+        # TODO: use last_break_notification.last_shown
         self.last_break_reminder_time = datetime.now()
         self.is_break_notification_allowed_to_show = False
 
