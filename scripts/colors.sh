@@ -4,7 +4,7 @@
 #       based on https://serverfault.com/a/524057
 export TERM=xterm-256color
 
-DARK_GREY=$(tput setab 8)
+DARK_GREY=$(tput setaf 8)
 GREEN=$(tput setaf 10)
 RED=$(tput setaf 1)
 

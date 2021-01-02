@@ -17,3 +17,12 @@ robot_says() {
   echo "  ${BOLD}${GREEN}🤖 ${emoji} ${text}${NC}"
   echo
 }
+
+print_list_item() {
+  local item=${1}
+  local comment=${2}
+
+  assert_argument_should_be_set "${item}" "item"
+
+  echo "      ${BOLD}${DARK_GREY}-${NC} ${item} ${DARK_GREY}${comment}${NC}"
+}
