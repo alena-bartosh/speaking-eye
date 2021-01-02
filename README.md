@@ -14,6 +14,14 @@
 - [x] time to take a break
 - [x] distracting apps if you spend a lot of time there
 
+### :globe_with_meridians: Speaks in
+
+- [x] english
+- [x] по-русски
+- [x] українською
+
+For other languages please feel free to make Pull Request :wink:
+
 ### Installation and use
 [Quick installation guide (video)](https://github.com/alena-bartosh/speaking-eye#quick-installation-guide)
 1. [Install system dependencies](https://github.com/alena-bartosh/speaking-eye#system-dependencies)
