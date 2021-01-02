@@ -22,9 +22,7 @@ jobs:
           python-version: 3.8
       - name: Install dependencies
         run: |
-          sudo apt install -y libgirepository1.0-dev
-          make install
-          pip install flake8
+          make install/ci
       - name: Type checking with mypy
         run: |
           make typecheck

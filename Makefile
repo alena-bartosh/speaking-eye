@@ -56,3 +56,10 @@ install/systemd:
 	@$(LOAD_TEXT_OUTPUT); print_list_item "systemctl --user start speaking-eye.service" "# run now"
 	@$(LOAD_TEXT_OUTPUT); print_list_item "reboot" "# will automatically run after reboot"
 	@echo
+
+install/ci:
+	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Prepare system dependencies for CI"
+	@sudo apt install -y libgirepository1.0-dev
+	make install
+	@pip install flake8
+	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Done!"
