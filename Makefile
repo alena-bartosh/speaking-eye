@@ -9,9 +9,7 @@ GREEN = \033[1;32m
 NC = \033[0m
 
 default:
-	@echo
-	@echo "  $(GREEN)🤖 💬 Supported commands$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Supported commands"
 	@echo "      $(DARK_GREY)-$(NC) make test"
 	@echo "      $(DARK_GREY)-$(NC) make coverage"
 	@echo "      $(DARK_GREY)-$(NC) make start"
@@ -22,13 +20,9 @@ default:
 	@echo
 
 test:
-	@echo
-	@echo "  $(GREEN)🤖 💬 Run unit tests$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Run unit tests"
 	@$(ACTIVATE_VENV) && PYTHONPATH=src coverage run --source=./src -m unittest discover ./tests
-	@echo
-	@echo "  $(GREEN)🤖 👍 All good!$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 coverage:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Show test coverage"
@@ -36,33 +30,21 @@ coverage:
 	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 start:
-	@echo
-	@echo "  $(GREEN)🤖 💬 One-time start$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "One-time start"
 	@$(ACTIVATE_VENV) && python3 ./src/speaking_eye.py $(SE_ARGS)
 
 typecheck:
-	@echo
-	@echo "  $(GREEN)🤖 💬 Type checking with mypy$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Type checking with mypy"
 	@$(ACTIVATE_VENV) && mypy --show-error-codes --warn-unused-ignores ./src/speaking_eye.py
-	@echo
-	@echo "  $(GREEN)🤖 👍 All good!$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 lint:
-	@echo
-	@echo "  $(GREEN)🤖 💬 Lint with flake8$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Lint with flake8"
 	@$(ACTIVATE_VENV) && flake8 . --show-source --statistics
-	@echo
-	@echo "  $(GREEN)🤖 👍 All good!$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 env/create:
-	@echo
-	@echo "  $(GREEN)🤖 💬 Setup virtual env & install requirements$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Setup virtual env & install requirements"
 	@test -d $(VENV_DIR) || python3 -m venv $(VENV_DIR)
 	@$(ACTIVATE_VENV) && pip install --upgrade pip && pip install -r requirements.txt
 	@echo
@@ -73,9 +55,7 @@ env/create:
 install: env/create
 
 install/systemd:
-	@echo
-	@echo "  $(GREEN)🤖 💬 Create systemd user unit & reload systemd$(NC)"
-	@echo
+	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Create systemd user unit & reload systemd"
 	@./scripts/install_systemd.sh
 	@echo
 	@echo "  $(GREEN)🤖 💬 Done! Choose a next step for Speaking Eye auto start:$(NC)"
