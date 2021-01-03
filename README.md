@@ -129,21 +129,9 @@ Speaking Eye will automatically turn on after system startup
 make install/systemd
 ```
 
-### Run unittests
+### Run type checking & linter & unittests
 ```sh
-make test covarage
-```
-
-### Run type checking
-
-```sh
-make typecheck
-```
-
-### Run linter
-
-```sh
-make lint
+make checks
 ```
 
 ### Quick installation guide
