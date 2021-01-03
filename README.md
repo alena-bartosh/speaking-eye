@@ -11,10 +11,15 @@
 
 ### :postal_horn: Speaking about
 
-- [x] your activity on the computer
-- [x] overtime
-- [x] time to take a break
-- [x] distracting apps if you spend a lot of time there
+- [x] your activity on the computer  
+  <img src="doc/notification_examples/start_en.png" width="450">
+  <img src="doc/notification_examples/finish_en.png" width="450">
+- [x] overtime  
+  <img src="doc/notification_examples/overtime_en.png" width="450">
+- [x] time to take a break  
+  <img src="doc/notification_examples/break_en.png" width="450">
+- [x] distracting apps if you spend a lot of time there  
+  <img src="doc/notification_examples/distracting_en.png" width="450">
 
 ### :globe_with_meridians: Speaks in
 
