@@ -99,7 +99,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.event.on(ApplicationEvent.DISTRACTING_APP_OVERTIME.value, self.show_distracting_app_overtime_notification)
 
         self.start_time = datetime.now()
-        self.last_break_reminder_time: Optional[datetime] = None
         self.is_work_time = False
         self.is_work_time_update_time = self.start_time
         self.last_overtime_notification: Optional[Notification] = None
@@ -355,7 +354,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         if self.is_work_time:
             self.last_lock_screen_time = now
-            self.last_break_reminder_time = now
+            self.last_break_notification = None
             self.last_overtime_notification = None
 
     def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
@@ -440,8 +439,6 @@ class SpeakingEyeApp(Gtk.Application):
         notification.show()
 
         self.last_break_notification = notification
-        # TODO: use last_break_notification.last_shown
-        self.last_break_reminder_time = datetime.now()
         self.is_break_notification_allowed_to_show = False
 
     def on_new_day_started(self) -> None:
@@ -511,7 +508,10 @@ class SpeakingEyeApp(Gtk.Application):
         if (now - last_break_time).total_seconds() < self.user_breaks_interval_hours * 60 * 60:
             return False
 
-        last_break_reminder_time = self.last_break_reminder_time if self.last_break_reminder_time else start_work_time
+        last_break_reminder_time = Value.get_or_default(
+            lambda: self.last_break_notification.last_shown,
+            start_work_time
+        )
 
         if (now - last_break_reminder_time).total_seconds() < 15 * 60:
             return False
