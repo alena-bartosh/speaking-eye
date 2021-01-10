@@ -107,7 +107,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.last_lock_screen_time: Optional[datetime] = None
         self.is_lock_screen_activated = False
         self.has_distracting_app_overtime_notification_shown = False
-        self.last_overtime_notification_time: Optional[datetime] = None
         self.is_overtime_notification_allowed_to_show = True
         self.is_break_notification_allowed_to_show = True
 
@@ -357,7 +356,7 @@ class SpeakingEyeApp(Gtk.Application):
         if self.is_work_time:
             self.last_lock_screen_time = now
             self.last_break_reminder_time = now
-            self.last_overtime_notification_time = None
+            self.last_overtime_notification = None
 
     def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
         self.set_work_time_state(not self.is_work_time)
@@ -409,8 +408,6 @@ class SpeakingEyeApp(Gtk.Application):
         notification.show()
 
         self.last_overtime_notification = notification
-        # TODO: use last_overtime_notification.last_shown
-        self.last_overtime_notification_time = datetime.now()
         self.is_overtime_notification_allowed_to_show = False
 
     def show_distracting_app_overtime_notification(self, title: str, total_time: timedelta) -> None:
@@ -477,13 +474,16 @@ class SpeakingEyeApp(Gtk.Application):
         if not is_overtime_started:
             return False
 
-        if self.last_overtime_notification_time is None:
+        if self.last_overtime_notification is None:
+            return True
+
+        if self.last_overtime_notification.last_shown is None:
             return True
 
         if not self.is_overtime_notification_allowed_to_show:
             return False
 
-        seconds_from_last_notification = (now - self.last_overtime_notification_time).total_seconds()
+        seconds_from_last_notification = (now - self.last_overtime_notification.last_shown).total_seconds()
         interval_seconds = 15 * 60
 
         return seconds_from_last_notification >= interval_seconds
