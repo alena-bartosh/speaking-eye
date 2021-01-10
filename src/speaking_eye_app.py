@@ -509,7 +509,7 @@ class SpeakingEyeApp(Gtk.Application):
             return False
 
         last_break_reminder_time = Value.get_or_default(
-            lambda: self.last_break_notification.last_shown,
+            lambda: self.last_break_notification.last_shown,  # type: ignore[union-attr]
             start_work_time
         )
 
