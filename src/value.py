@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Optional
+from typing import Generic, TypeVar, Optional, Callable
 
 # declare type variable
 T = TypeVar('T')
@@ -12,3 +12,17 @@ class Value(Generic[T]):
             raise ValueError(f'Value [{name}] is None!')
 
         return value
+
+    @staticmethod
+    def get_or_default(value_getter: Callable[[], Optional[T]], default: T) -> T:
+        """
+        Return value from value_getter if all attributes exist and set.
+        Return default value otherwise
+        """
+        try:
+            value = value_getter()
+
+            return value if value is not None else default
+
+        except (AttributeError, NameError):
+            return default
