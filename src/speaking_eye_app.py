@@ -19,8 +19,6 @@ from activity_stat import ActivityStat
 from activity_stat_holder import ActivityStatHolder
 from activity_writer import ActivityWriter
 from application_info_matcher import ApplicationInfoMatcher
-from application_info_reader import ApplicationInfoReader
-from config_reader import ConfigReader
 from gtk_extras import get_window_name
 from localizator import Localizator
 from notification import Notification, NotificationEvent
@@ -59,7 +57,12 @@ class ApplicationEvent(Enum):
 
 class SpeakingEyeApp(Gtk.Application):
 
-    def __init__(self, app_id: str, config: Dict, logger: logging.Logger) -> None:
+    def __init__(self,
+                 app_id: str,
+                 config: Dict,
+                 logger: logging.Logger,
+                 application_info_matcher: ApplicationInfoMatcher,
+                 activity_reader: ActivityReader) -> None:
         super().__init__()
         self.logger = logger
 
@@ -110,19 +113,11 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.writer = ActivityWriter(OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
 
-        app_info_reader = ApplicationInfoReader()
-        config_reader = ConfigReader(app_info_reader, config)
+        self.app_info_matcher = application_info_matcher
+        self.holder = ActivityStatHolder(activity_reader.read(self.get_tsv_file_path()))
 
-        self.detailed_app_infos = config_reader.try_read_application_info_list(ConfigReader.ConfigKey.DETAILED_NODE)
-        self.distracting_app_infos = config_reader.try_read_application_info_list(
-            ConfigReader.ConfigKey.DISTRACTING_NODE)
-        self.app_info_matcher = ApplicationInfoMatcher(self.detailed_app_infos, self.distracting_app_infos)
-
-        self.reader = ActivityReader(logger, self.app_info_matcher)
-        self.holder = ActivityStatHolder(self.reader.read(self.get_tsv_file_path()))
-
-        self.holder.initialize_stats(self.detailed_app_infos)
-        self.holder.initialize_stats(self.distracting_app_infos)
+        self.holder.initialize_stats(self.app_info_matcher.detailed_app_infos)
+        self.holder.initialize_stats(self.app_info_matcher.distracting_app_infos)
 
         self.current_activity: Optional[Activity] = None
 

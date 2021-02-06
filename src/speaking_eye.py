@@ -2,6 +2,11 @@ __author__ = 'alena-bartosh'
 
 import gi
 
+from activity_reader import ActivityReader
+from application_info_matcher import ApplicationInfoMatcher
+from application_info_reader import ApplicationInfoReader
+from config_reader import ConfigReader
+
 gi.require_version('Wnck', '3.0')
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
@@ -68,7 +73,15 @@ def main():
         logger.error(f'Config [{args.config}] is empty')
         app_exit(logger, error_config_msg)
 
-    app = SpeakingEyeApp(APP_ID, config, logger)
+    application_info_reader = ApplicationInfoReader()
+    config_reader = ConfigReader(application_info_reader, config)
+    detailed_app_infos = config_reader.try_read_application_info_list(ConfigReader.ConfigKey.DETAILED_NODE)
+    distracting_app_infos = config_reader.try_read_application_info_list(
+        ConfigReader.ConfigKey.DISTRACTING_NODE)
+    application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
+    activity_reader = ActivityReader(logger, application_info_matcher)
+
+    app = SpeakingEyeApp(APP_ID, config, logger, application_info_matcher, activity_reader)
     app.run()
     app.start_main_loop()
 
