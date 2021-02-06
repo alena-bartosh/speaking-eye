@@ -18,9 +18,9 @@ from activity_reader import ActivityReader
 from activity_stat import ActivityStat
 from activity_stat_holder import ActivityStatHolder
 from activity_writer import ActivityWriter
-from application_info import ApplicationInfo
 from application_info_matcher import ApplicationInfoMatcher
 from application_info_reader import ApplicationInfoReader
+from config_reader import ConfigReader
 from gtk_extras import get_window_name
 from localizator import Localizator
 from notification import Notification, NotificationEvent
@@ -51,11 +51,6 @@ class IconState(Enum):
 class SpecialWmClass(Enum):
     DESKTOP = 'Desktop'
     LOCK_SCREEN = 'LockScreen'
-
-
-class ConfigKey(Enum):
-    DETAILED_NODE = 'detailed'
-    DISTRACTING_NODE = 'distracting'
 
 
 class ApplicationEvent(Enum):
@@ -116,8 +111,11 @@ class SpeakingEyeApp(Gtk.Application):
         self.writer = ActivityWriter(OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
 
         app_info_reader = ApplicationInfoReader()
-        self.detailed_app_infos = self.__read_application_list(app_info_reader, config, ConfigKey.DETAILED_NODE)
-        self.distracting_app_infos = self.__read_application_list(app_info_reader, config, ConfigKey.DISTRACTING_NODE)
+        config_reader = ConfigReader(app_info_reader, config)
+
+        self.detailed_app_infos = config_reader.try_read_application_info_list(ConfigReader.ConfigKey.DETAILED_NODE)
+        self.distracting_app_infos = config_reader.try_read_application_info_list(
+            ConfigReader.ConfigKey.DISTRACTING_NODE)
         self.app_info_matcher = ApplicationInfoMatcher(self.detailed_app_infos, self.distracting_app_infos)
 
         self.reader = ActivityReader(logger, self.app_info_matcher)
@@ -214,19 +212,6 @@ class SpeakingEyeApp(Gtk.Application):
         for bus_name in self.screen_saver_bus_names:
             self.connection.signal_subscribe(None, bus_name, 'ActiveChanged', None, None,
                                              Gio.DBusSignalFlags.NONE, self.__on_screen_saver_active_changed)
-
-    def __read_application_list(self, reader: ApplicationInfoReader,
-                                config: Dict, config_key: ConfigKey) -> List[ApplicationInfo]:
-        apps_list_node = f'apps.{config_key.value}'
-
-        app_list = get(config, apps_list_node)
-
-        if app_list is None:
-            raise RuntimeError(f'Path [{apps_list_node}] should be set in config!')
-
-        is_distracting = config_key == ConfigKey.DISTRACTING_NODE
-
-        return reader.try_read(app_list, is_distracting)
 
     def do_activate(self) -> None:
         signal.signal(signal.SIGTERM, self.handle_sigterm)
