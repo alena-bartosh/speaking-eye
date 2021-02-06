@@ -19,6 +19,7 @@ import logging      # noqa: E402
 import os           # noqa: E402
 import sys          # noqa: E402
 import tempfile     # noqa: E402
+import threading    # noqa: E402
 import yaml         # noqa: E402
 
 from speaking_eye_app import SpeakingEyeApp  # noqa: E402
@@ -31,9 +32,14 @@ def app_exit(logger: logging.Logger, msg: str) -> None:
     sys.exit(1)
 
 
+def dash_server_main(logger: logging.Logger) -> None:
+    # TODO: start Dash server here
+    logger.info('Hello from the second thread!')
+
+
 def main():
     src_dir = os.path.dirname(os.path.abspath(__file__))
-    config_full_path = os.path.join(src_dir, '../config/config.yaml')
+    config_full_path = os.path.join(src_dir, '../config/config_example.yaml')
 
     parser = argparse.ArgumentParser(description=f'[{APP_ID}] Track & analyze your computer activity')
     parser.add_argument('--log-level', type=str, choices=['debug', 'info', 'warning', 'error'],
@@ -80,6 +86,10 @@ def main():
         ConfigReader.ConfigKey.DISTRACTING_NODE)
     application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
     activity_reader = ActivityReader(logger, application_info_matcher)
+
+    dash_server_thread = threading.Thread(target=dash_server_main, args=[logger], daemon=True)
+
+    dash_server_thread.run()
 
     app = SpeakingEyeApp(APP_ID, config, logger, application_info_matcher, activity_reader)
     app.run()
