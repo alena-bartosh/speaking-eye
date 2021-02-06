@@ -6,6 +6,7 @@ from activity_reader import ActivityReader
 from application_info_matcher import ApplicationInfoMatcher
 from application_info_reader import ApplicationInfoReader
 from config_reader import ConfigReader
+from dash_report_server import DashReportServer
 
 gi.require_version('Wnck', '3.0')
 gi.require_version('Gtk', '3.0')
@@ -32,9 +33,8 @@ def app_exit(logger: logging.Logger, msg: str) -> None:
     sys.exit(1)
 
 
-def dash_server_main(logger: logging.Logger) -> None:
-    # TODO: start Dash server here
-    logger.info('Hello from the second thread!')
+def dash_report_server_main() -> None:
+    DashReportServer().run()
 
 
 def main():
@@ -87,9 +87,8 @@ def main():
     application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
     activity_reader = ActivityReader(logger, application_info_matcher)
 
-    dash_server_thread = threading.Thread(target=dash_server_main, args=[logger], daemon=True)
-
-    dash_server_thread.run()
+    dash_server_thread = threading.Thread(target=dash_report_server_main, daemon=True)
+    dash_server_thread.start()
 
     app = SpeakingEyeApp(APP_ID, config, logger, application_info_matcher, activity_reader)
     app.run()
