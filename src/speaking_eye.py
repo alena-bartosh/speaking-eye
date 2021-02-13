@@ -33,8 +33,11 @@ def app_exit(logger: logging.Logger, msg: str) -> None:
     sys.exit(1)
 
 
-def dash_report_server_main() -> None:
-    DashReportServer().run()
+def dash_report_server_main(logger: logging.Logger) -> None:
+    try:
+        DashReportServer(logger=logger).run()
+    except Exception:
+        logger.exception(f'Could not start Report Server!')
 
 
 def main():
@@ -87,7 +90,9 @@ def main():
     application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
     activity_reader = ActivityReader(logger, application_info_matcher)
 
-    dash_server_thread = threading.Thread(target=dash_report_server_main, daemon=True)
+    dash_server_thread = threading.Thread(target=dash_report_server_main,
+                                          kwargs={'logger': logger},
+                                          daemon=True)
     dash_server_thread.start()
 
     app = SpeakingEyeApp(APP_ID, config, logger, application_info_matcher, activity_reader)
