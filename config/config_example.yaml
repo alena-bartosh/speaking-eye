@@ -27,6 +27,8 @@ apps:
         wm_name: Gnome-terminal|X-terminal-emulator
     - Slack:
         wm_name: Slack
+    - Spotify:
+        wm_name: Spotify
 
   distracting:
     - Telegram:
