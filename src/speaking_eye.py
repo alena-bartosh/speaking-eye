@@ -23,6 +23,8 @@ import tempfile     # noqa: E402
 import threading    # noqa: E402
 import yaml         # noqa: E402
 
+from typing import Dict  # noqa: E402
+
 from speaking_eye_app import SpeakingEyeApp  # noqa: E402
 
 APP_ID = 'speaking-eye'
@@ -33,11 +35,11 @@ def app_exit(logger: logging.Logger, msg: str) -> None:
     sys.exit(1)
 
 
-def dash_report_server_main(logger: logging.Logger) -> None:
+def dash_report_server_main(logger: logging.Logger, config: Dict) -> None:
     try:
-        DashReportServer(logger=logger).run()
+        DashReportServer(logger=logger, app_config=config).run()
     except Exception:
-        logger.exception(f'Could not start Report Server!')
+        logger.exception('Could not start Report Server!')
 
 
 def main():
@@ -91,7 +93,7 @@ def main():
     activity_reader = ActivityReader(logger, application_info_matcher)
 
     dash_server_thread = threading.Thread(target=dash_report_server_main,
-                                          kwargs={'logger': logger},
+                                          kwargs={'config': config, 'logger': logger},
                                           daemon=True)
     dash_server_thread.start()
 

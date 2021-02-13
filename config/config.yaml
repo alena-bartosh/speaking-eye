@@ -33,3 +33,7 @@ time_limits:
 #     - Viewing pictures:
 #         wm_name: Nautilus
 #         tab: dir-with-cute-corgi-dogs-photos
+
+# service with reports about your working days
+# will be run on http://localhost:{dash_report_server_port}/ after speaking-eye starting
+dash_report_server_port: 3838
