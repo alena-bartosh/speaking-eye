@@ -1,7 +1,8 @@
 import logging
-from datetime import date
+from datetime import date, datetime
 from enum import Enum
-from typing import Dict, Optional
+from pathlib import Path
+from typing import Dict, Optional, Tuple, List
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -10,7 +11,10 @@ from dash.dependencies import Input, Output
 from pydash import get
 
 from activity_reader import ActivityReader
+from activity_stat import ActivityStat
+from activity_stat_holder import ActivityStatHolder
 from application_info_matcher import ApplicationInfoMatcher
+from speaking_eye_app import OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK
 
 
 class ElementId(Enum):
@@ -53,12 +57,42 @@ class DashReportServer:
             html.Div(id=ElementId.REPORT_OUTPUT.value)
         ])
 
+    # TODO: extract this function
+    def __get_tsv_file_path(self, report_date: date) -> Path:
+        return OUTPUT_TSV_FILE_DIR / OUTPUT_TSV_FILE_MASK.format(date=report_date)
+
+    # TODO: type alias for List[Tuple[str, ActivityStat]]
+    def __get_report(self, report_date: date) -> List[Tuple[str, ActivityStat]]:
+        activities = self.activity_reader.read(self.__get_tsv_file_path(report_date))
+        holder = ActivityStatHolder(activities)
+
+        # TODO: to check: possibly it is not needed
+        holder.initialize_stats(self.application_info_matcher.detailed_app_infos)
+        holder.initialize_stats(self.application_info_matcher.distracting_app_infos)
+
+        return [item for item in holder.items()]
+
+    def __get_report_html(self, report: List[Tuple[str, ActivityStat]]) -> html.Div:
+        # TODO: Add plot or table view
+        report_items = [html.Div([html.Div(title), html.Div(f'{stat.work_time}')]) for (title, stat) in report]
+
+        return html.Div(report_items)
+
     def run(self) -> None:
         @self.app.callback(
             Output(ElementId.REPORT_OUTPUT.value, 'children'),
             Input(ElementId.DATE_PICKER.value, 'date'))
         def handle_date_picker_change(date_value: Optional[str]) -> Optional[str]:
-            # TODO: return report
-            return date_value
+            # TODO: localization
+
+            if date_value is None:
+                return None
+
+            # TODO: move FMT variable
+            report_date = datetime.strptime(date_value, '%Y-%m-%d').date()
+
+            report = self.__get_report(report_date)
+
+            return self.__get_report_html(report)
 
         self.app.run_server(port=self.port)
