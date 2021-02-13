@@ -35,9 +35,13 @@ def app_exit(logger: logging.Logger, msg: str) -> None:
     sys.exit(1)
 
 
-def dash_report_server_main(logger: logging.Logger, config: Dict) -> None:
+def dash_report_server_main(logger: logging.Logger,
+                            config: Dict,
+                            application_info_matcher: ApplicationInfoMatcher,
+                            activity_reader: ActivityReader) -> None:
     try:
-        DashReportServer(logger=logger, app_config=config).run()
+        server = DashReportServer(logger, config, application_info_matcher, activity_reader)
+        server.run()
     except Exception:
         logger.exception('Could not start Report Server!')
 
@@ -93,7 +97,12 @@ def main():
     activity_reader = ActivityReader(logger, application_info_matcher)
 
     dash_server_thread = threading.Thread(target=dash_report_server_main,
-                                          kwargs={'config': config, 'logger': logger},
+                                          kwargs={
+                                              'config': config,
+                                              'logger': logger,
+                                              'application_info_matcher': application_info_matcher,
+                                              'activity_reader': activity_reader,
+                                          },
                                           daemon=True)
     dash_server_thread.start()
 
