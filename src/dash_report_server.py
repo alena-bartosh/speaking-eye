@@ -1,14 +1,21 @@
 import logging
 from datetime import date
-from typing import Dict
+from enum import Enum
+from typing import Dict, Optional
 
 import dash_core_components as dcc
 import dash_html_components as html
 from dash import Dash
+from dash.dependencies import Input, Output
 from pydash import get
 
 from activity_reader import ActivityReader
 from application_info_matcher import ApplicationInfoMatcher
+
+
+class ElementId(Enum):
+    DATE_PICKER = 'date-picker'
+    REPORT_OUTPUT = 'report-output'
 
 
 class DashReportServer:
@@ -38,11 +45,20 @@ class DashReportServer:
         return html.Div([
             html.H1(children='Hello from Speaking Eye 👋'),
             dcc.DatePickerSingle(
+                id=ElementId.DATE_PICKER.value,
                 display_format='YYYY-MM-DD',
                 first_day_of_week=1,
                 date=date.today()
             ),
+            html.Div(id=ElementId.REPORT_OUTPUT.value)
         ])
 
     def run(self) -> None:
+        @self.app.callback(
+            Output(ElementId.REPORT_OUTPUT.value, 'children'),
+            Input(ElementId.DATE_PICKER.value, 'date'))
+        def handle_date_picker_change(date_value: Optional[str]) -> Optional[str]:
+            # TODO: return report
+            return date_value
+
         self.app.run_server(port=self.port)
