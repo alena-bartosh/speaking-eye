@@ -1,6 +1,8 @@
 import logging
+from datetime import date
 from typing import Dict
 
+import dash_core_components as dcc
 import dash_html_components as html
 from dash import Dash
 from pydash import get
@@ -31,7 +33,16 @@ class DashReportServer:
         self.app.layout = self.__get_layout()
 
     def __get_layout(self) -> html.Div:
-        return html.H1(children='Hello from Speaking Eye 👋')
+        # TODO: calculate min_date_allowed from dest files with raw data
+
+        return html.Div([
+            html.H1(children='Hello from Speaking Eye 👋'),
+            dcc.DatePickerSingle(
+                display_format='YYYY-MM-DD',
+                first_day_of_week=1,
+                date=date.today()
+            ),
+        ])
 
     def run(self) -> None:
         self.app.run_server(port=self.port)
