@@ -7,9 +7,9 @@ class DashReportServer:
         # TODO: use static file
         external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-        # TODO: change page name (currently it is "Dash") to "Speaking Eye Reports"
         # TODO: use our logger for Dash (read Flask) application
         self.app = Dash(__name__, external_stylesheets=external_stylesheets)
+        self.app.title = 'Speaking Eye Reports'
         self.app.layout = self.__get_layout()
 
     def __get_layout(self) -> html.Div:
