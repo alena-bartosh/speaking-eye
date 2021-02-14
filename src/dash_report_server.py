@@ -12,7 +12,6 @@ from pydash import get
 from activity_reader import ActivityReader
 from activity_stat import ActivityStat
 from activity_stat_holder import ActivityStatHolder
-from application_info_matcher import ApplicationInfoMatcher
 from files_provider import FilesProvider
 
 
@@ -25,7 +24,6 @@ class DashReportServer:
     def __init__(self,
                  logger: logging.Logger,
                  app_config: Dict,
-                 application_info_matcher: ApplicationInfoMatcher,
                  activity_reader: ActivityReader,
                  files_provider: FilesProvider) -> None:
         # TODO: use static file
@@ -38,7 +36,6 @@ class DashReportServer:
         self.app.title = 'Speaking Eye Reports'
         self.port = get(app_config, 'dash_report_server_port') or 3838
 
-        self.application_info_matcher = application_info_matcher
         self.activity_reader = activity_reader
         self.files_provider = files_provider
 
@@ -62,10 +59,6 @@ class DashReportServer:
     def __get_report(self, report_date: date) -> List[Tuple[str, ActivityStat]]:
         activities = self.activity_reader.read(self.files_provider.get_raw_data_file_path(report_date))
         holder = ActivityStatHolder(activities)
-
-        # TODO: to check: possibly it is not needed
-        holder.initialize_stats(self.application_info_matcher.detailed_app_infos)
-        holder.initialize_stats(self.application_info_matcher.distracting_app_infos)
 
         return [item for item in holder.items()]
 

@@ -38,11 +38,10 @@ def app_exit(logger: logging.Logger, msg: str) -> None:
 
 def dash_report_server_main(logger: logging.Logger,
                             config: Dict,
-                            application_info_matcher: ApplicationInfoMatcher,
                             activity_reader: ActivityReader,
                             files_provider: FilesProvider) -> None:
     try:
-        server = DashReportServer(logger, config, application_info_matcher, activity_reader, files_provider)
+        server = DashReportServer(logger, config, activity_reader, files_provider)
         server.run()
     except Exception:
         logger.exception('Could not start Report Server!')
@@ -106,7 +105,6 @@ def main():
                                           kwargs={
                                               'config': config,
                                               'logger': logger,
-                                              'application_info_matcher': application_info_matcher,
                                               'activity_reader': activity_reader,
                                               'files_provider': files_provider,
                                           },
