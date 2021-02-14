@@ -20,13 +20,13 @@ from application_info_reader import ApplicationInfoReader
 from config_reader import ConfigReader
 from dash_report_server import DashReportServer
 from files_provider import FilesProvider
-from speaking_eye_app import SpeakingEyeApp
 
 gi.require_version('Wnck', '3.0')
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
 
+from speaking_eye_app import SpeakingEyeApp  # noqa: E402
 
 APP_ID = 'speaking-eye'
 
