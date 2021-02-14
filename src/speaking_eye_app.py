@@ -114,7 +114,9 @@ class SpeakingEyeApp(Gtk.Application):
         self.writer = ActivityWriter(OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
 
         self.app_info_matcher = application_info_matcher
-        self.holder = ActivityStatHolder(activity_reader.read(self.get_tsv_file_path()))
+
+        today_raw_data_file_path = self.files_provider.get_raw_data_file_path(date.today())
+        self.holder = ActivityStatHolder(activity_reader.read(today_raw_data_file_path))
 
         self.holder.initialize_stats(self.app_info_matcher.detailed_app_infos)
         self.holder.initialize_stats(self.app_info_matcher.distracting_app_infos)
@@ -428,9 +430,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.new_notification(msg=open_new_file_msg).show()
 
         self.set_work_time_state(False)
-
-    def get_tsv_file_path(self) -> Path:
-        return OUTPUT_TSV_FILE_DIR / OUTPUT_TSV_FILE_MASK.format(date=date.today())
 
     def handle_sigterm(self, signal_number: int, frame: FrameType) -> None:
         self.stop()
