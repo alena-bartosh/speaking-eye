@@ -1,4 +1,3 @@
-from datetime import date
 from pathlib import Path
 from typing import cast, Optional, TextIO
 
@@ -8,6 +7,7 @@ from activity import Activity
 from activity_converter import ActivityConverter
 from activity_helper import ActivityHelper
 from activity_splitter import ActivitySplitter
+from files_provider import FilesProvider
 
 
 class ActivityWriter:
@@ -19,21 +19,11 @@ class ActivityWriter:
     FILE_MODE = 'a'
     NEW_DAY_EVENT = 'new-day-event'
 
-    def __init__(self, output_dir: Path, file_mask: str) -> None:
-        if not output_dir.is_dir():
-            raise ValueError(f'Path [{output_dir}] does not exist or it is not a dir!')
-
-        if '{date}' not in file_mask:
-            raise ValueError(f'file_mask [{file_mask}] should contain [date] string argument!')
-
-        self.__output_dir = output_dir
-        self.__file_mask = file_mask
+    def __init__(self, files_provider: FilesProvider) -> None:
+        self.__files_provider = files_provider
         self.__current_file: Optional[TextIO] = None
         self.__current_file_path: Optional[Path] = None
         self.event = BaseEventEmitter()
-
-    def __get_file(self, day: date) -> Path:
-        return self.__output_dir / self.__file_mask.format(date=day)
 
     def __open_file(self, file: Path) -> None:
         self.__current_file_path = file
@@ -53,7 +43,7 @@ class ActivityWriter:
         activities_with_days = ActivitySplitter.split_by_day(original_activity)
 
         for (day, activity) in activities_with_days:
-            file = self.__get_file(day)
+            file = self.__files_provider.get_raw_data_file_path(day)
 
             if self.__current_file_path == file:
                 self.__write_and_flush(activity)
