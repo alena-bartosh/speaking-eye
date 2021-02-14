@@ -18,6 +18,22 @@ class FilesProvider:
         self.__icon_dir = self.__app_root_dir / 'icon'
         self.__raw_data_dir = self.__app_root_dir / 'dest'
 
+        self.__check_dirs()
+
+    def __check_dirs(self) -> None:
+        dir_paths = [
+            self.__app_root_dir,
+            self.__i18n_dir,
+            self.__icon_dir,
+            self.__raw_data_dir,
+        ]
+
+        for dir_path in dir_paths:
+            if dir_path.is_dir():
+                continue
+
+            raise ValueError(f'Path [{dir_path}] does not exist or it is not a dir!')
+
     @property
     def i18n_dir(self) -> Path:
         return self.__i18n_dir
