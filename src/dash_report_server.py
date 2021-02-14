@@ -5,12 +5,14 @@ from typing import Dict, Optional
 
 import dash_core_components as dcc
 import dash_html_components as html
+import pandas as pd
+import plotly.express as px
 from dash import Dash
 from dash.dependencies import Input, Output
 from pydash import get
 
 from activity_reader import ActivityReader
-from activity_stat_holder import ActivityStatHolder, ActivityStatHolderItemsType
+from activity_stat_holder import ActivityStatHolder
 from files_provider import FilesProvider
 
 
@@ -54,17 +56,24 @@ class DashReportServer:
             html.Div(id=ElementId.REPORT_OUTPUT.value)
         ])
 
-    def __get_report(self, report_date: date) -> ActivityStatHolderItemsType:
+    def __get_report(self, report_date: date) -> pd.DataFrame:
         activities = self.activity_reader.read(self.files_provider.get_raw_data_file_path(report_date))
         holder = ActivityStatHolder(activities)
+        report_data = {title: stat.work_time for title, stat in holder.items()}
 
-        return holder.items()
+        report = pd.DataFrame().from_dict(report_data, orient='index').reset_index()
+        # TODO: use enum for column names
+        report.columns = ['title', 'work_time']
+        report['date'] = report_date
 
-    def __get_report_html(self, report: ActivityStatHolderItemsType) -> html.Div:
-        # TODO: Add plot or table view
-        report_items = [html.Div([html.Div(title), html.Div(f'{stat.work_time}')]) for (title, stat) in report]
+        return report
 
-        return html.Div(report_items)
+    def __get_report_html(self, report: pd.DataFrame) -> html.Div:
+        figure = px.pie(report, values='work_time', names='title', title='Cool plot')
+
+        return html.Div([
+            dcc.Graph(figure=figure)
+        ])
 
     def run(self) -> None:
         @self.app.callback(
