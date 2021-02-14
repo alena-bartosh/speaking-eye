@@ -1,7 +1,7 @@
 import logging
 from datetime import date, datetime
 from enum import Enum
-from typing import Dict, Optional, Tuple, List
+from typing import Dict, Optional
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -10,8 +10,7 @@ from dash.dependencies import Input, Output
 from pydash import get
 
 from activity_reader import ActivityReader
-from activity_stat import ActivityStat
-from activity_stat_holder import ActivityStatHolder
+from activity_stat_holder import ActivityStatHolder, ActivityStatHolderItemsType
 from files_provider import FilesProvider
 
 
@@ -55,14 +54,13 @@ class DashReportServer:
             html.Div(id=ElementId.REPORT_OUTPUT.value)
         ])
 
-    # TODO: type alias for List[Tuple[str, ActivityStat]]
-    def __get_report(self, report_date: date) -> List[Tuple[str, ActivityStat]]:
+    def __get_report(self, report_date: date) -> ActivityStatHolderItemsType:
         activities = self.activity_reader.read(self.files_provider.get_raw_data_file_path(report_date))
         holder = ActivityStatHolder(activities)
 
-        return [item for item in holder.items()]
+        return holder.items()
 
-    def __get_report_html(self, report: List[Tuple[str, ActivityStat]]) -> html.Div:
+    def __get_report_html(self, report: ActivityStatHolderItemsType) -> html.Div:
         # TODO: Add plot or table view
         report_items = [html.Div([html.Div(title), html.Div(f'{stat.work_time}')]) for (title, stat) in report]
 

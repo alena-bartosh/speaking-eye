@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import List
+from typing import List, ItemsView
 
 from activity import Activity
 from activity_helper import ActivityHelper
@@ -8,6 +8,7 @@ from application_info import ApplicationInfo
 
 KeyType = str
 ItemType = ActivityStat
+ActivityStatHolderItemsType = ItemsView[KeyType, ItemType]
 
 
 class ActivityStatHolder(dict):
@@ -55,3 +56,6 @@ class ActivityStatHolder(dict):
 
     def __contains__(self, app_name: KeyType) -> bool:  # type: ignore[override]
         return super().__contains__(app_name)
+
+    def items(self) -> ActivityStatHolderItemsType:
+        return super().items()
