@@ -1,7 +1,6 @@
 import logging
 from datetime import date, datetime
 from enum import Enum
-from pathlib import Path
 from typing import Dict, Optional, Tuple, List
 
 import dash_core_components as dcc
@@ -14,7 +13,7 @@ from activity_reader import ActivityReader
 from activity_stat import ActivityStat
 from activity_stat_holder import ActivityStatHolder
 from application_info_matcher import ApplicationInfoMatcher
-from speaking_eye_app import OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK
+from files_provider import FilesProvider
 
 
 class ElementId(Enum):
@@ -27,7 +26,8 @@ class DashReportServer:
                  logger: logging.Logger,
                  app_config: Dict,
                  application_info_matcher: ApplicationInfoMatcher,
-                 activity_reader: ActivityReader) -> None:
+                 activity_reader: ActivityReader,
+                 files_provider: FilesProvider) -> None:
         # TODO: use static file
         external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
         self.app = Dash(__name__, external_stylesheets=external_stylesheets)
@@ -40,6 +40,7 @@ class DashReportServer:
 
         self.application_info_matcher = application_info_matcher
         self.activity_reader = activity_reader
+        self.files_provider = files_provider
 
         self.app.layout = self.__get_layout()
 
@@ -57,13 +58,9 @@ class DashReportServer:
             html.Div(id=ElementId.REPORT_OUTPUT.value)
         ])
 
-    # TODO: extract this function
-    def __get_tsv_file_path(self, report_date: date) -> Path:
-        return OUTPUT_TSV_FILE_DIR / OUTPUT_TSV_FILE_MASK.format(date=report_date)
-
     # TODO: type alias for List[Tuple[str, ActivityStat]]
     def __get_report(self, report_date: date) -> List[Tuple[str, ActivityStat]]:
-        activities = self.activity_reader.read(self.__get_tsv_file_path(report_date))
+        activities = self.activity_reader.read(self.files_provider.get_raw_data_file_path(report_date))
         holder = ActivityStatHolder(activities)
 
         # TODO: to check: possibly it is not needed

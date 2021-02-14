@@ -39,9 +39,10 @@ def app_exit(logger: logging.Logger, msg: str) -> None:
 def dash_report_server_main(logger: logging.Logger,
                             config: Dict,
                             application_info_matcher: ApplicationInfoMatcher,
-                            activity_reader: ActivityReader) -> None:
+                            activity_reader: ActivityReader,
+                            files_provider: FilesProvider) -> None:
     try:
-        server = DashReportServer(logger, config, application_info_matcher, activity_reader)
+        server = DashReportServer(logger, config, application_info_matcher, activity_reader, files_provider)
         server.run()
     except Exception:
         logger.exception('Could not start Report Server!')
@@ -97,19 +98,20 @@ def main():
     application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
     activity_reader = ActivityReader(logger, application_info_matcher)
 
+    current_file_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+    app_root_dir = current_file_dir / '..'
+    files_provider = FilesProvider(app_root_dir)
+
     dash_server_thread = threading.Thread(target=dash_report_server_main,
                                           kwargs={
                                               'config': config,
                                               'logger': logger,
                                               'application_info_matcher': application_info_matcher,
                                               'activity_reader': activity_reader,
+                                              'files_provider': files_provider,
                                           },
                                           daemon=True)
     dash_server_thread.start()
-
-    current_file_dir = Path(os.path.dirname(os.path.abspath(__file__)))
-    app_root_dir = current_file_dir / '..'
-    files_provider = FilesProvider(app_root_dir)
 
     app = SpeakingEyeApp(APP_ID, config, logger, application_info_matcher, activity_reader, files_provider)
     app.run()

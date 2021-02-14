@@ -1,5 +1,4 @@
 import logging
-import os
 import re
 import signal
 from datetime import date, datetime, timedelta
@@ -28,11 +27,6 @@ from timer import Timer
 from tray_icon import TrayIcon
 from value import Value
 from x_helpers import get_wm_class
-
-# TODO: remove after migration
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_TSV_FILE_DIR = Path(SRC_DIR) / '..' / 'dest'
-OUTPUT_TSV_FILE_MASK = '{date}_speaking_eye_raw_data.tsv'
 
 BREAK_TIME_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
                      '🙇', '🙋', '🚣', '🤸', '🧟', '🐙',
