@@ -19,6 +19,7 @@ from activity_stat import ActivityStat
 from activity_stat_holder import ActivityStatHolder
 from activity_writer import ActivityWriter
 from application_info_matcher import ApplicationInfoMatcher
+from files_provider import FilesProvider
 from gtk_extras import get_window_name
 from icon_state import IconState
 from localizator import Localizator
@@ -58,7 +59,8 @@ class SpeakingEyeApp(Gtk.Application):
                  config: Dict,
                  logger: logging.Logger,
                  application_info_matcher: ApplicationInfoMatcher,
-                 activity_reader: ActivityReader) -> None:
+                 activity_reader: ActivityReader,
+                 files_provider: FilesProvider) -> None:
         super().__init__()
         self.logger = logger
 
@@ -107,6 +109,9 @@ class SpeakingEyeApp(Gtk.Application):
         self.user_breaks_interval_hours = get(config, 'time_limits.breaks_interval_hours') or 3
         self.user_distracting_apps_mins = get(config, 'time_limits.distracting_apps_mins') or 15
 
+        self.files_provider = files_provider
+
+        # TODO: use self.files_provider in ActivityWriter
         self.writer = ActivityWriter(OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
 
         self.app_info_matcher = application_info_matcher

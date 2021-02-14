@@ -1,5 +1,7 @@
 __author__ = 'alena-bartosh'
 
+from pathlib import Path
+
 import gi
 
 from activity_reader import ActivityReader
@@ -7,6 +9,7 @@ from application_info_matcher import ApplicationInfoMatcher
 from application_info_reader import ApplicationInfoReader
 from config_reader import ConfigReader
 from dash_report_server import DashReportServer
+from files_provider import FilesProvider
 
 gi.require_version('Wnck', '3.0')
 gi.require_version('Gtk', '3.0')
@@ -106,7 +109,11 @@ def main():
                                           daemon=True)
     dash_server_thread.start()
 
-    app = SpeakingEyeApp(APP_ID, config, logger, application_info_matcher, activity_reader)
+    current_file_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+    app_root_dir = current_file_dir / '..'
+    files_provider = FilesProvider(app_root_dir)
+
+    app = SpeakingEyeApp(APP_ID, config, logger, application_info_matcher, activity_reader, files_provider)
     app.run()
     app.start_main_loop()
 
