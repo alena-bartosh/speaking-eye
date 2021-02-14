@@ -85,10 +85,10 @@ class DashReportServer:
         def handle_date_picker_change(date_value: Optional[str]) -> Optional[str]:
             # TODO: localization
 
+            # NOTE: If could not parse date or field is empty then date_value will be None
             if date_value is None:
                 return None
 
-            # TODO: move FMT variable
             report_date = datetime.strptime(date_value, '%Y-%m-%d').date()
 
             report = self.__get_report(report_date)
