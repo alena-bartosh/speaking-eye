@@ -1,8 +1,18 @@
 __author__ = 'alena-bartosh'
 
+import argparse
+import fcntl
+import logging
+import os
+import sys
+import tempfile
+import threading
 from pathlib import Path
+from typing import Dict
 
+import coloredlogs
 import gi
+import yaml
 
 from activity_reader import ActivityReader
 from application_info_matcher import ApplicationInfoMatcher
@@ -10,25 +20,13 @@ from application_info_reader import ApplicationInfoReader
 from config_reader import ConfigReader
 from dash_report_server import DashReportServer
 from files_provider import FilesProvider
+from speaking_eye_app import SpeakingEyeApp
 
 gi.require_version('Wnck', '3.0')
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
 
-import argparse     # noqa: E402
-import coloredlogs  # noqa: E402
-import fcntl        # noqa: E402
-import logging      # noqa: E402
-import os           # noqa: E402
-import sys          # noqa: E402
-import tempfile     # noqa: E402
-import threading    # noqa: E402
-import yaml         # noqa: E402
-
-from typing import Dict  # noqa: E402
-
-from speaking_eye_app import SpeakingEyeApp  # noqa: E402
 
 APP_ID = 'speaking-eye'
 
