@@ -534,13 +534,13 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.has_distracting_app_overtime_notification_shown = True
 
-    def get_icon(self, icon_state: IconState) -> str:
+    def get_icon(self, icon_state: IconState) -> Path:
         if not self.theme:
             raise Exception('self.theme should be set!')
 
-        full_path = os.path.join(SRC_DIR, f'../icon/{self.theme}/{icon_state.value}.png')
+        path = self.files_provider.get_icon_file_path(self.theme, icon_state)
 
-        if not os.path.exists(full_path):
-            self.logger.warning(f'Icon [{full_path}] not found')
+        if not path.exists():
+            self.logger.warning(f'Icon [{path}] not found')
 
-        return full_path
+        return path

@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import auto, Enum
+from pathlib import Path
 from typing import Optional, Any, Tuple
 
 from gi.repository import Notify
@@ -32,11 +33,10 @@ class Notification:
     def __init__(self,
                  title: str,
                  message: str,
-                 # TODO: use Path instead of str
-                 icon_path: str,
+                 icon: Path,
                  urgency: Optional[Notify.Urgency] = None,
                  listen_closed_event: bool = False) -> None:
-        self.__raw_notification = Notify.Notification.new(title, message, icon_path)
+        self.__raw_notification = Notify.Notification.new(title, message, str(icon))
 
         if urgency is not None:
             self.__raw_notification.set_urgency(urgency)
