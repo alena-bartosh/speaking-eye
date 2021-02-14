@@ -20,6 +20,7 @@ from activity_stat_holder import ActivityStatHolder
 from activity_writer import ActivityWriter
 from application_info_matcher import ApplicationInfoMatcher
 from gtk_extras import get_window_name
+from icon_state import IconState
 from localizator import Localizator
 from notification import Notification, NotificationEvent
 from timer import Timer
@@ -39,11 +40,6 @@ BREAK_TIME_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
 DISTRACTING_NOTIFICATION_EMOJIS = ['🧐', '🌓', '🥤', '💼', '🐘', '🥴',
                                    '🤖', '💭', '🧠', '🤵', '🤹', '🏤',
                                    '🦊', '🦁', '🎡', '🐰', '🍩', '🐞']
-
-
-class IconState(Enum):
-    ACTIVE = 'active'
-    DISABLED = 'disabled'
 
 
 class SpecialWmClass(Enum):
