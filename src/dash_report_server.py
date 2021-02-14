@@ -65,11 +65,21 @@ class DashReportServer:
         # TODO: use enum for column names
         report.columns = ['title', 'work_time']
         report['date'] = report_date
+        report['work_time_str'] = report['work_time'].astype(str)
 
         return report
 
     def __get_report_html(self, report: pd.DataFrame) -> html.Div:
-        figure = px.pie(report, values='work_time', names='title', title='Cool plot')
+        # TODO: add text labels to pie -- find "text" property for px.pie like in go.Pie
+        #       https://plotly.com/python/hover-text-and-formatting/
+
+        figure = px.pie(report,
+                        values='work_time',
+                        names='title',
+                        # TODO: rename
+                        title='Cool plot',
+                        # TODO: format "work_time_str" column
+                        hover_data=['work_time_str'])
 
         return html.Div([
             dcc.Graph(figure=figure)
