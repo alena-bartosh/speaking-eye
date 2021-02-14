@@ -30,7 +30,6 @@ from value import Value
 from x_helpers import get_wm_class
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-I18N_DIR = Path(SRC_DIR) / '..' / 'i18n'
 OUTPUT_TSV_FILE_DIR = Path(SRC_DIR) / '..' / 'dest'
 OUTPUT_TSV_FILE_MASK = '{date}_speaking_eye_raw_data.tsv'
 
@@ -67,8 +66,10 @@ class SpeakingEyeApp(Gtk.Application):
         self.connection = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         self.screen_saver_bus_names = self.__dbus_get_screen_saver_bus_names()
 
+        self.files_provider = files_provider
+
         language = get(config, 'language') or 'en'
-        self.localizator = Localizator(I18N_DIR, language)
+        self.localizator = Localizator(self.files_provider.i18n_dir, language)
 
         self.theme = get(config, 'theme') or 'dark'
         self.active_icon = self.get_icon(IconState.ACTIVE)
@@ -108,8 +109,6 @@ class SpeakingEyeApp(Gtk.Application):
         self.user_work_time_hour_limit = get(config, 'time_limits.work_time_hours') or 9
         self.user_breaks_interval_hours = get(config, 'time_limits.breaks_interval_hours') or 3
         self.user_distracting_apps_mins = get(config, 'time_limits.distracting_apps_mins') or 15
-
-        self.files_provider = files_provider
 
         # TODO: use self.files_provider in ActivityWriter
         self.writer = ActivityWriter(OUTPUT_TSV_FILE_DIR, OUTPUT_TSV_FILE_MASK)
