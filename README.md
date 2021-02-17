@@ -145,4 +145,3 @@ make checks
 ### Special thanks
 
 * [@s373r](https://github.com/s373r) for mentoring and your love for me and typing
-* [@tarashypka](https://github.com/tarashypka) for becoming the first SE user among friends
