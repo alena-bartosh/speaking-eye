@@ -18,6 +18,7 @@ from activity_stat import ActivityStat
 from activity_stat_holder import ActivityStatHolder
 from activity_writer import ActivityWriter
 from application_info_matcher import ApplicationInfoMatcher
+from config_reader import ConfigReader
 from files_provider import FilesProvider
 from gtk_extras import get_window_name
 from icon_state import IconState
@@ -50,7 +51,9 @@ class SpeakingEyeApp(Gtk.Application):
 
     def __init__(self,
                  app_id: str,
+                 # TODO: replace with config_reader
                  config: Dict,
+                 config_reader: ConfigReader,
                  logger: logging.Logger,
                  application_info_matcher: ApplicationInfoMatcher,
                  activity_reader: ActivityReader,
@@ -101,7 +104,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_overtime_notification_allowed_to_show = True
         self.is_break_notification_allowed_to_show = True
 
-        self.user_work_time_hour_limit = get(config, 'time_limits.work_time_hours') or 9
+        self.user_work_time_hour_limit = config_reader.get_work_time_limit()
         self.user_breaks_interval_hours = get(config, 'time_limits.breaks_interval_hours') or 3
         self.user_distracting_apps_mins = get(config, 'time_limits.distracting_apps_mins') or 15
 

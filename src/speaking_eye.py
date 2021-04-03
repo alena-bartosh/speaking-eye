@@ -111,7 +111,13 @@ def main():
                                           daemon=True)
     dash_server_thread.start()
 
-    app = SpeakingEyeApp(APP_ID, config, logger, application_info_matcher, activity_reader, files_provider)
+    app = SpeakingEyeApp(APP_ID,
+                         config,
+                         config_reader,
+                         logger,
+                         application_info_matcher,
+                         activity_reader,
+                         files_provider)
     app.run()
     app.start_main_loop()
 

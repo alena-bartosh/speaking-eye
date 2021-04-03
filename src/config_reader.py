@@ -30,3 +30,8 @@ class ConfigReader:
         is_distracting = config_key == self.ConfigKey.DISTRACTING_NODE
 
         return self.application_info_reader.try_read(app_list, is_distracting)
+
+    def get_work_time_limit(self) -> int:
+        """Read work time limit from app config or return default value"""
+        # TODO: Add enum for time_limits config keys
+        return get(self.config, 'time_limits.work_time_hours') or 9
