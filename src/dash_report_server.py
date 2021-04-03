@@ -46,7 +46,6 @@ class DashReportServer:
         # TODO: calculate min_date_allowed from dest files with raw data
 
         return html.Div([
-            html.H1(children='Hello from Speaking Eye 👋'),
             dcc.DatePickerSingle(
                 id=ElementId.DATE_PICKER.value,
                 display_format='YYYY-MM-DD',
