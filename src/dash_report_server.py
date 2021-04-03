@@ -103,6 +103,10 @@ class DashReportServer:
         formatted_work_time = format_time(activity_stat_holder.total_work_time - break_time)
         formatted_total_work_time = format_time(activity_stat_holder.total_work_time)
         formatted_work_time_limit = format_time(timedelta(hours=self.work_time_limit))
+        distracting_app_infos = self.activity_reader.matcher.distracting_app_infos
+        distracting_app_titles = [app_info.title for app_info in distracting_app_infos]
+        distracting_time = activity_stat_holder.get_group_work_time(distracting_app_titles)
+        formatted_distracting_time = format_time(distracting_time)
 
         return html.Div([
             html.Div(f'Expected work time: {formatted_work_time_limit}'),
@@ -110,7 +114,7 @@ class DashReportServer:
             # TODO: show as a html hint
             html.Div(f'Total work time = real work time + breaks + distracting activities'),
             html.Div(
-                f'Total work time: {formatted_work_time} + {formatted_break_time} + ... = {formatted_total_work_time}'),
+                f'Total work time: {formatted_work_time} + {formatted_break_time} + {formatted_distracting_time} = {formatted_total_work_time}'),
             dcc.Graph(figure=figure)
         ])
 
