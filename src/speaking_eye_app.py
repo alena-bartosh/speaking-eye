@@ -106,7 +106,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.user_work_time_hour_limit = config_reader.get_work_time_limit()
         self.user_breaks_interval_hours = get(config, 'time_limits.breaks_interval_hours') or 3
-        self.user_distracting_apps_mins = get(config, 'time_limits.distracting_apps_mins') or 15
+        self.user_distracting_apps_mins = config_reader.get_distracting_apps_mins()
 
         self.writer = ActivityWriter(self.files_provider)
 

@@ -8,6 +8,8 @@ from application_info_reader import ApplicationInfoReader
 
 
 class ConfigReader:
+    # TODO: Add enum for all config keys
+
     class ConfigKey(Enum):
         DETAILED_NODE = 'detailed'
         DISTRACTING_NODE = 'distracting'
@@ -33,5 +35,7 @@ class ConfigReader:
 
     def get_work_time_limit(self) -> int:
         """Read work time limit from app config or return default value"""
-        # TODO: Add enum for time_limits config keys
         return get(self.config, 'time_limits.work_time_hours') or 9
+
+    def get_distracting_apps_mins(self) -> int:
+        return get(self.config, 'time_limits.distracting_apps_mins') or 15
