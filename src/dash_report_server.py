@@ -54,8 +54,13 @@ class DashReportServer:
         """Get ActivityStatHolder with all collected activities for specific date"""
         file_path = self.files_provider.get_raw_data_file_path(activity_date)
         activities = self.activity_reader.read(file_path)
+        holder = ActivityStatHolder(activities)
+        matcher = self.activity_reader.matcher
 
-        return ActivityStatHolder(activities)
+        holder.initialize_stats(matcher.detailed_app_infos)
+        holder.initialize_stats(matcher.distracting_app_infos)
+
+        return holder
 
     def __get_layout(self) -> html.Div:
         # TODO: calculate min_date_allowed from dest files with raw data
