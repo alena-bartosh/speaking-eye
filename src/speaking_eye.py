@@ -38,10 +38,11 @@ def app_exit(logger: logging.Logger, msg: str) -> None:
 
 def dash_report_server_main(logger: logging.Logger,
                             config: Dict,
+                            config_reader: ConfigReader,
                             activity_reader: ActivityReader,
                             files_provider: FilesProvider) -> None:
     try:
-        server = DashReportServer(logger, config, activity_reader, files_provider)
+        server = DashReportServer(logger, config, config_reader, activity_reader, files_provider)
         server.run()
     except Exception:
         logger.exception('Could not start Report Server!')
@@ -104,6 +105,7 @@ def main():
     dash_server_thread = threading.Thread(target=dash_report_server_main,
                                           kwargs={
                                               'config': config,
+                                              'config_reader': config_reader,
                                               'logger': logger,
                                               'activity_reader': activity_reader,
                                               'files_provider': files_provider,

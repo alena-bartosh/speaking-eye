@@ -13,6 +13,7 @@ from pydash import get
 
 from activity_reader import ActivityReader
 from activity_stat_holder import ActivityStatHolder
+from config_reader import ConfigReader
 from files_provider import FilesProvider
 
 
@@ -24,7 +25,9 @@ class ElementId(Enum):
 class DashReportServer:
     def __init__(self,
                  logger: logging.Logger,
+                 # TODO: replace with config_reader
                  app_config: Dict,
+                 app_config_reader: ConfigReader,
                  activity_reader: ActivityReader,
                  files_provider: FilesProvider) -> None:
         # TODO: use static file
@@ -36,6 +39,9 @@ class DashReportServer:
 
         self.app.title = 'Speaking Eye Reports'
         self.port = get(app_config, 'dash_report_server_port') or 3838
+
+        self.work_time_limit = app_config_reader.get_work_time_limit()
+        self.distracting_apps_mins = app_config_reader.get_distracting_apps_mins()
 
         self.activity_reader = activity_reader
         self.files_provider = files_provider
