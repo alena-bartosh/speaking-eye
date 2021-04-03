@@ -48,6 +48,13 @@ class DashReportServer:
 
         self.app.layout = self.__get_layout()
 
+    def __get_activity_stat_holder(self, activity_date: date) -> ActivityStatHolder:
+        """Get ActivityStatHolder with all collected activities for specific date"""
+        file_path = self.files_provider.get_raw_data_file_path(activity_date)
+        activities = self.activity_reader.read(file_path)
+
+        return ActivityStatHolder(activities)
+
     def __get_layout(self) -> html.Div:
         # TODO: calculate min_date_allowed from dest files with raw data
 
@@ -61,10 +68,8 @@ class DashReportServer:
             html.Div(id=ElementId.REPORT_OUTPUT.value)
         ])
 
-    def __get_report(self, report_date: date) -> pd.DataFrame:
-        activities = self.activity_reader.read(self.files_provider.get_raw_data_file_path(report_date))
-        holder = ActivityStatHolder(activities)
-        report_data = {title: stat.work_time for title, stat in holder.items()}
+    def __get_report(self, activity_stat_holder: ActivityStatHolder, report_date: date) -> pd.DataFrame:
+        report_data = {title: stat.work_time for title, stat in activity_stat_holder.items()}
 
         report = pd.DataFrame().from_dict(report_data, orient='index').reset_index()
         # TODO: use enum for column names
@@ -74,7 +79,7 @@ class DashReportServer:
 
         return report
 
-    def __get_report_html(self, report: pd.DataFrame) -> html.Div:
+    def __get_report_html(self, activity_stat_holder: ActivityStatHolder, report: pd.DataFrame) -> html.Div:
         # TODO: add text labels to pie -- find "text" property for px.pie like in go.Pie
         #       https://plotly.com/python/hover-text-and-formatting/
 
@@ -85,6 +90,7 @@ class DashReportServer:
                         hover_data=['work_time_str'])
 
         return html.Div([
+            html.Div(f'Total work time = {activity_stat_holder.total_work_time}'),
             dcc.Graph(figure=figure)
         ])
 
@@ -100,9 +106,9 @@ class DashReportServer:
                 return None
 
             report_date = datetime.strptime(date_value, '%Y-%m-%d').date()
+            activity_stat_holder = self.__get_activity_stat_holder(report_date)
+            report = self.__get_report(activity_stat_holder, report_date)
 
-            report = self.__get_report(report_date)
-
-            return self.__get_report_html(report)
+            return self.__get_report_html(activity_stat_holder, report)
 
         self.app.run_server(port=self.port)
