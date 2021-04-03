@@ -88,6 +88,9 @@ class DashReportServer:
         return report
 
     def __get_report_html(self, activity_stat_holder: ActivityStatHolder, report: pd.DataFrame) -> html.Div:
+        if report.empty:
+            return html.Div(f'No data for this day using current config!')
+
         # TODO: add text labels to pie -- find "text" property for px.pie like in go.Pie
         #       https://plotly.com/python/hover-text-and-formatting/
 
