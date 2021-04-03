@@ -15,11 +15,13 @@ import gi
 import yaml
 
 from activity_reader import ActivityReader
+from application_info import ApplicationInfo
 from application_info_matcher import ApplicationInfoMatcher
 from application_info_reader import ApplicationInfoReader
 from config_reader import ConfigReader
 from dash_report_server import DashReportServer
 from files_provider import FilesProvider
+from special_wm_class import SpecialWmClass
 
 gi.require_version('Wnck', '3.0')
 gi.require_version('Gtk', '3.0')
@@ -93,6 +95,11 @@ def main():
     application_info_reader = ApplicationInfoReader()
     config_reader = ConfigReader(application_info_reader, config)
     detailed_app_infos = config_reader.try_read_application_info_list(ConfigReader.ConfigKey.DETAILED_NODE)
+
+    # NOTE: Implicitly add LockScreen to monitor Break Time activity
+    #       to not to add this info at user detailed apps config
+    detailed_app_infos.append(ApplicationInfo('Break Time', SpecialWmClass.LOCK_SCREEN.value, '', False))
+
     distracting_app_infos = config_reader.try_read_application_info_list(
         ConfigReader.ConfigKey.DISTRACTING_NODE)
     application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
