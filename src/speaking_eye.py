@@ -21,6 +21,7 @@ from application_info_reader import ApplicationInfoReader
 from config_reader import ConfigReader
 from dash_report_server import DashReportServer
 from files_provider import FilesProvider
+from special_application_info_title import SpecialApplicationInfoTitle
 from special_wm_class import SpecialWmClass
 
 gi.require_version('Wnck', '3.0')
@@ -98,7 +99,11 @@ def main():
 
     # NOTE: Implicitly add LockScreen to monitor Break Time activity
     #       to not to add this info at user detailed apps config
-    detailed_app_infos.append(ApplicationInfo('Break Time', SpecialWmClass.LOCK_SCREEN.value, '', False))
+    break_time_activity_info = ApplicationInfo(SpecialApplicationInfoTitle.BREAK_TIME.value,
+                                               SpecialWmClass.LOCK_SCREEN.value,
+                                               tab_re='',
+                                               is_distracting=False)
+    detailed_app_infos.append(break_time_activity_info)
 
     distracting_app_infos = config_reader.try_read_application_info_list(
         ConfigReader.ConfigKey.DISTRACTING_NODE)

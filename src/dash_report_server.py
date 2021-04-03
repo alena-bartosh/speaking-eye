@@ -16,6 +16,7 @@ from activity_stat_holder import ActivityStatHolder
 from config_reader import ConfigReader
 from datetime_formatter import DatetimeFormatter
 from files_provider import FilesProvider
+from special_application_info_title import SpecialApplicationInfoTitle
 
 
 class ElementId(Enum):
@@ -90,11 +91,21 @@ class DashReportServer:
                         # TODO: format "work_time_str" column
                         hover_data=['work_time_str'])
 
-        formatted_total_work_time = DatetimeFormatter.format_time_without_seconds(activity_stat_holder.total_work_time)
-        formatted_work_time_limit = DatetimeFormatter.format_time_without_seconds(timedelta(hours=self.work_time_limit))
+        format_time = DatetimeFormatter.format_time_without_seconds
+
+        break_time = activity_stat_holder[SpecialApplicationInfoTitle.BREAK_TIME.value].work_time
+        formatted_break_time = format_time(break_time)
+        formatted_work_time = format_time(activity_stat_holder.total_work_time - break_time)
+        formatted_total_work_time = format_time(activity_stat_holder.total_work_time)
+        formatted_work_time_limit = format_time(timedelta(hours=self.work_time_limit))
 
         return html.Div([
-            html.Div(f'Total work time = {formatted_total_work_time} / {formatted_work_time_limit}'),
+            html.Div(f'Expected work time: {formatted_work_time_limit}'),
+            html.Div(f'Total work time: {formatted_total_work_time}'),
+            # TODO: show as a html hint
+            html.Div(f'Total work time = real work time + breaks + distracting activities'),
+            html.Div(
+                f'Total work time: {formatted_work_time} + {formatted_break_time} + ... = {formatted_total_work_time}'),
             dcc.Graph(figure=figure)
         ])
 
