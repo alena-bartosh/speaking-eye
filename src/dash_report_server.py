@@ -75,8 +75,6 @@ class DashReportServer:
         figure = px.pie(report,
                         values='work_time',
                         names='title',
-                        # TODO: rename
-                        title='Cool plot',
                         # TODO: format "work_time_str" column
                         hover_data=['work_time_str'])
 
