@@ -14,6 +14,7 @@ from pydash import get
 from activity_reader import ActivityReader
 from activity_stat_holder import ActivityStatHolder
 from config_reader import ConfigReader
+from datetime_formatter import DatetimeFormatter
 from files_provider import FilesProvider
 
 
@@ -89,8 +90,10 @@ class DashReportServer:
                         # TODO: format "work_time_str" column
                         hover_data=['work_time_str'])
 
+        formatted_total_work_time = DatetimeFormatter.format_time_without_seconds(activity_stat_holder.total_work_time)
+
         return html.Div([
-            html.Div(f'Total work time = {activity_stat_holder.total_work_time}'),
+            html.Div(f'Total work time = {formatted_total_work_time} / {self.work_time_limit}'),
             dcc.Graph(figure=figure)
         ])
 
