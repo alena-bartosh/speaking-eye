@@ -80,6 +80,15 @@ To track a specific group of applications, follow this pattern:
 
 [Additional config example.](https://github.com/alena-bartosh/speaking-eye/blob/master/config/config_example.yaml)
 
+#### Data
+
+SE saves all collected data to ```speaking-eye/dest``` into ```{date}_speaking_eye_raw_data.tsv``` files that contain
+such columns for each activity:
+
+```
+start_time, end_time, activity_time, wm_class, window_name, is_work_time
+```
+
 ### System dependencies
 
 ```sh
