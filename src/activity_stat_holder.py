@@ -46,6 +46,18 @@ class ActivityStatHolder(dict):
         activity_stat = self[title_from_config]
         activity_stat.update(activity)
 
+    def get_group_work_time(self, titles: List[str]) -> timedelta:
+        """Compute total work time for the specific group of ActivityStat titles"""
+        result = timedelta()
+
+        for title in titles:
+            if title not in self:
+                raise RuntimeError(f'ActivityStatHolder does not contain stat for [ActivityStat.title={title}]!')
+
+            result += self[title].work_time
+
+        return result
+
     # NOTE: override the default implementations just to use our typing
 
     def __setitem__(self, app_name: KeyType, item: ItemType) -> None:
