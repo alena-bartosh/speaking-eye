@@ -81,6 +81,7 @@ class DashReportServer:
         report = pd.DataFrame().from_dict(report_data, orient='index').reset_index()
         # TODO: use enum for column names
         report.columns = ['title', 'work_time']
+        report = report.loc[report['work_time'].gt(timedelta(0))]
         report['date'] = report_date
         report['work_time_str'] = report['work_time'].astype(str)
 
