@@ -89,7 +89,7 @@ class DashReportServer:
 
     def __get_report_html(self, activity_stat_holder: ActivityStatHolder, report: pd.DataFrame) -> html.Div:
         if report.empty:
-            return html.Div(f'No data for this day using current config!')
+            return html.Div('No data for this day using current config!')
 
         # TODO: add text labels to pie -- find "text" property for px.pie like in go.Pie
         #       https://plotly.com/python/hover-text-and-formatting/
@@ -116,9 +116,9 @@ class DashReportServer:
             html.Div(f'Expected work time: {formatted_work_time_limit}'),
             html.Div(f'Total work time: {formatted_total_work_time}'),
             # TODO: show as a html hint
-            html.Div(f'Total work time = real work time + breaks + distracting activities'),
-            html.Div(
-                f'Total work time: {formatted_work_time} + {formatted_break_time} + {formatted_distracting_time} = {formatted_total_work_time}'),
+            html.Div('Total work time = real work time + breaks + distracting activities'),
+            html.Div(f'Total work time: {formatted_work_time} + {formatted_break_time} '
+                     f'+ {formatted_distracting_time} = {formatted_total_work_time}'),
             dcc.Graph(figure=figure)
         ])
 
