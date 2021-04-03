@@ -24,6 +24,7 @@ from gtk_extras import get_window_name
 from icon_state import IconState
 from localizator import Localizator
 from notification import Notification, NotificationEvent
+from special_wm_class import SpecialWmClass
 from timer import Timer
 from tray_icon import TrayIcon
 from value import Value
@@ -36,11 +37,6 @@ BREAK_TIME_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
 DISTRACTING_NOTIFICATION_EMOJIS = ['🧐', '🌓', '🥤', '💼', '🐘', '🥴',
                                    '🤖', '💭', '🧠', '🤵', '🤹', '🏤',
                                    '🦊', '🦁', '🎡', '🐰', '🍩', '🐞']
-
-
-class SpecialWmClass(Enum):
-    DESKTOP = 'Desktop'
-    LOCK_SCREEN = 'LockScreen'
 
 
 class ApplicationEvent(Enum):
