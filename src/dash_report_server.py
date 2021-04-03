@@ -1,5 +1,5 @@
 import logging
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from enum import Enum
 from typing import Dict, Optional
 
@@ -91,9 +91,10 @@ class DashReportServer:
                         hover_data=['work_time_str'])
 
         formatted_total_work_time = DatetimeFormatter.format_time_without_seconds(activity_stat_holder.total_work_time)
+        formatted_work_time_limit = DatetimeFormatter.format_time_without_seconds(timedelta(hours=self.work_time_limit))
 
         return html.Div([
-            html.Div(f'Total work time = {formatted_total_work_time} / {self.work_time_limit}'),
+            html.Div(f'Total work time = {formatted_total_work_time} / {formatted_work_time_limit}'),
             dcc.Graph(figure=figure)
         ])
 
