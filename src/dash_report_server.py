@@ -37,6 +37,7 @@ class DashReportServer:
         self.app.logger = logger
 
         self.app.title = 'Speaking Eye Reports'
+        self.host = app_config_reader.get_report_server_host()
         self.port = app_config_reader.get_report_server_port()
 
         self.work_time_limit = app_config_reader.get_work_time_limit()
@@ -136,4 +137,4 @@ class DashReportServer:
 
             return self.__get_report_html(activity_stat_holder, report)
 
-        self.app.run_server(port=self.port)
+        self.app.run_server(self.host, self.port)

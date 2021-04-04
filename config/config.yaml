@@ -35,7 +35,8 @@ time_limits:
 #         tab: dir-with-cute-corgi-dogs-photos
 
 # service with reports about your working days
-# will be run on http://localhost:{port}/ after speaking-eye starting
+# will be run on http://{host}:{port}/ after speaking-eye starting
 report_server:
+  host: localhost
   port: 3838
 
