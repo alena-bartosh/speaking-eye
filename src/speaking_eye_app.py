@@ -1,6 +1,7 @@
 import logging
 import re
 import signal
+import webbrowser
 from datetime import date, datetime, timedelta
 from enum import Enum
 from pathlib import Path
@@ -56,6 +57,7 @@ class SpeakingEyeApp(Gtk.Application):
                  files_provider: FilesProvider) -> None:
         super().__init__()
         self.logger = logger
+        self.config_reader = config_reader
 
         self.connection = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         self.screen_saver_bus_names = self.__dbus_get_screen_saver_bus_names()
@@ -305,8 +307,12 @@ class SpeakingEyeApp(Gtk.Application):
         self.stop()
 
     def on_open_report_item_click(self, menu_item: Gtk.MenuItem) -> None:
-        # TODO: implement
-        self.logger.debug('on_open_report_item_click()')
+        browser = webbrowser.get(self.config_reader.get_report_server_browser())
+        host = self.config_reader.get_report_server_host()
+        port = self.config_reader.get_report_server_port()
+        url = f'http://{host}:{port}'
+
+        browser.open_new_tab(url)
 
     def set_work_time_state(self, value: bool) -> None:
         if value == self.is_work_time:

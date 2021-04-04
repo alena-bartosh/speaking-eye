@@ -45,3 +45,6 @@ class ConfigReader:
 
     def get_report_server_port(self) -> int:
         return get(self.config, 'report_server.port') or 3838
+
+    def get_report_server_browser(self) -> str:
+        return get(self.config, 'report_server.browser') or ''

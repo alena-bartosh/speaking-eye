@@ -39,4 +39,6 @@ time_limits:
 report_server:
   host: localhost
   port: 3838
-
+  # supported browsers: [firefox, opera, epiphany, chrome, chromium, chromium-browser]
+  # if empty, then will be used default browser
+  browser:
