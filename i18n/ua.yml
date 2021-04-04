@@ -34,4 +34,5 @@ ua:
 
   tray:
     work_time: 'Робочий Час'
+    open_report: 'Відкрити Звіт'
     close: 'Закрити'

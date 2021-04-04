@@ -304,6 +304,10 @@ class SpeakingEyeApp(Gtk.Application):
     def on_close_item_click(self, menu_item: Gtk.MenuItem) -> None:
         self.stop()
 
+    def on_open_report_item_click(self, menu_item: Gtk.MenuItem) -> None:
+        # TODO: implement
+        self.logger.debug('on_open_report_item_click()')
+
     def set_work_time_state(self, value: bool) -> None:
         if value == self.is_work_time:
             self.logger.debug('Trying to change is_work_time to the same value')
@@ -341,6 +345,10 @@ class SpeakingEyeApp(Gtk.Application):
         work_state_checkbox_item = Gtk.CheckMenuItem(self.localizator.get('tray.work_time'))
         work_state_checkbox_item.connect('activate', self.on_work_state_checkbox_item_click)
         menu.append(work_state_checkbox_item)
+
+        open_report_item = Gtk.MenuItem(self.localizator.get('tray.open_report'))
+        open_report_item.connect('activate', self.on_open_report_item_click)
+        menu.append(open_report_item)
 
         menu.append(Gtk.SeparatorMenuItem())
 

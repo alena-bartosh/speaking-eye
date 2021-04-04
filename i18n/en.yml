@@ -34,4 +34,5 @@ en:
 
   tray:
     work_time: 'Work Time'
+    open_report: 'Open Report'
     close: 'Close'

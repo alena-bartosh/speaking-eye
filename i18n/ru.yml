@@ -34,4 +34,5 @@ ru:
 
   tray:
     work_time: 'Рабочее Время'
+    open_report: 'Открыть Отчёт'
     close: 'Закрыть'
