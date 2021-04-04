@@ -342,6 +342,8 @@ class SpeakingEyeApp(Gtk.Application):
         work_state_checkbox_item.connect('activate', self.on_work_state_checkbox_item_click)
         menu.append(work_state_checkbox_item)
 
+        menu.append(Gtk.SeparatorMenuItem())
+
         close_item = Gtk.MenuItem(self.localizator.get('tray.close'))
         close_item.connect('activate', self.on_close_item_click)
         menu.append(close_item)
