@@ -43,5 +43,6 @@ time_limits:
   distracting_apps_mins: 20
 
 # service with reports about your working days
-# will be run on http://localhost:{dash_report_server_port}/ after speaking-eye starting
-dash_report_server_port: 3838
+# will be run on http://localhost:{port}/ after speaking-eye starting
+report_server:
+  port: 3838

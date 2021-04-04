@@ -39,3 +39,6 @@ class ConfigReader:
 
     def get_distracting_apps_mins(self) -> int:
         return get(self.config, 'time_limits.distracting_apps_mins') or 15
+
+    def get_report_server_port(self) -> int:
+        return get(self.config, 'report_server.port') or 3838

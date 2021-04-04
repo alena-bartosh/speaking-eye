@@ -1,7 +1,7 @@
 import logging
 from datetime import date, datetime, timedelta
 from enum import Enum
-from typing import Dict, Optional
+from typing import Optional
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -9,7 +9,6 @@ import pandas as pd
 import plotly.express as px
 from dash import Dash
 from dash.dependencies import Input, Output
-from pydash import get
 
 from activity_reader import ActivityReader
 from activity_stat_holder import ActivityStatHolder
@@ -27,8 +26,6 @@ class ElementId(Enum):
 class DashReportServer:
     def __init__(self,
                  logger: logging.Logger,
-                 # TODO: replace with config_reader
-                 app_config: Dict,
                  app_config_reader: ConfigReader,
                  activity_reader: ActivityReader,
                  files_provider: FilesProvider) -> None:
@@ -40,7 +37,7 @@ class DashReportServer:
         self.app.logger = logger
 
         self.app.title = 'Speaking Eye Reports'
-        self.port = get(app_config, 'dash_report_server_port') or 3838
+        self.port = app_config_reader.get_report_server_port()
 
         self.work_time_limit = app_config_reader.get_work_time_limit()
         self.distracting_apps_mins = app_config_reader.get_distracting_apps_mins()
