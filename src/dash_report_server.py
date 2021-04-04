@@ -29,9 +29,7 @@ class DashReportServer:
                  app_config_reader: ConfigReader,
                  activity_reader: ActivityReader,
                  files_provider: FilesProvider) -> None:
-        # TODO: use static file
-        external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-        self.app = Dash(__name__, external_stylesheets=external_stylesheets)
+        self.app = Dash(__name__, assets_folder='../assets')
 
         logging.getLogger('werkzeug').setLevel(logging.WARNING)
         self.app.logger = logger
