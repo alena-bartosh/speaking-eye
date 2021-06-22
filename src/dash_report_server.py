@@ -109,12 +109,19 @@ class DashReportServer:
         formatted_distracting_time = format_time(distracting_time)
 
         return html.Div([
-            html.Div(f'Expected work time: {formatted_work_time_limit}'),
-            html.Div(f'Total work time: {formatted_total_work_time}'),
-            # TODO: show as a html hint
-            html.Div('Total work time = real work time + breaks + distracting activities'),
-            html.Div(f'Total work time: {formatted_work_time} + {formatted_break_time} '
-                     f'+ {formatted_distracting_time} = {formatted_total_work_time}'),
+            html.H3(children='Work time'),
+            html.Table(
+                # headers
+                [html.Tr([html.Th(col) for col in [
+                    'Expected', 'Actual', 'Pure work',
+                    'Breaks', 'Distracting activities'
+                ]])] +
+                # body
+                [html.Tr([html.Td(time) for time in [
+                    formatted_work_time_limit, formatted_total_work_time, formatted_work_time,
+                    formatted_break_time, formatted_distracting_time
+                ]])]
+            ),
             dcc.Graph(figure=figure)
         ])
 
