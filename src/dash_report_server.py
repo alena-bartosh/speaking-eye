@@ -1,4 +1,5 @@
 import logging
+import re
 from datetime import date, datetime, timedelta
 from enum import Enum
 from typing import Optional
@@ -79,7 +80,10 @@ class DashReportServer:
         report.columns = ['title', 'work_time']
         report = report.loc[report['work_time'].gt(timedelta(0))]
         report['date'] = report_date
-        report['work_time_str'] = report['work_time'].astype(str)
+
+        # from timedelta as a string extract only time
+        date_re = re.compile(r'.*([\d]{2}):([\d]{2}):([\d]{2}).*')
+        report['work_time_str'] = report['work_time'].astype(str).str.replace(date_re, r'\1:\2:\3')
 
         return report
 
