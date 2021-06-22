@@ -2,6 +2,7 @@ import logging
 import re
 from datetime import date, datetime, timedelta
 from enum import Enum
+from random import choice
 from typing import Optional
 
 import dash_core_components as dcc
@@ -17,6 +18,14 @@ from config_reader import ConfigReader
 from datetime_formatter import DatetimeFormatter
 from files_provider import FilesProvider
 from special_application_info_title import SpecialApplicationInfoTitle
+
+COLORS_SEQUENTIALS = [
+    px.colors.sequential.Viridis,
+    px.colors.sequential.GnBu,
+    px.colors.sequential.RdBu,
+    px.colors.sequential.deep,
+    px.colors.sequential.dense,
+]
 
 
 class ElementId(Enum):
@@ -44,6 +53,8 @@ class DashReportServer:
 
         self.activity_reader = activity_reader
         self.files_provider = files_provider
+
+        self.colors = choice(COLORS_SEQUENTIALS)
 
         self.app.layout = self.__get_layout()
 
@@ -94,7 +105,8 @@ class DashReportServer:
         figure = px.pie(report,
                         values='work_time',
                         names='title',
-                        custom_data=['work_time_str'])
+                        custom_data=['work_time_str'],
+                        color_discrete_sequence=self.colors)
         figure.update(layout_showlegend=False)
 
         figure.update_traces(textposition='inside',
