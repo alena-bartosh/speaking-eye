@@ -22,7 +22,6 @@ from special_application_info_title import SpecialApplicationInfoTitle
 COLORS_SEQUENTIALS = [
     px.colors.sequential.Viridis,
     px.colors.sequential.GnBu,
-    px.colors.sequential.RdBu,
     px.colors.sequential.deep,
     px.colors.sequential.dense,
 ]
@@ -74,12 +73,15 @@ class DashReportServer:
         # TODO: calculate min_date_allowed from dest files with raw data
 
         return html.Div([
-            dcc.DatePickerSingle(
-                id=ElementId.DATE_PICKER.value,
-                display_format='YYYY-MM-DD',
-                first_day_of_week=1,
-                date=date.today()
-            ),
+            html.H3(children='Work time', style={'textAlign': 'center'}),
+            html.Div(
+                dcc.DatePickerSingle(
+                    id=ElementId.DATE_PICKER.value,
+                    display_format='YYYY-MM-DD',
+                    first_day_of_week=1,
+                    date=date.today()
+                ),
+                style=dict(display='flex', justifyContent='center')),
             html.Div(id=ElementId.REPORT_OUTPUT.value)
         ])
 
@@ -134,7 +136,6 @@ class DashReportServer:
         formatted_distracting_time = format_time(distracting_time)
 
         return html.Div([
-            html.H3(children='Work time'),
             html.Table(
                 # headers
                 [html.Tr([html.Th(col) for col in [
