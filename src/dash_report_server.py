@@ -91,14 +91,23 @@ class DashReportServer:
         if report.empty:
             return html.Div('No data for this day using current config!')
 
-        # TODO: add text labels to pie -- find "text" property for px.pie like in go.Pie
-        #       https://plotly.com/python/hover-text-and-formatting/
-
         figure = px.pie(report,
                         values='work_time',
                         names='title',
-                        # TODO: format "work_time_str" column
-                        hover_data=['work_time_str'])
+                        custom_data=['work_time_str'])
+        figure.update(layout_showlegend=False)
+
+        figure.update_traces(textposition='inside',
+                             hovertemplate='%{label} | %{customdata}',
+                             textinfo='percent+label')
+
+        figure.update_layout(
+            hoverlabel=dict(
+                bgcolor='white',
+                font_size=14,
+                font_family='Rockwell',
+            )
+        )
 
         format_time = DatetimeFormatter.format_time_without_seconds
 
