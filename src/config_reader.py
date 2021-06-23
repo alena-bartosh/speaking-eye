@@ -26,12 +26,15 @@ class ConfigReader:
 
         app_list = get(self.config, apps_list_node)
 
-        if app_list is None:
-            raise RuntimeError(f'Path [{apps_list_node}] should be set in config!')
-
         is_distracting = config_key == self.ConfigKey.DISTRACTING_NODE
 
-        return self.application_info_reader.try_read(app_list, is_distracting)
+        if app_list is not None:
+            return self.application_info_reader.try_read(app_list, is_distracting)
+
+        if is_distracting:
+            return []
+
+        raise RuntimeError(f'Path [{apps_list_node}] should be set in config!')
 
     def get_work_time_limit(self) -> int:
         """Read work time limit from app config or return default value"""

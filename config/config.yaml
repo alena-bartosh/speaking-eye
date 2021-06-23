@@ -14,8 +14,7 @@ apps:
     - Internet:
         wm_name: Chromium|Firefox|Opera
 
-  distracting:
-    - none                              # 'none' if no distracting apps
+  # if you want to track distracting apps then add distracting section like in examples below
 
 time_limits:
   work_time_hours: 9
