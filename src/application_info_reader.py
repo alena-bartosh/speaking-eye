@@ -8,7 +8,6 @@ TAB_KEY = 'tab'
 
 
 class SpecialApplicationInfo(Enum):
-    ALL = 'all'
     NONE = 'none'
 
     @staticmethod

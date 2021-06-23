@@ -10,7 +10,9 @@ language: en
 
 apps:
   detailed:
-    - all                               # 'all' for tracking all activities
+    # please fill in
+    - Internet:
+        wm_name: Chromium|Firefox|Opera
 
   distracting:
     - none                              # 'none' if no distracting apps

@@ -58,7 +58,7 @@ You also can close SE with *'Close'* in the context menu. Eye is closed: your br
 
 For a comfortable interaction with SE, please fill in [the config](https://github.com/alena-bartosh/speaking-eye/blob/master/config/config.yaml). 
 Here you can choose the color theme of the icon and set time limits for notifications. 
-Also choose which activity you want to track (set 'all' for all) and which apps are considered harmful or distracting ('none' if no such apps).
+Also choose which activity you want to track (it is necessary) and which apps are considered harmful or distracting ('none' if no such apps).
 
 *'work_time_hours'* — is recommended to count with lunch. If *work_time* = 8 hours and *lunch* = 1 hour then it's better to set *work_time_hours: 9*. 
 
