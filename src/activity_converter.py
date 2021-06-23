@@ -1,7 +1,6 @@
-from datetime import datetime
-
 from activity import Activity
 from bool_parser import BoolParser
+from datetime_formatter import DatetimeFormatter
 
 
 class ActivityConverter:
@@ -31,8 +30,8 @@ class ActivityConverter:
 
         try:
             start_time_str, end_time_str, activity_time, wm_class, window_name, is_work_time_str = columns
-            start_time = datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S.%f')
-            end_time = datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S.%f')
+            start_time = DatetimeFormatter.parse_string_with_optional_milliseconds(start_time_str)
+            end_time = DatetimeFormatter.parse_string_with_optional_milliseconds(end_time_str)
             is_work_time = BoolParser.parse(is_work_time_str.replace('\n', ''))
         except Exception as e:
             raise ValueError(f'Incorrect string [{value}]! {e}')
