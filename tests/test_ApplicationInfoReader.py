@@ -70,19 +70,19 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
             with self.subTest(name=sub_test):
                 with self.assertRaisesRegex(ValueError,
                                             expected_regex=r'Special case \[none\] must be the only one in a list!'):
-                    reader.try_read(incorrect_data, False)
+                    reader.try_read(incorrect_data, True)
 
     def test_when_only_special_application_info_used(self):
         reader = ApplicationInfoReader()
         sub_tests_data = {
-            'only none': (['none'], [ApplicationInfo(title='none', wm_name_re='', tab_re='', is_distracting=False)])
+            'only none': (['none'], [ApplicationInfo(title='none', wm_name_re='', tab_re='', is_distracting=True)])
         }
 
         for sub_test, sub_test_data in sub_tests_data.items():
             with self.subTest(name=sub_test):
                 data, expected = sub_test_data
 
-                result = reader.try_read(data, False)
+                result = reader.try_read(data, True)
 
                 self.assertListEqual(result, expected)
 
@@ -91,8 +91,8 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
         incorrect_data = ['I am not an object because I have not ":" in the .yaml']
 
         with self.assertRaisesRegex(ValueError,
-                                    expected_regex=r"Only special cases \[\['none'\]\] can be here or "
-                                                   r"list of apps with wm_name and tab!"):
+                                    expected_regex=r"Only list of apps with wm_name and tab "
+                                                   r"can be in detailed app list!"):
             reader.try_read(incorrect_data, False)
 
     def test_when_special_application_info_not_lowercase(self):
@@ -105,9 +105,9 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
         for sub_test, incorrect_data in sub_tests_incorrect_data.items():
             with self.subTest(name=sub_test):
                 with self.assertRaisesRegex(ValueError,
-                                            expected_regex=r"Only special cases \[\['none'\]\] can be here or "
-                                                           r"list of apps with wm_name and tab!"):
-                    reader.try_read(incorrect_data, False)
+                                            expected_regex=r"Only special cases \[\['none'\]\] or list of apps "
+                                                           r"with wm_name and tab can be in distracting app list!"):
+                    reader.try_read(incorrect_data, True)
 
     def test_when_special_application_info_is_object(self):
         reader = ApplicationInfoReader()
@@ -121,3 +121,11 @@ class ApplicationInfoReaderTestCase(unittest.TestCase):
                                             expected_regex=r"Special cases \[\['none'\]\] "
                                                            r"with \":\" are not supported!"):
                     reader.try_read(incorrect_data, False)
+
+    def test_when_special_case_in_detailed_app_list(self):
+        reader = ApplicationInfoReader()
+
+        with self.assertRaisesRegex(ValueError,
+                                    expected_regex=r"Special cases \[\['none'\]\] "
+                                                   r"can be used only for distracting apps!"):
+            reader.try_read(['none'], False)
