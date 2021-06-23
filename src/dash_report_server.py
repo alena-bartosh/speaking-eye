@@ -102,7 +102,7 @@ class DashReportServer:
 
     def __get_report_html(self, activity_stat_holder: ActivityStatHolder, report: pd.DataFrame) -> html.Div:
         if report.empty:
-            return html.Div('No data for this day using current config!')
+            return html.Div('No data for this day using current config!', style={'textAlign': 'center'})
 
         figure = px.pie(report,
                         values='work_time',
@@ -162,10 +162,14 @@ class DashReportServer:
             if date_value is None:
                 return None
 
-            report_date = datetime.strptime(date_value, '%Y-%m-%d').date()
-            activity_stat_holder = self.__get_activity_stat_holder(report_date)
-            report = self.__get_report(activity_stat_holder, report_date)
+            try:
+                report_date = datetime.strptime(date_value, '%Y-%m-%d').date()
+                activity_stat_holder = self.__get_activity_stat_holder(report_date)
+                report = self.__get_report(activity_stat_holder, report_date)
 
-            return self.__get_report_html(activity_stat_holder, report)
+                return self.__get_report_html(activity_stat_holder, report)
+
+            except Exception as err:
+                return html.Div(f'Something went wrong: [{err}]', style={'textAlign': 'center'})
 
         self.app.run_server(self.host, self.port)
