@@ -89,6 +89,19 @@ such columns for each activity:
 start_time, end_time, activity_time, wm_class, window_name, is_work_time
 ```
 
+#### Reports
+
+Reports are generated dynamically based on files with collected SE data and actual application groups in config.
+For reports displaying Dash server is used. You can configure it in application config and open report page by clicking on *'Open Report'* in the context menu.
+
+```
+report_server:
+  host: localhost
+  port: 3838
+  browser: firefox
+```
+***SE analyzes only work time (when eye is active and open)!***
+
 ### System dependencies
 
 ```sh
