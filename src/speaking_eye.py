@@ -93,7 +93,14 @@ def main():
 
     application_info_reader = ApplicationInfoReader()
     config_reader = ConfigReader(application_info_reader, config)
-    detailed_app_infos = config_reader.try_read_application_info_list(ConfigReader.ConfigKey.DETAILED_NODE)
+
+    try:
+        detailed_app_infos = config_reader.try_read_application_info_list(ConfigReader.ConfigKey.DETAILED_NODE)
+        distracting_app_infos = config_reader.try_read_application_info_list(
+            ConfigReader.ConfigKey.DISTRACTING_NODE)
+    except Exception:
+        logger.exception('Error while reading config!')
+        app_exit(logger, error_config_msg)
 
     # NOTE: Implicitly add LockScreen to monitor Break Time activity
     #       to not to add this info at user detailed apps config
@@ -103,8 +110,6 @@ def main():
                                                is_distracting=False)
     detailed_app_infos.append(break_time_activity_info)
 
-    distracting_app_infos = config_reader.try_read_application_info_list(
-        ConfigReader.ConfigKey.DISTRACTING_NODE)
     application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
     activity_reader = ActivityReader(logger, application_info_matcher)
 
