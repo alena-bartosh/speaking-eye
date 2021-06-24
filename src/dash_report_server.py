@@ -70,8 +70,6 @@ class DashReportServer:
         return holder
 
     def __get_layout(self) -> html.Div:
-        # TODO: calculate min_date_allowed from dest files with raw data
-
         return html.Div([
             html.H3(children='Work time', style={'textAlign': 'center'}),
             html.Div(
@@ -79,6 +77,8 @@ class DashReportServer:
                     id=ElementId.DATE_PICKER.value,
                     display_format='YYYY-MM-DD',
                     first_day_of_week=1,
+                    min_date_allowed=self.files_provider.get_date_of_first_raw_data_file(),
+                    max_date_allowed=date.today(),
                     date=date.today()
                 ),
                 style=dict(display='flex', justifyContent='center')),
