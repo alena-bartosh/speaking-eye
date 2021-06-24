@@ -3,18 +3,19 @@ from random import randint
 
 import i18n
 
+from language import Language
+
 
 class Localizator:
     """Wrapper to work with i18n internalization package"""
 
-    # TODO: add language enum for typing
-    def __init__(self, localization_dir: Path, language: str) -> None:
+    def __init__(self, localization_dir: Path, language: Language) -> None:
         if not localization_dir.is_dir():
             raise ValueError(f'Path [{localization_dir}] does not exist or it is not a dir!')
 
         i18n.load_path.append(localization_dir)
 
-        i18n.set('locale', language)
+        i18n.set('locale', language.value)
         i18n.set('enable_memoization', True)  # cache loaded strings in memory
         i18n.set('filename_format', '{locale}.{format}')
 

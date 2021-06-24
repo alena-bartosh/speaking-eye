@@ -23,6 +23,7 @@ from config_reader import ConfigReader
 from files_provider import FilesProvider
 from gtk_extras import get_window_name
 from icon_state import IconState
+from language import Language
 from localizator import Localizator
 from notification import Notification, NotificationEvent
 from special_wm_class import SpecialWmClass
@@ -64,7 +65,7 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.files_provider = files_provider
 
-        language = get(config, 'language') or 'en'
+        language = Language.parse(get(config, 'language'), Language.ENGLISH)
         self.localizator = Localizator(self.files_provider.i18n_dir, language)
 
         self.theme = get(config, 'theme') or 'dark'
