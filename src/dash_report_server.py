@@ -104,8 +104,8 @@ class DashReportServer:
         report['date'] = report_date
 
         # from timedelta as a string extract only time
-        date_re = re.compile(r'.*([\d]{2}):([\d]{2}):([\d]{2}).*')
-        report['work_time_str'] = report['work_time'].astype(str).str.replace(date_re, r'\1:\2:\3')
+        time_re = re.compile(r'.*([\d]{2}):([\d]{2}):([\d]{2}).*')
+        report['work_time_str'] = report['work_time'].astype(str).str.replace(time_re, r'\1:\2:\3')
 
         return report
 
