@@ -128,7 +128,6 @@ def main():
     dash_server_thread.start()
 
     app = SpeakingEyeApp(APP_ID,
-                         config,
                          config_reader,
                          logger,
                          application_info_matcher,

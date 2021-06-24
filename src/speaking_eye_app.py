@@ -7,10 +7,9 @@ from enum import Enum
 from pathlib import Path
 from random import choice
 from types import FrameType
-from typing import Any, cast, Dict, List, Optional, Tuple
+from typing import Any, cast, List, Optional, Tuple
 
 from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
-from pydash import get
 from pyee import BaseEventEmitter
 
 from activity import Activity
@@ -23,11 +22,9 @@ from config_reader import ConfigReader
 from files_provider import FilesProvider
 from gtk_extras import get_window_name
 from icon_state import IconState
-from language import Language
 from localizator import Localizator
 from notification import Notification, NotificationEvent
 from special_wm_class import SpecialWmClass
-from theme import Theme
 from timer import Timer
 from tray_icon import TrayIcon
 from value import Value
@@ -50,8 +47,6 @@ class SpeakingEyeApp(Gtk.Application):
 
     def __init__(self,
                  app_id: str,
-                 # TODO: replace with config_reader
-                 config: Dict,
                  config_reader: ConfigReader,
                  logger: logging.Logger,
                  application_info_matcher: ApplicationInfoMatcher,
@@ -66,10 +61,10 @@ class SpeakingEyeApp(Gtk.Application):
 
         self.files_provider = files_provider
 
-        language = Language.parse(get(config, 'language'), Language.ENGLISH)
+        language = self.config_reader.get_language()
         self.localizator = Localizator(self.files_provider.i18n_dir, language)
 
-        self.theme = Theme.parse(get(config, 'theme'), Theme.DARK)
+        self.theme = self.config_reader.get_theme()
         self.active_icon = self.get_icon(IconState.ACTIVE)
         self.disabled_icon = self.get_icon(IconState.DISABLED)
         self.tray_icon = TrayIcon(app_id, self.disabled_icon, self.create_tray_menu())
@@ -105,7 +100,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.is_break_notification_allowed_to_show = True
 
         self.user_work_time_hour_limit = config_reader.get_work_time_limit()
-        self.user_breaks_interval_hours = get(config, 'time_limits.breaks_interval_hours') or 3
+        self.user_breaks_interval_hours = config_reader.get_breaks_interval_hours()
         self.user_distracting_apps_mins = config_reader.get_distracting_apps_mins()
 
         self.writer = ActivityWriter(self.files_provider)

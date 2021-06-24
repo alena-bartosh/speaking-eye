@@ -5,6 +5,8 @@ from pydash import get
 
 from application_info import ApplicationInfo
 from application_info_reader import ApplicationInfoReader
+from language import Language
+from theme import Theme
 
 
 class ConfigReader:
@@ -37,8 +39,10 @@ class ConfigReader:
         raise RuntimeError(f'Path [{apps_list_node}] should be set in config!')
 
     def get_work_time_limit(self) -> int:
-        """Read work time limit from app config or return default value"""
         return get(self.config, 'time_limits.work_time_hours') or 9
+
+    def get_breaks_interval_hours(self) -> int:
+        return get(self.config, 'time_limits.breaks_interval_hours') or 3
 
     def get_distracting_apps_mins(self) -> int:
         return get(self.config, 'time_limits.distracting_apps_mins') or 15
@@ -51,3 +55,9 @@ class ConfigReader:
 
     def get_report_server_browser(self) -> str:
         return get(self.config, 'report_server.browser') or ''
+
+    def get_language(self) -> Language:
+        return Language.parse(get(self.config, 'language'), Language.ENGLISH)
+
+    def get_theme(self) -> Theme:
+        return Theme.parse(get(self.config, 'theme'), Theme.DARK)
