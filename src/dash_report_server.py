@@ -42,6 +42,7 @@ class DashReportServer:
         self.app = Dash(__name__, assets_folder='../assets')
 
         logging.getLogger('werkzeug').setLevel(logging.WARNING)
+        logging.getLogger('parse').setLevel(logging.WARNING)
         self.app.logger = logger
 
         self.app.title = 'Speaking Eye Reports'
