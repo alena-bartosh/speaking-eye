@@ -94,14 +94,13 @@ class DashReportServer:
             html.Div(id=ElementId.REPORT_OUTPUT.value)
         ])
 
-    def __get_report(self, activity_stat_holder: ActivityStatHolder, report_date: date) -> pd.DataFrame:
+    def __get_report(self, activity_stat_holder: ActivityStatHolder) -> pd.DataFrame:
         report_data = {title: stat.work_time for title, stat in activity_stat_holder.items()}
 
         report = pd.DataFrame().from_dict(report_data, orient='index').reset_index()
         # TODO: use enum for column names
         report.columns = ['title', 'work_time']
         report = report.loc[report['work_time'].gt(timedelta(0))]
-        report['date'] = report_date
 
         # from timedelta as a string extract only time
         time_re = re.compile(r'.*([\d]{2}):([\d]{2}):([\d]{2}).*')
@@ -180,7 +179,7 @@ class DashReportServer:
             try:
                 report_date = datetime.strptime(start_date_value, '%Y-%m-%d').date()
                 activity_stat_holder = self.__get_activity_stat_holder(report_date)
-                report = self.__get_report(activity_stat_holder, report_date)
+                report = self.__get_report(activity_stat_holder)
 
                 return self.__get_report_html(activity_stat_holder, report)
 
