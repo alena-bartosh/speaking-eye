@@ -6,6 +6,7 @@ from pathlib import Path
 import parse
 
 from icon_state import IconState
+from theme import Theme
 
 
 class FilesProvider:
@@ -44,9 +45,8 @@ class FilesProvider:
     def i18n_dir(self) -> Path:
         return self.__i18n_dir
 
-    # TODO: add enum for theme
-    def get_icon_file_path(self, theme: str, icon_state: IconState) -> Path:
-        return self.__icon_dir / theme / f'{icon_state.value}.png'
+    def get_icon_file_path(self, theme: Theme, icon_state: IconState) -> Path:
+        return self.__icon_dir / theme.value / f'{icon_state.value}.png'
 
     def get_raw_data_file_path(self, file_date: date) -> Path:
         return self.__raw_data_dir / self.__RAW_DATA_FILE_MASK.format_map({self.__DATE_FORMAT_LABEL: file_date})

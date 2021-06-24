@@ -27,6 +27,7 @@ from language import Language
 from localizator import Localizator
 from notification import Notification, NotificationEvent
 from special_wm_class import SpecialWmClass
+from theme import Theme
 from timer import Timer
 from tray_icon import TrayIcon
 from value import Value
@@ -68,7 +69,7 @@ class SpeakingEyeApp(Gtk.Application):
         language = Language.parse(get(config, 'language'), Language.ENGLISH)
         self.localizator = Localizator(self.files_provider.i18n_dir, language)
 
-        self.theme = get(config, 'theme') or 'dark'
+        self.theme = Theme.parse(get(config, 'theme'), Theme.DARK)
         self.active_icon = self.get_icon(IconState.ACTIVE)
         self.disabled_icon = self.get_icon(IconState.DISABLED)
         self.tray_icon = TrayIcon(app_id, self.disabled_icon, self.create_tray_menu())
