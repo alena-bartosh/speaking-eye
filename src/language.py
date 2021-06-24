@@ -1,15 +1,7 @@
-from enum import Enum
+from extended_enum import ExtendedEnum
 
 
-class Language(Enum):
+class Language(ExtendedEnum):
     UKRAINIAN = 'ua'
     RUSSIAN = 'ru'
     ENGLISH = 'en'
-
-    @staticmethod
-    def parse(value: str, default: 'Language') -> 'Language':
-        for language in Language:
-            if value == language.value:
-                return language
-
-        return default
