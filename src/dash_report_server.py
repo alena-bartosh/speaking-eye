@@ -167,7 +167,8 @@ class DashReportServer:
                 Input(ElementId.DATE_PICKER.value, 'end_date'),
             ]
         )
-        def handle_date_picker_change(start_date_value: Optional[str], end_date_value: Optional[str]) -> Optional[str]:
+        def handle_date_picker_change(start_date_value: Optional[str],
+                                      end_date_value: Optional[str]) -> Optional[html.Div]:
             # TODO: localization
 
             # NOTE: If could not parse date or field is empty then date_value will be None
