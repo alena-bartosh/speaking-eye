@@ -70,16 +70,25 @@ class DashReportServer:
         return holder
 
     def __get_layout(self) -> html.Div:
+        today = date.today()
+
         return html.Div([
             html.H3(children='Work time', style={'textAlign': 'center'}),
             html.Div(
-                dcc.DatePickerSingle(
+                dcc.DatePickerRange(
                     id=ElementId.DATE_PICKER.value,
+                    # TODO: localization
+                    start_date_placeholder_text='Start Period',
+                    end_date_placeholder_text='End Period',
                     display_format='YYYY-MM-DD',
                     first_day_of_week=1,
                     min_date_allowed=self.files_provider.get_date_of_first_raw_data_file(),
-                    max_date_allowed=date.today(),
-                    date=date.today()
+                    max_date_allowed=today,
+                    initial_visible_month=today,
+                    # NOTE: allow to select the single date for start & end
+                    minimum_nights=0,
+                    start_date=today,
+                    end_date=today
                 ),
                 style=dict(display='flex', justifyContent='center')),
             html.Div(id=ElementId.REPORT_OUTPUT.value)
@@ -154,16 +163,22 @@ class DashReportServer:
     def run(self) -> None:
         @self.app.callback(
             Output(ElementId.REPORT_OUTPUT.value, 'children'),
-            Input(ElementId.DATE_PICKER.value, 'date'))
-        def handle_date_picker_change(date_value: Optional[str]) -> Optional[str]:
+            [
+                Input(ElementId.DATE_PICKER.value, 'start_date'),
+                Input(ElementId.DATE_PICKER.value, 'end_date'),
+            ]
+        )
+        def handle_date_picker_change(start_date_value: Optional[str], end_date_value: Optional[str]) -> Optional[str]:
             # TODO: localization
 
             # NOTE: If could not parse date or field is empty then date_value will be None
-            if date_value is None:
+            if start_date_value is None:
                 return None
 
+            # TODO: use end_date_value for reports
+
             try:
-                report_date = datetime.strptime(date_value, '%Y-%m-%d').date()
+                report_date = datetime.strptime(start_date_value, '%Y-%m-%d').date()
                 activity_stat_holder = self.__get_activity_stat_holder(report_date)
                 report = self.__get_report(activity_stat_holder, report_date)
 
