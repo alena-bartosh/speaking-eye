@@ -3,7 +3,7 @@ import re
 from datetime import date, datetime, timedelta
 from enum import Enum
 from random import choice
-from typing import Optional
+from typing import List, Optional
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -16,6 +16,7 @@ from activity_reader import ActivityReader
 from activity_stat_holder import ActivityStatHolder
 from config_reader import ConfigReader
 from datetime_formatter import DatetimeFormatter
+from datetime_helper import DatetimeHelper
 from files_provider import FilesProvider
 from special_application_info_title import SpecialApplicationInfoTitle
 
@@ -57,11 +58,15 @@ class DashReportServer:
 
         self.app.layout = self.__get_layout()
 
-    def __get_activity_stat_holder(self, activity_date: date) -> ActivityStatHolder:
-        """Get ActivityStatHolder with all collected activities for specific date"""
-        file_path = self.files_provider.get_raw_data_file_path(activity_date)
-        activities = self.activity_reader.read(file_path)
-        holder = ActivityStatHolder(activities)
+    def __get_activity_stat_holder(self, report_dates: List[date]) -> ActivityStatHolder:
+        """Get ActivityStatHolder with all collected activities for specific dates"""
+        all_activities = []
+        for report_date in report_dates:
+            file_path = self.files_provider.get_raw_data_file_path(report_date)
+            activities = self.activity_reader.read(file_path)
+            all_activities.extend(activities)
+
+        holder = ActivityStatHolder(all_activities)
         matcher = self.activity_reader.matcher
 
         holder.initialize_stats(matcher.detailed_app_infos)
@@ -143,6 +148,11 @@ class DashReportServer:
         distracting_time = activity_stat_holder.get_group_work_time(distracting_app_titles)
         formatted_distracting_time = format_time(distracting_time)
 
+        # TODO: update headers:
+        #       - print total if date range is selected
+        #       - print mean values
+        # TODO: add loading spinner
+
         return html.Div([
             html.Table(
                 # headers
@@ -175,11 +185,11 @@ class DashReportServer:
             if start_date_value is None:
                 return None
 
-            # TODO: use end_date_value for reports
-
             try:
-                report_date = datetime.strptime(start_date_value, '%Y-%m-%d').date()
-                activity_stat_holder = self.__get_activity_stat_holder(report_date)
+                start_date = datetime.strptime(start_date_value, '%Y-%m-%d').date()
+                end_date = datetime.strptime(end_date_value, '%Y-%m-%d').date()
+                report_dates = DatetimeHelper.get_dates_between(start_date, end_date)
+                activity_stat_holder = self.__get_activity_stat_holder(report_dates)
                 report = self.__get_report(activity_stat_holder)
 
                 return self.__get_report_html(activity_stat_holder, report)
