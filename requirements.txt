@@ -25,6 +25,7 @@ mypy==0.790
 mypy-extensions==0.4.3
 numpy==1.18.3
 pandas==1.0.3
+parse==1.19.0
 plotly==4.14.3
 pycairo==1.19.1
 pycodestyle==2.6.0
