@@ -97,9 +97,6 @@ class DashReportServer:
                 html.H3('Work time'),
                 dcc.DatePickerRange(
                     id=ElementId.DATE_PICKER.value,
-                    # TODO: localization
-                    start_date_placeholder_text='Start Period',
-                    end_date_placeholder_text='End Period',
                     display_format='YYYY-MM-DD',
                     first_day_of_week=1,
                     min_date_allowed=self.files_provider.get_date_of_first_raw_data_file(),
