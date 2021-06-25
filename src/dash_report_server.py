@@ -3,7 +3,7 @@ import re
 from datetime import date, datetime, timedelta
 from enum import Enum
 from random import choice
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import dash_core_components as dcc
 import dash_html_components as html
@@ -33,6 +33,12 @@ class ElementId(Enum):
     REPORT_OUTPUT = 'report-output'
 
 
+GetActivityStatHolderResultType = Tuple[
+    ActivityStatHolder,
+    int,  # active_days_count
+]
+
+
 class DashReportServer:
     def __init__(self,
                  logger: logging.Logger,
@@ -59,12 +65,20 @@ class DashReportServer:
 
         self.app.layout = self.__get_layout()
 
-    def __get_activity_stat_holder(self, report_dates: List[date]) -> ActivityStatHolder:
+    def __get_activity_stat_holder(self, report_dates: List[date]) -> GetActivityStatHolderResultType:
         """Get ActivityStatHolder with all collected activities for specific dates"""
+        active_days_count = 0
         all_activities = []
         for report_date in report_dates:
             file_path = self.files_provider.get_raw_data_file_path(report_date)
             activities = self.activity_reader.read(file_path)
+
+            no_activities_for_date = len(activities) == 0
+
+            if no_activities_for_date:
+                continue
+
+            active_days_count += 1
             all_activities.extend(activities)
 
         holder = ActivityStatHolder(all_activities)
@@ -73,13 +87,13 @@ class DashReportServer:
         holder.initialize_stats(matcher.detailed_app_infos)
         holder.initialize_stats(matcher.distracting_app_infos)
 
-        return holder
+        return holder, active_days_count
 
     def __get_layout(self) -> html.Div:
         today = date.today()
 
         return html.Div([
-            html.H3(children='Work time', style={'textAlign': 'center'}),
+            html.H3('Work time', style={'textAlign': 'center'}),
             html.Div(
                 dcc.DatePickerRange(
                     id=ElementId.DATE_PICKER.value,
@@ -100,28 +114,30 @@ class DashReportServer:
             html.Div(id=ElementId.REPORT_OUTPUT.value)
         ])
 
-    def __get_report(self, activity_stat_holder: ActivityStatHolder) -> pd.DataFrame:
+    def __get_report(self, activity_stat_holder: ActivityStatHolder, active_days_count: int) -> pd.DataFrame:
         report_data = {title: stat.work_time for title, stat in activity_stat_holder.items()}
 
         report = pd.DataFrame().from_dict(report_data, orient='index').reset_index()
         # TODO: use enum for column names
         report.columns = ['title', 'work_time']
         report = report.loc[report['work_time'].gt(timedelta(0))]
+        report['mean_work_time'] = report['work_time'] / active_days_count
 
         # from timedelta as a string extract only time
         time_re = re.compile(r'.*([\d]{2}):([\d]{2}):([\d]{2}).*')
-        report['work_time_str'] = report['work_time'].astype(str).str.replace(time_re, r'\1:\2:\3')
+        report['mean_work_time_str'] = report['mean_work_time'].astype(str).str.replace(time_re, r'\1:\2:\3')
 
         return report
 
-    def __get_report_html(self, activity_stat_holder: ActivityStatHolder, report: pd.DataFrame) -> html.Div:
+    def __get_report_html(self, activity_stat_holder: ActivityStatHolder,
+                          report: pd.DataFrame, active_days_count: int) -> html.Div:
         if report.empty:
             return html.Div('No data for this day using current config!', style={'textAlign': 'center'})
 
         figure = px.pie(report,
-                        values='work_time',
+                        values='mean_work_time',
                         names='title',
-                        custom_data=['work_time_str'],
+                        custom_data=['mean_work_time_str'],
                         color_discrete_sequence=self.colors)
         figure.update(layout_showlegend=False)
 
@@ -137,21 +153,18 @@ class DashReportServer:
             )
         )
 
-        format_time = DatetimeFormatter.format_time_without_seconds
-
-        break_time = activity_stat_holder[SpecialApplicationInfoTitle.BREAK_TIME.value].work_time
-        formatted_break_time = format_time(break_time)
-        formatted_work_time = format_time(activity_stat_holder.total_work_time - break_time)
-        formatted_total_work_time = format_time(activity_stat_holder.total_work_time)
-        formatted_work_time_limit = format_time(timedelta(hours=self.work_time_limit))
         distracting_app_infos = self.activity_reader.matcher.distracting_app_infos
         distracting_app_titles = [app_info.title for app_info in distracting_app_infos]
-        distracting_time = activity_stat_holder.get_group_work_time(distracting_app_titles)
-        formatted_distracting_time = format_time(distracting_time)
 
-        # TODO: update headers:
-        #       - print total if date range is selected
-        #       - print mean values
+        break_time = activity_stat_holder[SpecialApplicationInfoTitle.BREAK_TIME.value].work_time
+        mean_break_time = break_time / active_days_count
+        mean_total_work_time = activity_stat_holder.total_work_time / active_days_count
+        mean_pure_work_time = mean_total_work_time - mean_break_time
+        distracting_time = activity_stat_holder.get_group_work_time(distracting_app_titles)
+        mean_distracting_time = distracting_time / active_days_count
+
+        format_time = DatetimeFormatter.format_time_without_seconds
+
         # TODO: add loading spinner
 
         return html.Div([
@@ -163,10 +176,16 @@ class DashReportServer:
                 ]])] +
                 # body
                 [html.Tr([html.Td(time) for time in [
-                    formatted_work_time_limit, formatted_total_work_time, formatted_work_time,
-                    formatted_break_time, formatted_distracting_time
+                    format_time(timedelta(hours=self.work_time_limit)),
+                    format_time(mean_total_work_time),
+                    format_time(mean_pure_work_time),
+                    format_time(mean_break_time),
+                    format_time(mean_distracting_time)
                 ]])]
             ),
+            # TODO: print only if report_days > 1
+            # TODO: print active_days_count with another color or font size
+            html.Div(f'* hours, in average for {active_days_count} day(s)', style={'textAlign': 'center'}),
             dcc.Graph(figure=figure)
         ])
 
@@ -186,10 +205,11 @@ class DashReportServer:
                 start_date = datetime.strptime(start_date_value, '%Y-%m-%d').date()
                 end_date = datetime.strptime(end_date_value, '%Y-%m-%d').date()
                 report_dates = DatetimeHelper.get_dates_between(start_date, end_date)
-                activity_stat_holder = self.__get_activity_stat_holder(report_dates)
-                report = self.__get_report(activity_stat_holder)
 
-                return self.__get_report_html(activity_stat_holder, report)
+                activity_stat_holder, active_days_count = self.__get_activity_stat_holder(report_dates)
+                report = self.__get_report(activity_stat_holder, active_days_count)
+
+                return self.__get_report_html(activity_stat_holder, report, active_days_count)
 
             except Exception as err:
                 return html.Div(f'Something went wrong: [{err}]', style={'textAlign': 'center'})
