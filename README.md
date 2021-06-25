@@ -29,6 +29,14 @@
 
 For other languages please feel free to make Pull Request :wink:
 
+### Report examples
+
+Using Speaking Eye you can simply track you working hours: 
+   * during one day  
+     <img src="doc/reports_examples/one_day_en.png" width="450">
+   * or as many days as you like  
+     <img src="doc/reports_examples/several_days_en.png" width="450">     
+
 ### Installation and use
 
 [Quick installation guide (video)](https://github.com/alena-bartosh/speaking-eye#quick-installation-guide)
