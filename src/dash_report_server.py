@@ -127,6 +127,8 @@ class DashReportServer:
         report = pd.DataFrame().from_dict(report_data, orient='index').reset_index()
         # TODO: use enum for column names
         report.columns = ['title', 'work_time']
+        report['work_time'] = pd.to_timedelta(report['work_time'])
+
         report = report.loc[report['work_time'].gt(timedelta(0))]
         report['mean_work_time'] = report['work_time'] / active_days_count
 
@@ -166,9 +168,9 @@ class DashReportServer:
         break_time = activity_stat_holder[SpecialApplicationInfoTitle.BREAK_TIME.value].work_time
         mean_break_time = break_time / active_days_count
         mean_total_work_time = activity_stat_holder.total_work_time / active_days_count
-        mean_pure_work_time = mean_total_work_time - mean_break_time
         distracting_time = activity_stat_holder.get_group_work_time(distracting_app_titles)
         mean_distracting_time = distracting_time / active_days_count
+        mean_pure_work_time = mean_total_work_time - mean_break_time - mean_distracting_time
 
         format_time = DatetimeFormatter.format_time_without_seconds
 
