@@ -100,7 +100,7 @@ class DashReportServer:
                     display_format='YYYY-MM-DD',
                     first_day_of_week=1,
                     min_date_allowed=self.files_provider.get_date_of_first_raw_data_file(),
-                    max_date_allowed=today+timedelta(days=1),
+                    max_date_allowed=today + timedelta(days=1),
                     initial_visible_month=today,
                     # NOTE: allow to select the single date for start & end
                     minimum_nights=0,
