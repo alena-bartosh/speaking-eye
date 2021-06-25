@@ -110,7 +110,7 @@ class DashReportServer:
                 ),
                 dcc.Loading(
                     [html.Div(id=ElementId.REPORT_OUTPUT.value)],
-                    type='dot',
+                    type='graph',
                     color=choice(self.colors)
                 ),
             ],
@@ -184,9 +184,14 @@ class DashReportServer:
                     format_time(mean_distracting_time)
                 ]])]
             ),
-            # TODO: print only if report_days > 1
-            # TODO: print active_days_count with another color or font size
-            html.Div(f'* hours, in average for {active_days_count} day(s)', style={'textAlign': 'center'}),
+            html.Div(
+                [
+                    '* hours, in average for ',
+                    html.B(f'{active_days_count} ', style=dict(color='darkcyan')),
+                    'day(s)',
+                ],
+                style=dict(textAlign='center')
+            ),
             dcc.Graph(figure=figure)
         ])
 
