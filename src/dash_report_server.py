@@ -135,7 +135,7 @@ class DashReportServer:
     def __get_report_html(self, activity_stat_holder: ActivityStatHolder,
                           report: pd.DataFrame, active_days_count: int) -> html.Div:
         if report.empty:
-            return html.Div('No data for this day using current config!', style={'textAlign': 'center'})
+            return html.Div('No data for selected date range using current config!')
 
         figure = px.pie(report,
                         values='mean_work_time',
