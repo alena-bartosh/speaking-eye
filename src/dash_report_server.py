@@ -92,9 +92,9 @@ class DashReportServer:
     def __get_layout(self) -> html.Div:
         today = date.today()
 
-        return html.Div([
-            html.H3('Work time', style={'textAlign': 'center'}),
-            html.Div(
+        return html.Div(
+            [
+                html.H3('Work time'),
                 dcc.DatePickerRange(
                     id=ElementId.DATE_PICKER.value,
                     # TODO: localization
@@ -108,11 +108,17 @@ class DashReportServer:
                     # NOTE: allow to select the single date for start & end
                     minimum_nights=0,
                     start_date=today,
-                    end_date=today
+                    end_date=today,
+                    updatemode='bothdates',
                 ),
-                style=dict(display='flex', justifyContent='center')),
-            html.Div(id=ElementId.REPORT_OUTPUT.value)
-        ])
+                dcc.Loading(
+                    [html.Div(id=ElementId.REPORT_OUTPUT.value)],
+                    type='dot',
+                    color=choice(self.colors)
+                ),
+            ],
+            style=dict(display='flex', flexDirection='column', alignItems='center'),
+        )
 
     def __get_report(self, activity_stat_holder: ActivityStatHolder, active_days_count: int) -> pd.DataFrame:
         report_data = {title: stat.work_time for title, stat in activity_stat_holder.items()}
@@ -164,8 +170,6 @@ class DashReportServer:
         mean_distracting_time = distracting_time / active_days_count
 
         format_time = DatetimeFormatter.format_time_without_seconds
-
-        # TODO: add loading spinner
 
         return html.Div([
             html.Table(
