@@ -67,7 +67,9 @@ class SpeakingEyeApp(Gtk.Application):
         self.theme = self.config_reader.get_theme()
         self.active_icon = self.get_icon(IconState.ACTIVE)
         self.disabled_icon = self.get_icon(IconState.DISABLED)
-        self.tray_icon = TrayIcon(app_id, self.disabled_icon, self.create_tray_menu())
+
+        self.work_state_checkbox_item = self.__create_work_state_checkbox_item()
+        self.tray_icon = TrayIcon(app_id, self.disabled_icon, self.create_tray_menu(self.work_state_checkbox_item))
 
         self.screen: Optional[Wnck.Screen] = None
         self.main_loop: Optional[GObject.MainLoop] = None
@@ -317,6 +319,7 @@ class SpeakingEyeApp(Gtk.Application):
             return
 
         self.is_work_time = value
+        self.work_state_checkbox_item.set_active(self.is_work_time)
 
         current_activity = Value.get_or_raise(self.current_activity, 'current_activity')
         now = datetime.now()
@@ -339,14 +342,18 @@ class SpeakingEyeApp(Gtk.Application):
             self.last_break_notification = None
             self.last_overtime_notification = None
 
-    def on_work_state_checkbox_item_click(self, menu_item: Gtk.MenuItem) -> None:
+    def on_work_state_checkbox_item_click(self, menu_item: Gtk.CheckMenuItem) -> None:
         self.set_work_time_state(not self.is_work_time)
 
-    def create_tray_menu(self) -> Gtk.Menu:
-        menu = Gtk.Menu()
-
+    def __create_work_state_checkbox_item(self) -> Gtk.CheckMenuItem:
         work_state_checkbox_item = Gtk.CheckMenuItem(self.localizator.get('tray.work_time'))
         work_state_checkbox_item.connect('activate', self.on_work_state_checkbox_item_click)
+
+        return work_state_checkbox_item
+
+    def create_tray_menu(self, work_state_checkbox_item: Gtk.CheckMenuItem) -> Gtk.Menu:
+        menu = Gtk.Menu()
+
         menu.append(work_state_checkbox_item)
 
         open_report_item = Gtk.MenuItem(self.localizator.get('tray.open_report'))
