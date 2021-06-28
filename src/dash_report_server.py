@@ -59,6 +59,9 @@ class DashReportServer:
         self.work_time_limit = app_config_reader.get_work_time_limit()
         self.distracting_apps_mins = app_config_reader.get_distracting_apps_mins()
 
+        # TODO: read from config
+        self.ignore_weekends = True
+
         self.activity_reader = activity_reader
         self.files_provider = files_provider
 
@@ -71,6 +74,11 @@ class DashReportServer:
         active_days_count = 0
         all_activities = []
         for report_date in report_dates:
+            is_weekend = report_date.weekday() > 4
+
+            if self.ignore_weekends and is_weekend:
+                continue
+
             file_path = self.files_provider.get_raw_data_file_path(report_date)
             activities = self.activity_reader.read(file_path)
 
