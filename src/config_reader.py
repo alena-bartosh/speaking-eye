@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Dict, Optional
+from typing import Any, List, Dict, Optional, cast
 
 from pydash import get
 
@@ -10,6 +10,8 @@ from theme import Theme
 
 
 class ConfigReader:
+    ConfigType = Dict[str, Any]
+
     # TODO: Add enum for all config keys
 
     class ConfigKey(Enum):
@@ -18,7 +20,7 @@ class ConfigReader:
 
     def __init__(self,
                  application_info_reader: ApplicationInfoReader,
-                 config: Dict) -> None:
+                 config: ConfigType) -> None:
         self.application_info_reader = application_info_reader
         self.config = config
 
@@ -55,10 +57,10 @@ class ConfigReader:
         return get(self.config, 'report_server.port') or 3838
 
     def get_report_server_browser(self) -> Optional[str]:
-        return get(self.config, 'report_server.browser', default=None)
+        return cast(Optional[str], get(self.config, 'report_server.browser', default=None))
 
     def get_report_server_ignore_weekends(self) -> bool:
-        return get(self.config, 'report_server.ignore_weekends', default=True)
+        return cast(bool, get(self.config, 'report_server.ignore_weekends', default=True))
 
     def get_language(self) -> Language:
         return Language.parse(get(self.config, 'language'), Language.ENGLISH)
