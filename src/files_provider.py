@@ -2,6 +2,7 @@ import glob
 import os
 from datetime import date, datetime
 from pathlib import Path
+from typing import cast
 
 import parse
 
@@ -46,7 +47,7 @@ class FilesProvider:
         return self.__i18n_dir
 
     def get_icon_file_path(self, theme: Theme, icon_state: IconState) -> Path:
-        return self.__icon_dir / theme.value / f'{icon_state.value}.png'
+        return self.__icon_dir / cast(str, theme.value) / f'{icon_state.value}.png'
 
     def get_raw_data_file_path(self, file_date: date) -> Path:
         return self.__raw_data_dir / self.__RAW_DATA_FILE_MASK.format_map({self.__DATE_FORMAT_LABEL: file_date})
