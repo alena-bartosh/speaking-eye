@@ -5,10 +5,18 @@ from application_info import ApplicationInfo
 WM_NAME_KEY = 'wm_name'
 TAB_KEY = 'tab'
 
+DataItemType = Dict[
+    str,  # app_name
+    Dict[
+        str,  # wm_name or tab
+        str  # value
+    ]
+]
+
 
 class ApplicationInfoReader:
 
-    def __handle_regular_case(self, data_item: Dict[str, Dict], is_distracting: bool) -> ApplicationInfo:
+    def __handle_regular_case(self, data_item: DataItemType, is_distracting: bool) -> ApplicationInfo:
         raw_app_info, = data_item.items()
         app_name, app_info = raw_app_info
 
@@ -20,7 +28,7 @@ class ApplicationInfoReader:
 
         return ApplicationInfo(app_name, wm_name, tab, is_distracting)
 
-    def try_read(self, data: List, is_distracting: bool) -> List[ApplicationInfo]:
+    def try_read(self, data: List[DataItemType], is_distracting: bool) -> List[ApplicationInfo]:
         if not isinstance(data, list):
             raise ValueError(f'Incorrect data type [{type(data)}]!')
 
