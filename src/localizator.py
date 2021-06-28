@@ -1,5 +1,7 @@
+from datetime import timedelta
 from pathlib import Path
 from random import randint
+from typing import Union, cast
 
 import i18n
 
@@ -8,6 +10,8 @@ from language import Language
 
 class Localizator:
     """Wrapper to work with i18n internalization package"""
+
+    FormatValueType = Union[str, int, timedelta]
 
     def __init__(self, localization_dir: Path, language: Language) -> None:
         if not localization_dir.is_dir():
@@ -19,10 +23,10 @@ class Localizator:
         i18n.set('enable_memoization', True)  # cache loaded strings in memory
         i18n.set('filename_format', '{locale}.{format}')
 
-    def get(self, key: str, **kwargs) -> str:
-        return i18n.t(key, **kwargs)
+    def get(self, key: str, **kwargs: FormatValueType) -> str:
+        return cast(str, i18n.t(key, **kwargs))
 
-    def get_random(self, key: str, max_n: int, **kwargs) -> str:
+    def get_random(self, key: str, max_n: int, **kwargs: FormatValueType) -> str:
         variant = randint(1, max_n)
         key_with_variant = key + i18n.get('namespace_delimiter') + str(variant)
 
