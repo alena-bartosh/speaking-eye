@@ -11,6 +11,7 @@ import pandas as pd
 import plotly.express as px
 from dash import Dash
 from dash.dependencies import Input, Output
+from pydash import some
 
 from activity_reader import ActivityReader
 from activity_stat_holder import ActivityStatHolder
@@ -73,13 +74,14 @@ class DashReportServer:
             file_path = self.files_provider.get_raw_data_file_path(report_date)
             activities = self.activity_reader.read(file_path)
 
-            # TODO: Fix the way we calculate active_days_count
-            #       Now day is considered as active even if there was not activities with is_work_time=True
-            #       It affects average work time values
-
             no_activities_for_date = len(activities) == 0
 
             if no_activities_for_date:
+                continue
+
+            no_work_activities_for_date = not some(activities, lambda activity: activity.is_work_time)
+
+            if no_work_activities_for_date:
                 continue
 
             active_days_count += 1
@@ -219,7 +221,6 @@ class DashReportServer:
                 report_dates = DatetimeHelper.get_dates_between(start_date, end_date)
 
                 # TODO: Add checkbox in config: ignore weekends for report stats
-                # TODO: Fix BUG for active_days_count (see more in __get_activity_stat_holder())
                 activity_stat_holder, active_days_count = self.__get_activity_stat_holder(report_dates)
                 report = self.__get_report(activity_stat_holder, active_days_count)
 
