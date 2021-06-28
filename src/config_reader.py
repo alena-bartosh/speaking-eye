@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from pydash import get
 
@@ -54,8 +54,8 @@ class ConfigReader:
     def get_report_server_port(self) -> int:
         return get(self.config, 'report_server.port') or 3838
 
-    def get_report_server_browser(self) -> str:
-        return get(self.config, 'report_server.browser') or ''
+    def get_report_server_browser(self) -> Optional[str]:
+        return get(self.config, 'report_server.browser', default=None)
 
     def get_report_server_ignore_weekends(self) -> bool:
         return get(self.config, 'report_server.ignore_weekends', default=True)
