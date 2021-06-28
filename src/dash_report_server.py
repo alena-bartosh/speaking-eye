@@ -59,8 +59,7 @@ class DashReportServer:
         self.work_time_limit = app_config_reader.get_work_time_limit()
         self.distracting_apps_mins = app_config_reader.get_distracting_apps_mins()
 
-        # TODO: read from config
-        self.ignore_weekends = True
+        self.ignore_weekends = app_config_reader.get_report_server_ignore_weekends()
 
         self.activity_reader = activity_reader
         self.files_provider = files_provider
@@ -228,7 +227,6 @@ class DashReportServer:
                 end_date = datetime.strptime(end_date_value, '%Y-%m-%d').date()
                 report_dates = DatetimeHelper.get_dates_between(start_date, end_date)
 
-                # TODO: Add checkbox in config: ignore weekends for report stats
                 activity_stat_holder, active_days_count = self.__get_activity_stat_holder(report_dates)
                 report = self.__get_report(activity_stat_holder, active_days_count)
 

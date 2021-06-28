@@ -38,6 +38,7 @@ class ConfigReader:
 
         raise RuntimeError(f'Path [{apps_list_node}] should be set in config!')
 
+    # TODO: for all get_* funcs need to validate value type (e.g. work_time_hours must be int)
     def get_work_time_limit(self) -> int:
         return get(self.config, 'time_limits.work_time_hours') or 9
 
@@ -55,6 +56,9 @@ class ConfigReader:
 
     def get_report_server_browser(self) -> str:
         return get(self.config, 'report_server.browser') or ''
+
+    def get_report_server_ignore_weekends(self) -> bool:
+        return get(self.config, 'report_server.ignore_weekends', default=True)
 
     def get_language(self) -> Language:
         return Language.parse(get(self.config, 'language'), Language.ENGLISH)

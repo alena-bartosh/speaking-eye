@@ -50,3 +50,5 @@ report_server:
   # supported browsers: [firefox, opera, epiphany, chrome, chromium, chromium-browser]
   # if empty, then will be used default browser
   browser: firefox
+  # if selected, weekends files will be ignored even if there was work activity on that day
+  ignore_weekends: true
