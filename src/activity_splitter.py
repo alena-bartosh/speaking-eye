@@ -5,6 +5,7 @@ from activity import Activity
 from activity_builder import ActivityBuilder
 from activity_helper import ActivityHelper
 from datetime_helper import DatetimeHelper
+from value import Value
 
 
 class ActivitySplitter:
@@ -25,7 +26,9 @@ class ActivitySplitter:
 
             new_activity = ActivityBuilder(activity)\
                 .with_start_time(activity.start_time if day == first_day else start_time)\
-                .with_end_time(activity.end_time if day == last_day else end_time)\
+                .with_end_time(
+                    Value.get_or_raise(activity.end_time, 'activity.end_time') if day == last_day else end_time
+                )\
                 .build()
 
             result.append((day, new_activity))
