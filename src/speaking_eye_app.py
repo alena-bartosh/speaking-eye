@@ -500,7 +500,7 @@ class SpeakingEyeApp(Gtk.Application):
         if (now - last_break_time).total_seconds() < self.user_breaks_interval_hours * 60 * 60:
             return False
 
-        last_break_reminder_time = Value.get_or_default(
+        last_break_reminder_time = Value.get_by_getter_or_default(
             lambda: self.last_break_notification.last_shown,  # type: ignore[union-attr]
             start_work_time
         )

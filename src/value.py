@@ -14,7 +14,7 @@ class Value(Generic[T]):
         return value
 
     @staticmethod
-    def get_or_default(value_getter: Callable[[], Optional[T]], default: T) -> T:
+    def get_by_getter_or_default(value_getter: Callable[[], Optional[T]], default: T) -> T:
         """
         Return value from value_getter if all attributes exist and set.
         Return default value otherwise

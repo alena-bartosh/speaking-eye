@@ -9,7 +9,7 @@ T = TypeVar('T')
 
 class ValueTestCase(unittest.TestCase):
 
-    def test_get_or_default(self):
+    def test_get_by_getter_or_default(self):
         # TODO: TestCaseType must be a generic type like a TestCaseType[T] = Tuple[..., T, T]
         TestCaseType = Tuple[
             Callable[[], Optional[str]],  # value_getter func
@@ -42,4 +42,4 @@ class ValueTestCase(unittest.TestCase):
         ]
 
         for (value_getter, default, expected) in test_cases:
-            self.assertEqual(expected, Value.get_or_default(value_getter, default))
+            self.assertEqual(expected, Value.get_by_getter_or_default(value_getter, default))
