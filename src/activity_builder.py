@@ -12,12 +12,12 @@ class ActivityBuilder:
         self.start_time: Optional[datetime] = None
         self.end_time: Optional[datetime] = None
 
-    def with_start_time(self, value) -> 'ActivityBuilder':
+    def with_start_time(self, value: datetime) -> 'ActivityBuilder':
         self.start_time = value
 
         return self
 
-    def with_end_time(self, value) -> 'ActivityBuilder':
+    def with_end_time(self, value: datetime) -> 'ActivityBuilder':
         self.end_time = value
 
         return self
