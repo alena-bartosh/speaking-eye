@@ -7,14 +7,13 @@ from enum import Enum
 from pathlib import Path
 from random import choice
 from types import FrameType
-from typing import Any, cast, List, Optional, Tuple
+from typing import Any, cast, List, Optional
 
 from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
 from pyee import BaseEventEmitter
 
 from activity import Activity
 from activity_reader import ActivityReader
-from activity_stat import ActivityStat
 from activity_stat_holder import ActivityStatHolder
 from activity_writer import ActivityWriter
 from application_info_matcher import ApplicationInfoMatcher
@@ -43,7 +42,7 @@ class ApplicationEvent(Enum):
     DISTRACTING_APP_OVERTIME = 'distracting_app_overtime'
 
 
-class SpeakingEyeApp(Gtk.Application):
+class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
 
     def __init__(self,
                  app_id: str,
@@ -150,8 +149,11 @@ class SpeakingEyeApp(Gtk.Application):
         return None
 
     def __dbus_get_all_bus_names(self) -> List[str]:
-        return self.__dbus_method_call('org.freedesktop.DBus', '/org/freedesktop/DBus',
-                                       'org.freedesktop.DBus', 'ListNames')
+        return cast(
+            List[str],
+            self.__dbus_method_call('org.freedesktop.DBus', '/org/freedesktop/DBus',
+                                    'org.freedesktop.DBus', 'ListNames')
+        )
 
     def __dbus_lock_screen(self) -> None:
         for bus in self.screen_saver_bus_names:
@@ -289,8 +291,7 @@ class SpeakingEyeApp(Gtk.Application):
         self.logger.info('--------------------------------------------------------------')
 
         for holder_item in self.holder.items():
-            # cast untyped title and stat to str and ActivityStat
-            title, stat = cast(Tuple[str, ActivityStat], holder_item)
+            title, stat = holder_item
 
             padded_title = title.rjust(19, ' ')
             padded_work_time = f'{stat.work_time}'.rjust(19, ' ')
