@@ -5,9 +5,14 @@ T = TypeVar('T')
 
 
 class Value(Generic[T]):
+
     @staticmethod
+    # NOTE: type T will be inherited based on the function call
     def get_or_raise(value: Optional[T], name: str) -> T:
-        # NOTE: type T will be inherited based on the function call
+        """
+        Return value if it is not None.
+        Raise exception otherwise
+        """
         if value is None:
             raise ValueError(f'Value [{name}] is None!')
 
