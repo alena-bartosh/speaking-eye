@@ -36,3 +36,16 @@ en:
     work_time: 'Work Time'
     open_report: 'Open Report'
     close: 'Close'
+
+  report_server:
+    tab_title: 'Speaking Eye Reports'
+    page_title: 'Work time'
+    expected_col: 'Expected'
+    actual_col: 'Actual'
+    pure_work_col: 'Pure work'
+    breaks_col: 'Breaks'
+    distracting_col: 'Distracting activities'
+    average_text: '* hours, in average for '
+    days_text: 'day(s)'
+    no_data: 'No data for selected date range using current config!'
+    error: 'Something went wrong: [%{err}]'

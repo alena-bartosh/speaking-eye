@@ -36,3 +36,16 @@ ru:
     work_time: 'Рабочее Время'
     open_report: 'Открыть Отчёт'
     close: 'Закрыть'
+
+  report_server:
+    tab_title: 'Speaking Eye Отчёты'
+    page_title: 'Рабочее время'
+    expected_col: 'Ожидаемое'
+    actual_col: 'Фактическое'
+    pure_work_col: 'Чистая работа'
+    breaks_col: 'Перерывы'
+    distracting_col: 'Отвлечения'
+    average_text: '* часов, в среднем за '
+    days_text: 'дн.'
+    no_data: 'Нет данных для отображения за выбранный диапазон дат, применяя текущий конфиг!'
+    error: 'Что-то пошло не так: [%{err}]'

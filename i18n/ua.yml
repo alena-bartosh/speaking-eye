@@ -36,3 +36,16 @@ ua:
     work_time: 'Робочий Час'
     open_report: 'Відкрити Звіт'
     close: 'Закрити'
+
+  report_server:
+    tab_title: 'Speaking Eye Звіти'
+    page_title: 'Робочий час'
+    expected_col: 'Очікуємий'
+    actual_col: 'Фактичний'
+    pure_work_col: 'Чиста робота'
+    breaks_col: 'Перерви'
+    distracting_col: 'Відволікання'
+    average_text: '* годин, у середньому за '
+    days_text: 'дн.'
+    no_data: 'Відсутні дані для відображення за обраний діапазон дат, використовуючи поточний конфіг!'
+    error: 'Щось пішло не так: [%{err}]'

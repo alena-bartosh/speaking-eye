@@ -54,7 +54,9 @@ class DashReportServer:
         logging.getLogger('parse').setLevel(logging.WARNING)
         self.app.logger = logger
 
-        self.app.title = 'Speaking Eye Reports'
+        self.localizator = localizator
+        self.app.title = self.localizator.get('report_server.tab_title')
+
         self.host = app_config_reader.get_report_server_host()
         self.port = app_config_reader.get_report_server_port()
 
@@ -109,7 +111,7 @@ class DashReportServer:
 
         return html.Div(
             [
-                html.H3('Work time'),
+                html.H3(self.localizator.get('report_server.page_title')),
                 dcc.DatePickerRange(
                     id=ElementId.DATE_PICKER.value,
                     display_format='YYYY-MM-DD',
@@ -152,7 +154,7 @@ class DashReportServer:
     def __get_report_html(self, activity_stat_holder: ActivityStatHolder,
                           report: pd.DataFrame, active_days_count: int) -> html.Div:
         if report.empty:
-            return html.Div('No data for selected date range using current config!')
+            return html.Div(self.localizator.get('report_server.no_data'))
 
         figure = px.pie(report,
                         values='mean_work_time',
@@ -189,8 +191,11 @@ class DashReportServer:
             html.Table(
                 # headers
                 [html.Tr([html.Th(col) for col in [
-                    'Expected', 'Actual', 'Pure work',
-                    'Breaks', 'Distracting activities'
+                    self.localizator.get('report_server.expected_col'),
+                    self.localizator.get('report_server.actual_col'),
+                    self.localizator.get('report_server.pure_work_col'),
+                    self.localizator.get('report_server.breaks_col'),
+                    self.localizator.get('report_server.distracting_col'),
                 ]])] +
                 # body
                 [html.Tr([html.Td(time) for time in [
@@ -203,9 +208,9 @@ class DashReportServer:
             ),
             html.Div(
                 [
-                    '* hours, in average for ',
+                    self.localizator.get('report_server.average_text'),
                     html.B(f'{active_days_count} ', style=dict(color='darkcyan')),
-                    'day(s)',
+                    self.localizator.get('report_server.days_text'),
                 ],
                 style=dict(textAlign='center')
             ),
@@ -222,8 +227,6 @@ class DashReportServer:
         )
         def handle_date_picker_change(start_date_value: str,
                                       end_date_value: str) -> Optional[html.Div]:
-            # TODO: localization
-
             try:
                 start_date = datetime.strptime(start_date_value, '%Y-%m-%d').date()
                 end_date = datetime.strptime(end_date_value, '%Y-%m-%d').date()
@@ -235,6 +238,7 @@ class DashReportServer:
                 return self.__get_report_html(activity_stat_holder, report, active_days_count)
 
             except Exception as err:
-                return html.Div(f'Something went wrong: [{err}]', style={'textAlign': 'center'})
+                return html.Div(self.localizator.get('report_server.error', err=str(err)),
+                                style={'textAlign': 'center'})
 
         self.app.run_server(self.host, self.port)
