@@ -13,6 +13,7 @@ class ExtendedEnum(Enum):
 
     @classmethod
     def parse(cls: Type[DerivedEnumClass], value: str, default: DerivedEnumClass) -> DerivedEnumClass:
+        """Parse string to enum member. Return default otherwise"""
         for enum_item in cls:
             if value == enum_item.value:
                 return enum_item
