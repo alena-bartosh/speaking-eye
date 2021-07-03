@@ -21,6 +21,7 @@ from application_info_reader import ApplicationInfoReader
 from config_reader import ConfigReader
 from dash_report_server import DashReportServer
 from files_provider import FilesProvider
+from localizator import Localizator
 from special_application_info_title import SpecialApplicationInfoTitle
 from special_wm_class import SpecialWmClass
 
@@ -42,9 +43,10 @@ def app_exit(logger: logging.Logger, msg: str) -> None:
 def dash_report_server_main(logger: logging.Logger,
                             config_reader: ConfigReader,
                             activity_reader: ActivityReader,
-                            files_provider: FilesProvider) -> None:
+                            files_provider: FilesProvider,
+                            localizator: Localizator) -> None:
     try:
-        server = DashReportServer(logger, config_reader, activity_reader, files_provider)
+        server = DashReportServer(logger, config_reader, activity_reader, files_provider, localizator)
         server.run()
     except Exception:
         logger.exception('Could not start Report Server!')
@@ -125,22 +127,28 @@ def main() -> None:
     app_root_dir = current_file_dir / '..'
     files_provider = FilesProvider(app_root_dir)
 
+    language = config_reader.get_language()
+    localizator = Localizator(files_provider.i18n_dir, language)
+    logger.debug(f'Set user language to [{language.value}]')
+
     dash_server_thread = threading.Thread(target=dash_report_server_main,
                                           kwargs={
                                               'config_reader': config_reader,
                                               'logger': logger,
                                               'activity_reader': activity_reader,
                                               'files_provider': files_provider,
+                                              'localizator': localizator,
                                           },
                                           daemon=True)
     dash_server_thread.start()
 
-    app = SpeakingEyeApp(APP_ID,
-                         config_reader,
-                         logger,
-                         application_info_matcher,
-                         activity_reader,
-                         files_provider)
+    app = SpeakingEyeApp(app_id=APP_ID,
+                         config_reader=config_reader,
+                         logger=logger,
+                         application_info_matcher=application_info_matcher,
+                         activity_reader=activity_reader,
+                         files_provider=files_provider,
+                         localizator=localizator)
     app.run()
     app.start_main_loop()
 

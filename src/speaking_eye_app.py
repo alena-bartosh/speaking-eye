@@ -50,7 +50,8 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
                  logger: logging.Logger,
                  application_info_matcher: ApplicationInfoMatcher,
                  activity_reader: ActivityReader,
-                 files_provider: FilesProvider) -> None:
+                 files_provider: FilesProvider,
+                 localizator: Localizator) -> None:
         super().__init__()
         self.logger = logger
         self.config_reader = config_reader
@@ -59,9 +60,7 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         self.screen_saver_bus_names = self.__dbus_get_screen_saver_bus_names()
 
         self.files_provider = files_provider
-
-        language = self.config_reader.get_language()
-        self.localizator = Localizator(self.files_provider.i18n_dir, language)
+        self.localizator = localizator
 
         self.theme = self.config_reader.get_theme()
         self.active_icon = self.get_icon(IconState.ACTIVE)

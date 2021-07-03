@@ -19,6 +19,7 @@ from config_reader import ConfigReader
 from datetime_formatter import DatetimeFormatter
 from datetime_helper import DatetimeHelper
 from files_provider import FilesProvider
+from localizator import Localizator
 from special_application_info_title import SpecialApplicationInfoTitle
 
 COLORS_SEQUENTIALS = [
@@ -45,7 +46,8 @@ class DashReportServer:
                  logger: logging.Logger,
                  app_config_reader: ConfigReader,
                  activity_reader: ActivityReader,
-                 files_provider: FilesProvider) -> None:
+                 files_provider: FilesProvider,
+                 localizator: Localizator) -> None:
         self.app = Dash(__name__, assets_folder='../assets')
 
         logging.getLogger('werkzeug').setLevel(logging.WARNING)
