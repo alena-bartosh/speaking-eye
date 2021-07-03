@@ -5,6 +5,16 @@ from application_info import ApplicationInfo
 
 
 class Activity:
+    """
+    Activity — is the one of the base concept of speaking-eye.
+    Any user action with a window will turn into Activity.
+    In can be written to file with ActivityWriter or read from raw data with ActivityReader.
+    Also activities are stored in ActivityStatHolder using ActivityStat to compute total time spent in all activities.
+
+    Activity is a more specific concept then ApplicationInfo,
+    so two or more activities with different wm_class or window_name
+    can have the same ApplicationInfo
+    """
     def __init__(self, wm_class: str, window_name: str, start_time: datetime, is_work_time: bool) -> None:
         self.wm_class = wm_class
         self.window_name = window_name
