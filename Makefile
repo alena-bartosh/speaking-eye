@@ -32,7 +32,7 @@ start:
 
 typecheck:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Type checking with mypy"
-	@$(ACTIVATE_VENV) && mypy --show-error-codes --warn-unused-ignores ./src/speaking_eye.py
+	@$(ACTIVATE_VENV) && mypy --strict --show-error-codes --warn-unused-ignores ./src/speaking_eye.py
 	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 lint:
