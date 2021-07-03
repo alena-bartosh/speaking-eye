@@ -211,7 +211,7 @@ class DashReportServer:
         ])
 
     def run(self) -> None:
-        @self.app.callback(
+        @self.app.callback(  # type: ignore[misc]
             Output(ElementId.REPORT_OUTPUT.value, 'children'),
             [
                 Input(ElementId.DATE_PICKER.value, 'start_date'),
