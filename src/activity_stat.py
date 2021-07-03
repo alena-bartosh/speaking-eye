@@ -7,8 +7,10 @@ from activity_helper import ActivityHelper
 class ActivityStat:
     """Store and update the amount of time spent in a certain activity"""
 
-    def __init__(self, work_time: timedelta = timedelta(), off_time: timedelta = timedelta()) -> None:
-        """Can be used for the first reading ApplicationInfo
+    def __init__(self, work_time: timedelta = timedelta(),
+                 off_time: timedelta = timedelta()) -> None:
+        """
+        Can be used for the first reading ApplicationInfo
         from detailed/distracting lists when no activity has started yet
         """
         self.work_time = work_time
@@ -31,7 +33,6 @@ class ActivityStat:
 
         return ActivityStat(work_time, off_time)
 
-    # TODO: check whether activity the same as in from_activity()
     def update(self, activity: Activity) -> None:
         ActivityHelper.raise_if_not_finished(activity)
 
