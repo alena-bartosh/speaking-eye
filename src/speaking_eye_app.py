@@ -77,12 +77,14 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         self.previous_wm_class: Optional[str] = None
 
         self.overtime_timer = \
-            Timer('overtime_timer', handler=self.overtime_timer_handler, interval_ms=1 * 60 * 1000, repeat=True)
+            Timer('overtime_timer', handler=self.overtime_timer_handler,
+                  interval_ms=1 * 60 * 1000, repeat=True, logger=self.logger)
         self.break_timer = \
-            Timer('break_timer', handler=self.break_timer_handler, interval_ms=1 * 60 * 1000, repeat=True)
+            Timer('break_timer', handler=self.break_timer_handler,
+                  interval_ms=1 * 60 * 1000, repeat=True, logger=self.logger)
         self.distracting_app_timer = \
-            Timer('distracting_app_timer', handler=self.distracting_app_timer_handler, interval_ms=1 * 60 * 1000,
-                  repeat=True)
+            Timer('distracting_app_timer', handler=self.distracting_app_timer_handler,
+                  interval_ms=1 * 60 * 1000, repeat=True, logger=self.logger)
 
         self.event = BaseEventEmitter()
 

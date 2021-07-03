@@ -1,10 +1,15 @@
+import logging
 from typing import Callable, Optional
 
 from gi.repository import GLib, GObject
 
 
 class Timer:
-    def __init__(self, name: str, handler: Callable[[], None], interval_ms: int, repeat: bool) -> None:
+    def __init__(self, name: str,
+                 handler: Callable[[], None],
+                 interval_ms: int,
+                 repeat: bool,
+                 logger: logging.Logger) -> None:
         self.name = name
         self.handler = handler
         self.interval_ms = interval_ms
@@ -12,9 +17,11 @@ class Timer:
         self.timer_id: Optional[int] = None
         self.is_started = False
 
+        self.logger = logger
+
     def start(self) -> None:
         if self.is_started:
-            print(f'Timer [{self.name}] has already started')
+            self.logger.debug(f'Timer [{self.name}] has already started, thus will not start again')
             return
 
         self.timer_id = GLib.timeout_add(self.interval_ms, self.__internal_handler)
@@ -22,7 +29,7 @@ class Timer:
 
     def stop(self) -> None:
         if not self.is_started:
-            print(f'Timer [{self.name}] is not started')
+            self.logger.debug(f'Timer [{self.name}] is not started, thus will not stop')
             return
 
         GObject.source_remove(self.timer_id)
