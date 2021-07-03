@@ -34,5 +34,6 @@ class ActivityHelper:
 
     @staticmethod
     def get_days(activity: Activity) -> List[date]:
+        """Get all dates between activity start day and its end day"""
         return DatetimeHelper.get_dates_between(activity.start_time.date(),
                                                 ActivityHelper.get_end_time(activity).date())
