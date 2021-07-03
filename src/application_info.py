@@ -1,4 +1,14 @@
 class ApplicationInfo:
+    """
+    ApplicationInfo — is the one of the base concept of speaking-eye.
+    List of ApplicationInfo is created during the reading speaking-eye config
+    and later it is used for computing different stats that are displayed at reports.
+    ApplicationInfo can be read with ApplicationInfoReader.
+
+    ApplicationInfo is a more broad concept then Activity,
+    because it operates with re expressions.
+    They can be matched with each other using ApplicationInfoMatcher
+    """
 
     def __init__(self, title: str, wm_name_re: str, tab_re: str, is_distracting: bool) -> None:
         self.title = title
