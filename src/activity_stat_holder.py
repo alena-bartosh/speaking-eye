@@ -5,6 +5,7 @@ from activity import Activity
 from activity_helper import ActivityHelper
 from activity_stat import ActivityStat
 from application_info import ApplicationInfo
+from special_application_info_title import SpecialApplicationInfoTitle
 
 KeyType = str
 ItemType = ActivityStat
@@ -36,7 +37,8 @@ class ActivityStatHolder(dict):  # type: ignore[type-arg]
         else:
             self.total_off_time += ActivityHelper.get_activity_time(activity)
 
-        title_from_config = activity.application_info.title if activity.application_info is not None else 'Others'
+        title_from_config = activity.application_info.title if activity.application_info is not None \
+            else SpecialApplicationInfoTitle.OTHERS.value
 
         if title_from_config not in self:
             self[title_from_config] = ActivityStat.from_activity(activity)
