@@ -123,6 +123,10 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         self.new_notification(msg=start_msg).show()
 
     def __dbus_method_call(self, bus_name: str, object_path: str, interface_name: str, method_name: str) -> Any:
+        """
+        D-Bus is a middleware mechanism that allows communication between
+        multiple processes running concurrently on the same machine
+        """
         if not self.connection:
             raise Exception('self.connection should be set!')
 
@@ -150,6 +154,7 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         )
 
     def __dbus_lock_screen(self) -> None:
+        """Try to lock screen with a dbus call"""
         for bus in self.screen_saver_bus_names:
             if bus == 'org.freedesktop.ScreenSaver':
                 # NOTE: that server is just interface without implementation
@@ -178,6 +183,7 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
             wm_class = SpecialWmClass.LOCK_SCREEN.value
             window_name = ''
         else:
+            # the screen has just been unlocked
             if self.is_work_time:
                 self.last_lock_screen_time = now
 
@@ -201,6 +207,7 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
                                              Gio.DBusSignalFlags.NONE, self.__on_screen_saver_active_changed)
 
     def do_activate(self) -> None:
+        """Gtk.Application must call this method to get the application up and running"""
         signal.signal(signal.SIGTERM, self.handle_sigterm)
         self.screen = Wnck.Screen.get_default()
         self.screen.connect('active-window-changed', self.on_active_window_changed)
@@ -270,6 +277,7 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
             self.stop()
 
     def stop(self) -> None:
+        """Stop application work and quit main loop"""
         now = datetime.now()
 
         finish_time = now
@@ -301,6 +309,7 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         self.stop()
 
     def on_open_report_item_click(self, menu_item: Gtk.MenuItem) -> None:
+        """Open page with report in browser"""
         browser = webbrowser.get(self.config_reader.get_report_server_browser())
         host = self.config_reader.get_report_server_host()
         port = self.config_reader.get_report_server_port()
@@ -309,6 +318,10 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         browser.open_new_tab(url)
 
     def set_work_time_state(self, value: bool) -> None:
+        """
+        Try to change work time state. It can be True (working time) or False (not working time).
+        If changed successfully, tray icon & work state checkbox in menu should also change
+        """
         if value == self.is_work_time:
             self.logger.debug('Trying to change is_work_time to the same value')
             return
@@ -338,6 +351,7 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
             self.last_overtime_notification = None
 
     def on_work_state_checkbox_item_click(self, menu_item: Gtk.CheckMenuItem) -> None:
+        """Reverse work time state"""
         self.set_work_time_state(not self.is_work_time)
 
     def __create_work_state_checkbox_item(self) -> Gtk.CheckMenuItem:
@@ -432,6 +446,7 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         self.is_break_notification_allowed_to_show = False
 
     def on_new_day_started(self) -> None:
+        """Reset work time state"""
         open_new_file_msg = self.localizator.get('notification.new_day')
 
         self.logger.debug(open_new_file_msg)
