@@ -15,6 +15,10 @@ DataItemType = Dict[
 
 
 class ApplicationInfoReader:
+    """
+    Try to read data items that consist of app name (title), wm_name, tab
+    and create collection of ApplicationInfo
+    """
 
     def __handle_regular_case(self, data_item: DataItemType, is_distracting: bool) -> ApplicationInfo:
         raw_app_info, = data_item.items()
