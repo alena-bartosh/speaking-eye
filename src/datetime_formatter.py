@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 
 class DatetimeFormatter:
+    """Format date/time objects as a strings or vice versa"""
     __TIME_SEPARATOR = ':'
 
     @staticmethod
@@ -14,6 +15,7 @@ class DatetimeFormatter:
 
     @staticmethod
     def format_time_without_seconds(value: timedelta) -> str:
+        """Take timedelta and return it as a string with hours and minutes"""
         time = DatetimeFormatter.__timedelta_to_datetime(value).time()
         hours = DatetimeFormatter.__days_to_hours(value.days) + time.hour
 
