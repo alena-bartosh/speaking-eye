@@ -110,7 +110,7 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
 
         self.current_activity: Optional[Activity] = None
 
-        self.writer.event.on(ActivityWriter.NEW_DAY_EVENT, self.on_new_day_started)
+        self.writer.event.on(ActivityWriter.NEW_DAY_EVENT, self.__on_new_day_started)
 
         self.logger.debug(f'Set user work time limit to [{self.user_work_time_hour_limit}] hours')
         self.logger.debug(f'Set user user breaks interval to [{self.user_breaks_interval_hours}] hours')
@@ -190,7 +190,7 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
             wm_class = Value.get_or_raise(self.previous_wm_class, 'previous_wm_class')
             window_name = Value.get_or_raise(self.previous_active_window_name, 'previous_active_window_name')
 
-        self.on_open_window(wm_class, window_name, now)
+        self.__on_open_window(wm_class, window_name, now)
 
     def __dbus_get_screen_saver_bus_names(self) -> List[str]:
         bus_names = self.__dbus_get_all_bus_names()
@@ -210,13 +210,13 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         """Gtk.Application must call this method to get the application up and running"""
         signal.signal(signal.SIGTERM, self.handle_sigterm)
         self.screen = Wnck.Screen.get_default()
-        self.screen.connect('active-window-changed', self.on_active_window_changed)
+        self.screen.connect('active-window-changed', self.__on_active_window_changed)
         self.main_loop = GObject.MainLoop()
         self.overtime_timer.start()
         self.break_timer.start()
         self.distracting_app_timer.start()
 
-    def on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
+    def __on_active_window_changed(self, screen: Wnck.Screen, previously_active_window: Gtk.Window) -> None:
         now = datetime.now()
 
         # to prevent double handler connections
@@ -226,21 +226,21 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         active_window = screen.get_active_window()
 
         if active_window:
-            self.name_changed_handler_id = active_window.connect('name-changed', self.on_name_changed)
+            self.name_changed_handler_id = active_window.connect('name-changed', self.__on_name_changed)
             wm_class = get_wm_class(active_window.get_xid())
             window_name = get_window_name(active_window)
         else:
             wm_class = SpecialWmClass.DESKTOP.value
             window_name = ''
 
-        self.on_open_window(wm_class, window_name, now)
+        self.__on_open_window(wm_class, window_name, now)
 
-    def on_open_window(self, wm_class: str, window_name: str, now: datetime) -> None:
+    def __on_open_window(self, wm_class: str, window_name: str, now: datetime) -> None:
         new_activity = Activity(wm_class, window_name, now, self.is_work_time)
 
         self.__on_activity_changed(self.current_activity, new_activity)
 
-    def on_name_changed(self, window: Wnck.Window) -> None:
+    def __on_name_changed(self, window: Wnck.Window) -> None:
         now = datetime.now()
 
         current_activity = Value.get_or_raise(self.current_activity, 'current_activity')
@@ -305,10 +305,10 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
 
         self.main_loop.quit()  # type: ignore[union-attr]
 
-    def on_close_item_click(self, menu_item: Gtk.MenuItem) -> None:
+    def __on_close_item_click(self, menu_item: Gtk.MenuItem) -> None:
         self.stop()
 
-    def on_open_report_item_click(self, menu_item: Gtk.MenuItem) -> None:
+    def __on_open_report_item_click(self, menu_item: Gtk.MenuItem) -> None:
         """Open page with report in browser"""
         browser = webbrowser.get(self.config_reader.get_report_server_browser())
         host = self.config_reader.get_report_server_host()
@@ -366,26 +366,26 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         menu.append(work_state_checkbox_item)
 
         open_report_item = Gtk.MenuItem(self.localizator.get('tray.open_report'))
-        open_report_item.connect('activate', self.on_open_report_item_click)
+        open_report_item.connect('activate', self.__on_open_report_item_click)
         menu.append(open_report_item)
 
         menu.append(Gtk.SeparatorMenuItem())
 
         close_item = Gtk.MenuItem(self.localizator.get('tray.close'))
-        close_item.connect('activate', self.on_close_item_click)
+        close_item.connect('activate', self.__on_close_item_click)
         menu.append(close_item)
 
         menu.show_all()
 
         return menu
 
-    def on_overtime_notification_closed(self) -> None:
+    def __on_overtime_notification_closed(self) -> None:
         self.is_overtime_notification_allowed_to_show = True
 
-    def on_finish_work_action_clicked(self) -> None:
+    def __on_finish_work_action_clicked(self) -> None:
         self.set_work_time_state(False)
 
-    def on_take_break_clicked(self) -> None:
+    def __on_take_break_clicked(self) -> None:
         self.__dbus_lock_screen()
 
     def new_notification(self,
@@ -405,8 +405,8 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
             self.localizator.get('notification.overtime.right_button')  # remind_later
         ))
 
-        notification.event.on(NotificationEvent.CLOSED.value, self.on_overtime_notification_closed)
-        notification.event.on(NotificationEvent.LEFT_BUTTON_CLICKED.value, self.on_finish_work_action_clicked)
+        notification.event.on(NotificationEvent.CLOSED.value, self.__on_overtime_notification_closed)
+        notification.event.on(NotificationEvent.LEFT_BUTTON_CLICKED.value, self.__on_finish_work_action_clicked)
 
         notification.show()
 
@@ -438,14 +438,14 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         ))
 
         notification.event.on(NotificationEvent.CLOSED.value, self.__on_break_notification_closed)
-        notification.event.on(NotificationEvent.LEFT_BUTTON_CLICKED.value, self.on_take_break_clicked)
+        notification.event.on(NotificationEvent.LEFT_BUTTON_CLICKED.value, self.__on_take_break_clicked)
 
         notification.show()
 
         self.last_break_notification = notification
         self.is_break_notification_allowed_to_show = False
 
-    def on_new_day_started(self) -> None:
+    def __on_new_day_started(self) -> None:
         """Reset work time state"""
         open_new_file_msg = self.localizator.get('notification.new_day')
 
