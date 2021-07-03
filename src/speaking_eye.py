@@ -54,7 +54,7 @@ def dash_report_server_main(logger: logging.Logger,
 
 def main() -> None:
     src_dir = os.path.dirname(os.path.abspath(__file__))
-    config_full_path = os.path.join(src_dir, '../config/config_example.yaml')
+    config_full_path = os.path.join(src_dir, '../config/config.yaml')
 
     parser = argparse.ArgumentParser(description=f'[{APP_ID}] Track & analyze your computer activity')
     parser.add_argument('--log-level', type=str, choices=['debug', 'info', 'warning', 'error'],
