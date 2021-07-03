@@ -10,9 +10,11 @@ from theme import Theme
 
 
 class ConfigReader:
+    """
+    Parse config and get values from it.
+    Allows to create application info lists based on config nodes
+    """
     ConfigType = Dict[str, Any]
-
-    # TODO: Add enum for all config keys
 
     class ConfigKey(Enum):
         DETAILED_NODE = 'detailed'
