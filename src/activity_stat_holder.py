@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import List, ItemsView
+from typing import List, ItemsView, cast
 
 from activity import Activity
 from activity_helper import ActivityHelper
@@ -11,7 +11,7 @@ ItemType = ActivityStat
 ActivityStatHolderItemsType = ItemsView[KeyType, ItemType]
 
 
-class ActivityStatHolder(dict):
+class ActivityStatHolder(dict):  # type: ignore[type-arg]
     """Store ActivityStat objects and compute total time spent in all activities"""
 
     def __init__(self, activities: List[Activity]) -> None:
@@ -64,7 +64,7 @@ class ActivityStatHolder(dict):
         super().__setitem__(app_name, item)
 
     def __getitem__(self, app_name: KeyType) -> ItemType:
-        return super().__getitem__(app_name)
+        return cast(ItemType, super().__getitem__(app_name))
 
     def __contains__(self, app_name: KeyType) -> bool:  # type: ignore[override]
         return super().__contains__(app_name)
