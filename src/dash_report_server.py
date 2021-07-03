@@ -42,6 +42,13 @@ GetActivityStatHolderResultType = Tuple[
 
 
 class DashReportServer:
+
+    class ColumnName(Enum):
+        TITLE = 'title'
+        WORK_TIME = 'work_time'
+        MEAN_WORK_TIME = 'mean_work_time'
+        MEAN_WORK_TIME_STR = 'mean_work_time_str'
+
     def __init__(self,
                  logger: logging.Logger,
                  app_config_reader: ConfigReader,
@@ -138,16 +145,23 @@ class DashReportServer:
         report_data = {title: stat.work_time for title, stat in activity_stat_holder.items()}
 
         report = pd.DataFrame().from_dict(report_data, orient='index').reset_index()
-        # TODO: use enum for column names
-        report.columns = ['title', 'work_time']
-        report['work_time'] = pd.to_timedelta(report['work_time'])
 
-        report = report.loc[report['work_time'].gt(timedelta(0))]
-        report['mean_work_time'] = report['work_time'] / active_days_count
+        work_time_col = self.ColumnName.WORK_TIME.value
+        mean_work_time_col = self.ColumnName.MEAN_WORK_TIME.value
+        mean_work_time_str_col = self.ColumnName.MEAN_WORK_TIME_STR.value
+
+        report.columns = [
+            self.ColumnName.TITLE.value,
+            work_time_col,
+        ]
+        report[work_time_col] = pd.to_timedelta(report[work_time_col])
+
+        report = report.loc[report[work_time_col].gt(timedelta(0))]
+        report[mean_work_time_col] = report[work_time_col] / active_days_count
 
         # from timedelta as a string extract only time
         time_re = re.compile(r'.*([\d]{2}):([\d]{2}):([\d]{2}).*')
-        report['mean_work_time_str'] = report['mean_work_time'].astype(str).str.replace(time_re, r'\1:\2:\3')
+        report[mean_work_time_str_col] = report[mean_work_time_col].astype(str).str.replace(time_re, r'\1:\2:\3')
 
         return report
 
@@ -157,9 +171,9 @@ class DashReportServer:
             return html.Div(self.localizator.get('report_server.no_data'))
 
         figure = px.pie(report,
-                        values='mean_work_time',
-                        names='title',
-                        custom_data=['mean_work_time_str'],
+                        values=self.ColumnName.MEAN_WORK_TIME.value,
+                        names=self.ColumnName.TITLE.value,
+                        custom_data=[self.ColumnName.MEAN_WORK_TIME_STR.value],
                         color_discrete_sequence=self.colors)
         figure.update(layout_showlegend=False)
 
