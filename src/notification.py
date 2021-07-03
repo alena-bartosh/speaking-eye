@@ -25,6 +25,10 @@ ButtonCaptionsType = Tuple[
 
 
 class Notification:
+    """
+    Create notification with the specified urgency, message, icon.
+    Add buttons and listenable events for notification closing / buttons clicking
+    """
     __notification_button_to_event_map = {
         NotificationButton.LEFT.value: NotificationEvent.LEFT_BUTTON_CLICKED.value,
         NotificationButton.RIGHT.value: NotificationEvent.RIGHT_BUTTON_CLICKED.value,
@@ -58,6 +62,7 @@ class Notification:
         self.event.emit(event)
 
     def add_buttons(self, button_captions: ButtonCaptionsType) -> None:
+        """Add two active buttons to notification - left and right"""
         left, right = button_captions
 
         self.__raw_notification.add_action(
