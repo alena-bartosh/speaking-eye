@@ -23,19 +23,12 @@ from gtk_extras import get_window_name
 from icon_state import IconState
 from localizator import Localizator
 from notification import Notification, NotificationEvent
+from notification_emojis import BREAK_TIME_EMOJIS, DISTRACTING_NOTIFICATION_EMOJIS
 from special_wm_class import SpecialWmClass
 from timer import Timer
 from tray_icon import TrayIcon
 from value import Value
 from x_helpers import get_wm_class
-
-BREAK_TIME_EMOJIS = ['🐵', '✋', '🙃', '💆', '💣', '😎',
-                     '🙇', '🙋', '🚣', '🤸', '🧟', '🐙',
-                     '🐧', '☕', '🍌', '🥐', '🆓', '🔮']
-
-DISTRACTING_NOTIFICATION_EMOJIS = ['🧐', '🌓', '🥤', '💼', '🐘', '🥴',
-                                   '🤖', '💭', '🧠', '🤵', '🤹', '🏤',
-                                   '🦊', '🦁', '🎡', '🐰', '🍩', '🐞']
 
 
 class ApplicationEvent(Enum):
