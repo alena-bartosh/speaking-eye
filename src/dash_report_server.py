@@ -114,6 +114,7 @@ class DashReportServer:
         return holder, active_days_count
 
     def __get_layout(self) -> html.Div:
+        """Get layout with calendar (DatePickerRange) & loading spinner & report output"""
         today = date.today()
 
         return html.Div(
@@ -142,6 +143,7 @@ class DashReportServer:
         )
 
     def __get_report(self, activity_stat_holder: ActivityStatHolder, active_days_count: int) -> pd.DataFrame:
+        """Transform data from ActivityStatHolder to DataFrame for report"""
         report_data = {title: stat.work_time for title, stat in activity_stat_holder.items()}
 
         report = pd.DataFrame().from_dict(report_data, orient='index').reset_index()
@@ -241,6 +243,7 @@ class DashReportServer:
         )
         def handle_date_picker_change(start_date_value: str,
                                       end_date_value: str) -> Optional[html.Div]:
+            """Update report output when date range on calendar (DatePickerRange) is changed"""
             try:
                 start_date = datetime.strptime(start_date_value, '%Y-%m-%d').date()
                 end_date = datetime.strptime(end_date_value, '%Y-%m-%d').date()
