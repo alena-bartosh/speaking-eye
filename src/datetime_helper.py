@@ -9,6 +9,8 @@ DateRange = Tuple[
 
 
 class DatetimeHelper:
+    """Extra methods for working with date/time objects"""
+
     @staticmethod
     def get_dates_between(start: date, end: date) -> List[date]:
         if end < start:
@@ -23,6 +25,7 @@ class DatetimeHelper:
 
     @staticmethod
     def get_date_range(date_: date) -> DateRange:
+        """Get start & end point for the specific date"""
         start = datetime(date_.year, date_.month, date_.day)
         end = start + timedelta(days=1) - timedelta(microseconds=1)
 
