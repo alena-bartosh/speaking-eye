@@ -148,14 +148,20 @@ class DashReportServer:
 
         report = pd.DataFrame().from_dict(report_data, orient='index').reset_index()
 
+        title_col = self.ColumnName.TITLE.value
         work_time_col = self.ColumnName.WORK_TIME.value
         mean_work_time_col = self.ColumnName.MEAN_WORK_TIME.value
         mean_work_time_str_col = self.ColumnName.MEAN_WORK_TIME_STR.value
 
         report.columns = [
-            self.ColumnName.TITLE.value,
+            title_col,
             work_time_col,
         ]
+        report.loc[report[title_col].eq(SpecialApplicationInfoTitle.BREAK_TIME.value), title_col] = \
+            self.localizator.get('report_server.special_title.break_time')
+        report.loc[report[title_col].eq(SpecialApplicationInfoTitle.OTHERS.value), title_col] = \
+            self.localizator.get('report_server.special_title.others')
+
         report[work_time_col] = pd.to_timedelta(report[work_time_col])
 
         report = report.loc[report[work_time_col].gt(timedelta(0))]

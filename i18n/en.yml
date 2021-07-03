@@ -49,3 +49,7 @@ en:
     days_text: 'day(s)'
     no_data: 'No data for selected date range using current config!'
     error: 'Something went wrong: [%{err}]'
+
+    special_title:
+      break_time: 'Break Time'
+      others: 'Others'
