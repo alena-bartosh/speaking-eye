@@ -35,7 +35,7 @@ from speaking_eye_app import SpeakingEyeApp  # noqa: E402
 APP_ID = 'speaking-eye'
 
 
-def app_exit(logger: logging.Logger, msg: str) -> None:
+def app_exit_with_failure(logger: logging.Logger, msg: str) -> None:
     logger.error(msg)
     sys.exit(1)
 
@@ -78,7 +78,7 @@ def main() -> None:
     try:
         fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except IOError:
-        app_exit(logger, msg='Another instance is already running!')
+        app_exit_with_failure(logger, msg='Another instance is already running!')
 
     config: Optional[ConfigReader.ConfigType] = None
     error_config_msg = 'Speaking Eye does not work without config. Bye baby!'
@@ -88,11 +88,11 @@ def main() -> None:
             config = yaml.safe_load(config_file)
     except Exception:
         logger.exception(f'Config [{args.config}] is not correct')
-        app_exit(logger, error_config_msg)
+        app_exit_with_failure(logger, error_config_msg)
 
     if not config:
         logger.error(f'Config [{args.config}] is empty')
-        app_exit(logger, error_config_msg)
+        app_exit_with_failure(logger, error_config_msg)
         # NOTE: return is needed for correct mypy checks (config type)
         return
 
@@ -108,7 +108,7 @@ def main() -> None:
             ConfigReader.ConfigKey.DISTRACTING_NODE)
     except Exception:
         logger.exception('Error while reading config!')
-        app_exit(logger, error_config_msg)
+        app_exit_with_failure(logger, error_config_msg)
         # NOTE: return is needed for correct mypy checks (detailed_app_infos & distracting_app_infos types)
         return
 
