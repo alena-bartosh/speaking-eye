@@ -8,6 +8,7 @@ import sys
 import tempfile
 import threading
 from pathlib import Path
+from typing import Optional
 
 import coloredlogs
 import gi
@@ -49,7 +50,7 @@ def dash_report_server_main(logger: logging.Logger,
         logger.exception('Could not start Report Server!')
 
 
-def main():
+def main() -> None:
     src_dir = os.path.dirname(os.path.abspath(__file__))
     config_full_path = os.path.join(src_dir, '../config/config_example.yaml')
 
@@ -77,7 +78,7 @@ def main():
     except IOError:
         app_exit(logger, msg='Another instance is already running!')
 
-    config = None
+    config: Optional[ConfigReader.ConfigType] = None
     error_config_msg = 'Speaking Eye does not work without config. Bye baby!'
 
     try:
@@ -90,6 +91,8 @@ def main():
     if not config:
         logger.error(f'Config [{args.config}] is empty')
         app_exit(logger, error_config_msg)
+        # NOTE: return is needed for correct mypy checks (config type)
+        return
 
     application_info_reader = ApplicationInfoReader()
     config_reader = ConfigReader(application_info_reader, config)
