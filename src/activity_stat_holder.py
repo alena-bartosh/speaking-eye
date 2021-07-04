@@ -25,6 +25,11 @@ class ActivityStatHolder(dict):  # type: ignore[type-arg]
             self.update_stat(activity)
 
     def initialize_stats(self, application_infos: List[ApplicationInfo]) -> None:
+        """
+        Add to holder all titles from app info list
+        even if there was not activity in these apps to
+        simplify further holder uses and stats analyses
+        """
         for application_info in application_infos:
             if application_info.title in self:
                 continue
