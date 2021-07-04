@@ -2,6 +2,7 @@ import unittest
 from datetime import datetime, timedelta
 
 from activity import Activity
+from application_info import ApplicationInfo
 
 
 class ActivityTestCase(unittest.TestCase):
@@ -89,3 +90,13 @@ class ActivityTestCase(unittest.TestCase):
         for sub_test, another_activity in sub_tests_data.items():
             with self.subTest(name=sub_test):
                 self.assertNotEqual(activity, another_activity)
+
+    def test_when_set_application_info(self):
+        start_time = datetime(2021, 7, 4, 12, 0, 0)
+        application_info = ApplicationInfo('title', 'wm_name_re', 'tab_re', is_distracting=False)
+
+        activity = Activity('wm_class', 'window_name', start_time, is_work_time=True)
+        self.assertIsNone(activity.application_info)
+
+        activity.set_application_info(application_info)
+        self.assertEqual(application_info, activity.application_info)
