@@ -64,5 +64,7 @@ class Activity:
 
         return self.application_info == other.application_info
 
-    def set_application_info(self, value: ApplicationInfo) -> None:
+    def set_application_info(self, value: ApplicationInfo) -> 'Activity':
         self.application_info = value
+
+        return self
