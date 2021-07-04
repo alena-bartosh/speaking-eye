@@ -38,3 +38,46 @@ class ActivityStatHolderTestCase(unittest.TestCase):
         self.assertEqual(holder['title2'], ActivityStat(timedelta(minutes=5), timedelta()))
         self.assertEqual(holder[SpecialApplicationInfoTitle.OTHERS.value],
                          ActivityStat(timedelta(), timedelta(hours=2)))
+
+    def test_when_initialize_stats(self) -> None:
+        additional_activity = Activity('wm_name3', 'tab3', datetime(2021, 7, 4, 23, 35), True)
+        additional_activity.set_end_time(datetime(2021, 7, 4, 23, 40))
+        additional_activity.set_application_info(ApplicationInfo('title3', 'wm_name3', 'tab3', False))
+
+        holder = ActivityStatHolder([additional_activity])
+        empty_activity_stat = ActivityStat(timedelta(), timedelta())
+
+        detailed_app_infos = [
+            self.activities['ordinary_activity'].application_info,
+            additional_activity.application_info
+        ]
+        holder.initialize_stats(detailed_app_infos)
+        self.assertEqual(len(holder), 2)
+        self.assertEqual(holder['title1'], empty_activity_stat)
+        self.assertEqual(holder['title3'], ActivityStat(timedelta(minutes=5), timedelta()))
+
+        youtube_app_info = ApplicationInfo('youtube', 'firefox', 'youtube', True)
+        distracting_app_infos = [
+            self.activities['distracting_activity'].application_info,
+            youtube_app_info
+        ]
+        holder.initialize_stats(distracting_app_infos)
+        self.assertEqual(len(holder), 4)
+        self.assertEqual(holder['title2'], empty_activity_stat)
+        self.assertEqual(holder['youtube'], empty_activity_stat)
+
+    def test_when_get_correct_group_work_time(self) -> None:
+        holder = ActivityStatHolder([activity for activity in self.activities.values()])
+
+        correct_group_titles = ['title1', 'title2']
+        self.assertEqual(holder.get_group_work_time(correct_group_titles), timedelta(hours=1, minutes=5))
+
+    def test_when_get_incorrect_group_work_time(self) -> None:
+        holder = ActivityStatHolder([activity for activity in self.activities.values()])
+
+        incorrect_group_titles = ['I am bad title that is missing in holder!']
+        with self.assertRaisesRegex(
+                RuntimeError,
+                expected_regex='ActivityStatHolder does not contain stat for '
+                               '\[ActivityStat.title=I am bad title that is missing in holder!\]!'):
+            holder.get_group_work_time(incorrect_group_titles)
