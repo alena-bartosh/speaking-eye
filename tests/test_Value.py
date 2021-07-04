@@ -43,3 +43,11 @@ class ValueTestCase(unittest.TestCase):
 
         for (value_getter, default, expected) in test_cases:
             self.assertEqual(expected, Value.get_by_getter_or_default(value_getter, default))
+
+    def test_get_or_raise_correct_value(self):
+        result = Value.get_or_raise(1, 'correct value')
+        self.assertEqual(result, 1)
+
+    def test_get_or_raise_none_value(self):
+        with self.assertRaisesRegex(ValueError, expected_regex='Value \[none_value\] is None!'):
+            Value.get_or_raise(None, 'none_value')
