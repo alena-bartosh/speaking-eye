@@ -81,3 +81,14 @@ class ActivityStatHolderTestCase(unittest.TestCase):
                 expected_regex='ActivityStatHolder does not contain stat for '
                                '\[ActivityStat.title=I am bad title that is missing in holder!\]!'):
             holder.get_group_work_time(incorrect_group_titles)
+
+    def test_when_update_stat(self) -> None:
+        holder = ActivityStatHolder([self.activities['ordinary_activity']])
+        self.assertEqual(holder['title1'], ActivityStat(timedelta(hours=1), timedelta()))
+
+        next_ordinary_activity = Activity('wm_name1', 'tab1', datetime(2021, 7, 4, 22, 0), True)
+        next_ordinary_activity.set_end_time(datetime(2021, 7, 4, 22, 20))
+        next_ordinary_activity.set_application_info(ApplicationInfo('title1', 'wm_name1', 'tab1', False))
+
+        holder.update_stat(next_ordinary_activity)
+        self.assertEqual(holder['title1'], ActivityStat(timedelta(hours=1, minutes=20), timedelta()))
