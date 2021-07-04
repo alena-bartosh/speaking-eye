@@ -40,3 +40,16 @@ class ActivityStat:
             self.work_time += ActivityHelper.get_activity_time(activity)
         else:
             self.off_time += ActivityHelper.get_activity_time(activity)
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Overrides the default implementation
+        to use the object values instead of identifiers for comparison
+        """
+        if not isinstance(other, ActivityStat):
+            return False
+
+        if self.work_time != other.work_time:
+            return False
+
+        return self.off_time == other.off_time
