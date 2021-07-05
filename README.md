@@ -174,4 +174,4 @@ make checks
 
 ### Special thanks
 
-* [@s373r](https://github.com/s373r) for mentoring and your love for me and typing
+* [@s373r](https://github.com/s373r) for mentoring and your love for me and strong typing
