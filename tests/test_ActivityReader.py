@@ -37,11 +37,12 @@ class ActivityReaderTestCase(unittest.TestCase):
         mock_open_res.assert_called_once_with(str(raw_data_file))
 
         expected_activities = [
-            Activity('wm_name1', 'tab1', datetime(2021, 7, 4, 20, 30, 0, 1), True)\
-                .set_end_time(datetime(2021, 7, 4, 21, 30, 0, 2)),
-            Activity('wm_name2', 'tab2', datetime(2021, 7, 4, 21, 30, 0, 3), False)\
-                .set_end_time(datetime(2021, 7, 4, 21, 35, 0, 4))\
-                .set_application_info(self.reader.matcher.detailed_app_infos[0]),
+            Activity('wm_name1', 'tab1', datetime(2021, 7, 4, 20, 30, 0, 1), True)
+            .set_end_time(datetime(2021, 7, 4, 21, 30, 0, 2)),
+
+            Activity('wm_name2', 'tab2', datetime(2021, 7, 4, 21, 30, 0, 3), False)
+            .set_end_time(datetime(2021, 7, 4, 21, 35, 0, 4))
+            .set_application_info(self.reader.matcher.detailed_app_infos[0]),
         ]
 
         self.assertListEqual(result_activities, expected_activities)

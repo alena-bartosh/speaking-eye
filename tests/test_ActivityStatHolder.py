@@ -79,7 +79,7 @@ class ActivityStatHolderTestCase(unittest.TestCase):
         with self.assertRaisesRegex(
                 RuntimeError,
                 expected_regex='ActivityStatHolder does not contain stat for '
-                               '\[ActivityStat.title=I am bad title that is missing in holder!\]!'):
+                               '\\[ActivityStat.title=I am bad title that is missing in holder!\\]!'):
             holder.get_group_work_time(incorrect_group_titles)
 
     def test_when_update_stat(self) -> None:

@@ -49,5 +49,5 @@ class ValueTestCase(unittest.TestCase):
         self.assertEqual(result, 1)
 
     def test_get_or_raise_none_value(self):
-        with self.assertRaisesRegex(ValueError, expected_regex='Value \[none_value\] is None!'):
+        with self.assertRaisesRegex(ValueError, expected_regex='Value \\[none_value\\] is None!'):
             Value.get_or_raise(None, 'none_value')
