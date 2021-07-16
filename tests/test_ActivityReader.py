@@ -12,10 +12,8 @@ from application_info_matcher import ApplicationInfoMatcher
 
 
 class ActivityReaderTestCase(unittest.TestCase):
-    read_data = [
-        '2021-07-04 20:30:00.000001\t2021-07-04 21:30:00.000002\t1:00:00.000001\twm_name1\ttab1\tTrue\n',
-        '2021-07-04 21:30:00.000003\t2021-07-04 21:35:00.000004\t0:05:00.000001\twm_name2\ttab2\tFalse\n',
-    ]
+    read_data = '2021-07-04 20:30:00.000001\t2021-07-04 21:30:00.000002\t1:00:00.000001\twm_name1\ttab1\tTrue\n' \
+                '2021-07-04 21:30:00.000003\t2021-07-04 21:35:00.000004\t0:05:00.000001\twm_name2\ttab2\tFalse\n'
 
     def setUp(self) -> None:
         detailed_app_infos = [ApplicationInfo('title', 'wm_name2', 'tab2', False)]
