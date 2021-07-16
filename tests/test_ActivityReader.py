@@ -28,18 +28,18 @@ class ActivityReaderTestCase(unittest.TestCase):
     def test_when_read_successfully(self, mock_exists_res, mock_open_res) -> None:
         raw_data_file = Path('/root_dir/raw_data_file.tsv')
 
-        print(f'DEBUG: [python={sys.version}]')
-        print('DEBUG: START test_when_read_successfully')
+        # print(f'DEBUG: [python={sys.version}]')
+        # print('DEBUG: START test_when_read_successfully')
 
         # NOTE: mock_open does not properly handle iterating over the open file with "for line in file",
         #       so need to set the return value like this
-        mock_open_res.return_value.__iter__.return_value = self.read_data
-
-        print(f'DEBUG: [mock_open_res={mock_open_res}]')
-        print(f'DEBUG: [mock_open_res.return_value.__iter__.return_value='
-              f'{mock_open_res.return_value.__iter__.return_value}]')
-        print(f'DEBUG: [mock_open_res.return_value='
-              f'{mock_open_res.return_value}]')
+        # mock_open_res.return_value.__iter__.return_value = self.read_data
+        #
+        # print(f'DEBUG: [mock_open_res={mock_open_res}]')
+        # print(f'DEBUG: [mock_open_res.return_value.__iter__.return_value='
+        #       f'{mock_open_res.return_value.__iter__.return_value}]')
+        # print(f'DEBUG: [mock_open_res.return_value='
+        #       f'{mock_open_res.return_value}]')
 
         result_activities = self.reader.read(raw_data_file)
 
