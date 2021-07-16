@@ -1,4 +1,5 @@
 import logging
+import sys
 import unittest
 from datetime import datetime
 from pathlib import Path
@@ -27,11 +28,22 @@ class ActivityReaderTestCase(unittest.TestCase):
     def test_when_read_successfully(self, mock_exists_res, mock_open_res) -> None:
         raw_data_file = Path('/root_dir/raw_data_file.tsv')
 
+        print(f'DEBUG: [python={sys.version}]')
+        print('DEBUG: START test_when_read_successfully')
+
         # NOTE: mock_open does not properly handle iterating over the open file with "for line in file",
         #       so need to set the return value like this
         mock_open_res.return_value.__iter__.return_value = self.read_data
 
+        print(f'DEBUG: [mock_open_res={mock_open_res}]')
+        print(f'DEBUG: [mock_open_res.return_value.__iter__.return_value='
+              f'{mock_open_res.return_value.__iter__.return_value}]')
+        print(f'DEBUG: [mock_open_res.return_value='
+              f'{mock_open_res.return_value}]')
+
         result_activities = self.reader.read(raw_data_file)
+
+        print(f'DEBUG: [result_activities={result_activities}]')
 
         self.assertEqual(mock_exists_res.call_count, 1)
         mock_open_res.assert_called_once_with(str(raw_data_file))
