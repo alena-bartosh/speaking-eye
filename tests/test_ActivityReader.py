@@ -1,5 +1,4 @@
 import logging
-# import sys
 import unittest
 from datetime import datetime
 from pathlib import Path
@@ -12,8 +11,10 @@ from application_info_matcher import ApplicationInfoMatcher
 
 
 class ActivityReaderTestCase(unittest.TestCase):
-    read_data = '2021-07-04 20:30:00.000001\t2021-07-04 21:30:00.000002\t1:00:00.000001\twm_name1\ttab1\tTrue\n' \
-                '2021-07-04 21:30:00.000003\t2021-07-04 21:35:00.000004\t0:05:00.000001\twm_name2\ttab2\tFalse\n'
+    read_data = [
+        '2021-07-04 20:30:00.000001\t2021-07-04 21:30:00.000002\t1:00:00.000001\twm_name1\ttab1\tTrue\n',
+        '2021-07-04 21:30:00.000003\t2021-07-04 21:35:00.000004\t0:05:00.000001\twm_name2\ttab2\tFalse\n'
+    ]
 
     def setUp(self) -> None:
         detailed_app_infos = [ApplicationInfo('title', 'wm_name2', 'tab2', False)]
@@ -21,27 +22,16 @@ class ActivityReaderTestCase(unittest.TestCase):
         self.reader = ActivityReader(logger=logging.Logger('ActivityReaderTestCase'),
                                      matcher=ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos))
 
-    @patch('builtins.open', new_callable=mock_open, read_data=read_data)
+    @patch('builtins.open', new_callable=mock_open, read_data=''.join(read_data))
     @patch('pathlib.Path.exists', return_value=True)
     def test_when_read_successfully(self, mock_exists_res, mock_open_res) -> None:
         raw_data_file = Path('/root_dir/raw_data_file.tsv')
 
-        # print(f'DEBUG: [python={sys.version}]')
-        # print('DEBUG: START test_when_read_successfully')
-
         # NOTE: mock_open does not properly handle iterating over the open file with "for line in file",
-        #       so need to set the return value like this
-        # mock_open_res.return_value.__iter__.return_value = self.read_data
-        #
-        # print(f'DEBUG: [mock_open_res={mock_open_res}]')
-        # print(f'DEBUG: [mock_open_res.return_value.__iter__.return_value='
-        #       f'{mock_open_res.return_value.__iter__.return_value}]')
-        # print(f'DEBUG: [mock_open_res.return_value='
-        #       f'{mock_open_res.return_value}]')
+        #       so need to set the return value like this (for python 3.6)
+        mock_open_res.return_value.__iter__.return_value = self.read_data
 
         result_activities = self.reader.read(raw_data_file)
-
-        print(f'DEBUG: [result_activities={result_activities}]')
 
         self.assertEqual(mock_exists_res.call_count, 1)
         mock_open_res.assert_called_once_with(str(raw_data_file))
