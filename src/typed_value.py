@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Mapping, Sequence, Type, TypeVar, Union
+from typing import Any, Dict, List, Mapping, Sequence, Type, TypeVar, Union, cast
 
 from pydash import get
 from typeguard import check_type
@@ -12,10 +12,12 @@ class TypedValue:
     def check_type(name: str, value: Any, value_type: Type[T]) -> T:
         check_type(name, value, value_type)
 
-        return value
+        return cast(T, value)
 
+    # TODO: Optional or Union as value_type does not work
     @staticmethod
-    def get(obj: Union[List, Dict, Sequence, Mapping], path: str, value_type: Type[T], default_value: T) -> T:
+    def get(obj: Union[List[Any], Dict[Any, Any], Sequence[Any], Mapping[Any, Any]],
+            path: str, value_type: Type[T], default_value: T) -> T:
         """
         Get a value from an object by path if the value has requested type.
         Raise exception otherwise
