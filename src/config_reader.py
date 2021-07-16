@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, List, Dict, Optional, cast
+from typing import Any, List, Dict, Optional
 
 from pydash import get
 
@@ -7,6 +7,7 @@ from application_info import ApplicationInfo
 from application_info_reader import ApplicationInfoReader
 from language import Language
 from theme import Theme
+from typed_value import TypedValue
 
 
 class ConfigReader:
@@ -30,6 +31,7 @@ class ConfigReader:
         """Try to read detailed/distracting ApplicationInfos from app config"""
         apps_list_node = f'apps.{config_key.value}'
 
+        # TODO: get with TypedValue.get() to check types
         app_list = get(self.config, apps_list_node)
 
         is_distracting = config_key == self.ConfigKey.DISTRACTING_NODE
@@ -42,27 +44,26 @@ class ConfigReader:
 
         raise RuntimeError(f'Path [{apps_list_node}] should be set in config!')
 
-    # TODO: for all get_* funcs need to validate value type (e.g. work_time_hours must be int)
     def get_work_time_limit(self) -> int:
-        return get(self.config, 'time_limits.work_time_hours') or 9
+        return TypedValue.get(self.config, 'time_limits.work_time_hours', int, 9)
 
     def get_breaks_interval_hours(self) -> int:
-        return get(self.config, 'time_limits.breaks_interval_hours') or 3
+        return TypedValue.get(self.config, 'time_limits.breaks_interval_hours', int, 3)
 
     def get_distracting_apps_mins(self) -> int:
-        return get(self.config, 'time_limits.distracting_apps_mins') or 15
+        return TypedValue.get(self.config, 'time_limits.distracting_apps_mins', int, 15)
 
     def get_report_server_host(self) -> str:
-        return get(self.config, 'report_server.host') or 'localhost'
+        return TypedValue.get(self.config, 'report_server.host', str, 'localhost')
 
     def get_report_server_port(self) -> int:
-        return get(self.config, 'report_server.port') or 3838
+        return TypedValue.get(self.config, 'report_server.port', int, 3838)
 
     def get_report_server_browser(self) -> Optional[str]:
-        return cast(Optional[str], get(self.config, 'report_server.browser', default=None))
+        return TypedValue.get(self.config, 'report_server.browser', Optional[str], None)  # type: ignore[arg-type]
 
     def get_report_server_ignore_weekends(self) -> bool:
-        return cast(bool, get(self.config, 'report_server.ignore_weekends', default=True))
+        return TypedValue.get(self.config, 'report_server.ignore_weekends', bool, True)
 
     def get_language(self) -> Language:
         return Language.parse(get(self.config, 'language'), Language.ENGLISH)
