@@ -23,7 +23,7 @@ class ActivityReaderTestCase(unittest.TestCase):
         self.reader = ActivityReader(logger=logging.Logger('ActivityReaderTestCase'),
                                      matcher=ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos))
 
-    @patch('builtins.open', new_callable=mock_open)
+    @patch('builtins.open', new_callable=mock_open, read_data=read_data)
     @patch('pathlib.Path.exists', return_value=True)
     def test_when_read_successfully(self, mock_exists_res, mock_open_res) -> None:
         raw_data_file = Path('/root_dir/raw_data_file.tsv')
