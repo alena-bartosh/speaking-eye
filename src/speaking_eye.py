@@ -69,9 +69,12 @@ def main() -> None:
         'error': logging.ERROR
     }
 
+    # TODO: raise & exit if XDG_SESSION_TYPE is not x11 (check env vars for that)
+
     coloredlogs.install(log_level_map[args.log_level])
     logger = logging.getLogger(APP_ID)
 
+    # TODO: It can be extracted into separate package with name like "run_once" -->
     pid_file = f'{tempfile.gettempdir()}/{APP_ID}.pid'
     fp = open(pid_file, 'w')
 
@@ -79,6 +82,7 @@ def main() -> None:
         fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except IOError:
         app_exit_with_failure(logger, msg='Another instance is already running!')
+    # <--
 
     config: Optional[ConfigReader.ConfigType] = None
     error_config_msg = 'Speaking Eye does not work without config. Bye baby!'
