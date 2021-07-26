@@ -7,7 +7,6 @@ import os
 import sys
 import tempfile
 import threading
-from pathlib import Path
 from typing import List, Optional
 
 import coloredlogs
@@ -18,6 +17,7 @@ from activity_reader import ActivityReader
 from application_info import ApplicationInfo
 from application_info_matcher import ApplicationInfoMatcher
 from application_info_reader import ApplicationInfoReader
+from bundle_helpers import is_frozen_bundle, get_current_dir
 from config_reader import ConfigReader
 from dash_report_server import DashReportServer
 from files_provider import FilesProvider
@@ -53,8 +53,10 @@ def dash_report_server_main(logger: logging.Logger,
 
 
 def main() -> None:
-    src_dir = os.path.dirname(os.path.abspath(__file__))
-    config_full_path = os.path.join(src_dir, '../config/config.yaml')
+    current_file_dir = get_current_dir()
+    app_root_dir = current_file_dir if is_frozen_bundle() else (current_file_dir / '..')
+
+    config_full_path = os.path.join(app_root_dir, 'config/config_example.yaml')
 
     parser = argparse.ArgumentParser(description=f'[{APP_ID}] Track & analyze your computer activity')
     parser.add_argument('--log-level', type=str, choices=['debug', 'info', 'warning', 'error'],
@@ -84,6 +86,8 @@ def main() -> None:
         app_exit_with_failure(logger, msg='Another instance is already running!')
     # <--
 
+    # TODO: copy config to ~/.local/speaking-eye/config/config.yaml
+    #       (read about XDG user directories) and use from there
     config: Optional[ConfigReader.ConfigType] = None
     error_config_msg = 'Speaking Eye does not work without config. Bye baby!'
 
@@ -127,9 +131,12 @@ def main() -> None:
     application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
     activity_reader = ActivityReader(logger, application_info_matcher)
 
-    current_file_dir = Path(os.path.dirname(os.path.abspath(__file__)))
-    app_root_dir = current_file_dir / '..'
+    # TODO: With this implementation have an error
+    #       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/_MEImHTUCg/dash/favicon.ico'
+    #       Why is it looking in "dash" folder if favicon is in "assets"?
     files_provider = FilesProvider(app_root_dir)
+
+    # TODO: What about files with raw data? They should not been copied to bundle
 
     language = config_reader.get_language()
     localizator = Localizator(files_provider.i18n_dir, language)
