@@ -168,6 +168,11 @@ make checks
 
 [![speaking-eye installation](https://img.youtube.com/vi/x2HaQlQTiTM/0.jpg)](https://youtu.be/x2HaQlQTiTM)
 
+### 🐌 Possible improvements
+
+* Simple new versions delivery, deb package [[TODO & Notes]](https://github.com/alena-bartosh/speaking-eye/blob/try-pyinstaller/TODO_NOTES.md)
+* Now SE uses ```xprop``` (a program that can list and set ```x11``` window properties). In the future we may want to use other window managers. Is it possible to get an active window using ```dbus```?
+
 ### Code conduction
 
 * Use [Gitmoji](https://gitmoji.carloscuesta.me) for commit messages
