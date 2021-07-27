@@ -39,6 +39,7 @@ Using Speaking Eye you can simply track you working hours:
 
 ### Installation and use
 
+[Demo (video)](https://github.com/alena-bartosh/speaking-eye#demo)  
 [Quick installation guide (video)](https://github.com/alena-bartosh/speaking-eye#quick-installation-guide)
 
 1. [Install system dependencies](https://github.com/alena-bartosh/speaking-eye#system-dependencies)
@@ -163,6 +164,9 @@ make install/systemd
 ```sh
 make checks
 ```
+### Demo
+
+[![speaking-eye demo](https://img.youtube.com/vi/0J-ZlpQaWHA/0.jpg)](https://youtu.be/0J-ZlpQaWHA)
 
 ### Quick installation guide
 
