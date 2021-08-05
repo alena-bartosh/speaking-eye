@@ -39,13 +39,14 @@ Using Speaking Eye you can simply track you working hours:
 
 ### Installation and use
 
-[Demo (video)](https://github.com/alena-bartosh/speaking-eye#demo)  
-[Quick installation guide (video)](https://github.com/alena-bartosh/speaking-eye#quick-installation-guide)
+Speaking Eye can be installed in two different ways: for developing and for regular using (production).  
+The simplest way of installation is
 
-1. [Install system dependencies](https://github.com/alena-bartosh/speaking-eye#system-dependencies)
-2. [Install requirements](https://github.com/alena-bartosh/speaking-eye#setup)
-3. [Set auto start](https://github.com/alena-bartosh/speaking-eye#set-auto-start)
-4. [Manually run at first time](https://github.com/alena-bartosh/speaking-eye#one-time-start) or reboot the system
+```
+pip install speaking-eye
+```
+
+Anyway, you will need some system dependencies. Please see all steps on [wiki pages](https://github.com/alena-bartosh/speaking-eye/wiki/Installation).
 
 #### Basics
 
@@ -111,44 +112,6 @@ report_server:
 ```
 ***SE analyzes only work time (when eye is active and open)!***
 
-### System dependencies
-
-```sh
-sudo apt-get install \
-    python3-dev \
-    python3-venv \
-    libcairo2-dev \
-    libgirepository1.0-dev \
-    python3-gi \
-    gir1.2-gtk-3.0 \
-    gir1.2-wnck-3.0 \
-    gir1.2-appindicator3-0.1 \
-    gir1.2-notify-0.7
-```
-
-### Setup
-```sh
-git clone https://github.com/alena-bartosh/speaking-eye.git && \
-cd speaking-eye && \
-make install
-```
-
-### Usage
-```sh
-SE_ARGS=--help make start
-```
-
-```
-usage: speaking_eye.py [-h] [--log-level] [-c]
-
-[speaking-eye] Track & analyze your computer activity
-
-optional arguments:
-  -h, --help      show this help message and exit
-  --log-level     debug/info/warning/error
-  -c , --config   config path
-```
-
 ### One-time start
 ```sh
 make start
@@ -167,10 +130,6 @@ make checks
 ### Demo
 
 [![speaking-eye demo](https://img.youtube.com/vi/0J-ZlpQaWHA/0.jpg)](https://youtu.be/0J-ZlpQaWHA)
-
-### Quick installation guide
-
-[![speaking-eye installation](https://img.youtube.com/vi/x2HaQlQTiTM/0.jpg)](https://youtu.be/x2HaQlQTiTM)
 
 ### 🐌 Possible improvements
 
