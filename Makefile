@@ -18,7 +18,7 @@ default:
 
 test:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Run unit tests"
-	@$(ACTIVATE_VENV) && PYTHONPATH=src coverage run --source=./src -m unittest discover ./tests
+	@$(ACTIVATE_VENV) && PYTHONPATH=speaking_eye coverage run --source=./speaking_eye -m unittest discover ./tests
 	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 coverage:
@@ -28,11 +28,11 @@ coverage:
 
 start:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "One-time start"
-	@$(ACTIVATE_VENV) && python3 ./src/speaking_eye.py $(SE_ARGS)
+	@$(ACTIVATE_VENV) && python3 ./speaking_eye/speaking_eye.py $(SE_ARGS)
 
 typecheck:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Type checking with mypy"
-	@$(ACTIVATE_VENV) && mypy --strict --show-error-codes --warn-unused-ignores ./src/speaking_eye.py
+	@$(ACTIVATE_VENV) && mypy --strict --show-error-codes --warn-unused-ignores ./speaking_eye/speaking_eye.py
 	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 lint:
