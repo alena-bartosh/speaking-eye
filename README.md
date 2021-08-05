@@ -174,7 +174,6 @@ make checks
 
 ### 🐌 Possible improvements
 
-* Simple new versions delivery, deb package [[TODO & Notes]](https://github.com/alena-bartosh/speaking-eye/blob/try-pyinstaller/TODO_NOTES.md)
 * Now SE uses ```xprop``` (a program that can list and set ```x11``` window properties). In the future we may want to use other window managers. Is it possible to get an active window using ```dbus```?
 
 ### Code conduction
