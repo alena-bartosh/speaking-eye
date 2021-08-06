@@ -11,8 +11,7 @@ requires = (
     'pydash>=4.8.0',
     'pyee>=7.0.2',
     'python-i18n>=0.3.9',
-    'PyYAML>=5.4',
-    'PyGObject>=3.36.0',
+    'pyyaml>=5.4',
     'typeguard>=2.12.1',
 )
 
