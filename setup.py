@@ -48,6 +48,11 @@ setup(
     url='https://github.com/alena-bartosh/speaking-eye',
     install_requires=requires,
     packages=['speaking_eye'],
+    entry_points={
+        'console_scripts': [
+            'speaking-eye = speaking_eye.speaking_eye:main',
+        ],
+    },
     author='Alena Bartosh',
     author_email='alena.mathematics@gmail.com',
     keywords='worktracker timetracker gtk wnck dash',
