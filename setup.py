@@ -45,6 +45,7 @@ setup(
     long_description=get_long_description(),
     long_description_content_type='text/markdown',
     url='https://github.com/alena-bartosh/speaking-eye',
+    python_requires='>=3.6, <4',
     install_requires=requires,
     package_dir={'': 'src'},
     packages=['speaking_eye'],
