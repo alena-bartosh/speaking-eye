@@ -49,7 +49,7 @@ setup(
     packages=['speaking_eye'],
     entry_points={
         'console_scripts': [
-            'speaking-eye = speaking_eye.speaking_eye:main',
+            'speaking-eye = speaking_eye.__main__:main',
         ],
     },
     author='Alena Bartosh',

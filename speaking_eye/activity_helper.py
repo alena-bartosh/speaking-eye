@@ -1,9 +1,9 @@
 from datetime import timedelta, datetime, date
 from typing import List
 
-from activity import Activity
-from activity_converter import ActivityConverter
-from datetime_helper import DatetimeHelper
+from .activity import Activity
+from .activity_converter import ActivityConverter
+from .datetime_helper import DatetimeHelper
 
 
 class ActivityHelper:

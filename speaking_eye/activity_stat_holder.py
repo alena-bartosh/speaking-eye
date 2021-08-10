@@ -1,11 +1,11 @@
 from datetime import timedelta
 from typing import List, ItemsView, cast
 
-from activity import Activity
-from activity_helper import ActivityHelper
-from activity_stat import ActivityStat
-from application_info import ApplicationInfo
-from special_application_info_title import SpecialApplicationInfoTitle
+from .activity import Activity
+from .activity_helper import ActivityHelper
+from .activity_stat import ActivityStat
+from .application_info import ApplicationInfo
+from .special_application_info_title import SpecialApplicationInfoTitle
 
 KeyType = str
 ItemType = ActivityStat

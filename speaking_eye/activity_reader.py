@@ -2,9 +2,9 @@ import logging
 from pathlib import Path
 from typing import List
 
-from activity import Activity
-from activity_converter import ActivityConverter
-from application_info_matcher import ApplicationInfoMatcher
+from .activity import Activity
+from .activity_converter import ActivityConverter
+from .application_info_matcher import ApplicationInfoMatcher
 
 
 class ActivityReader:

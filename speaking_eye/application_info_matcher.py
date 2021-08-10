@@ -1,8 +1,8 @@
 from re import search
 from typing import List, Optional
 
-from activity import Activity
-from application_info import ApplicationInfo
+from .activity import Activity
+from .application_info import ApplicationInfo
 
 
 class ApplicationInfoMatcher:

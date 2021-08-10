@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from application_info import ApplicationInfo
+from .application_info import ApplicationInfo
 
 
 class Activity:

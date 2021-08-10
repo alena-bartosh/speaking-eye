@@ -1,4 +1,4 @@
-from extended_enum import ExtendedEnum
+from .extended_enum import ExtendedEnum
 
 
 class Theme(ExtendedEnum):

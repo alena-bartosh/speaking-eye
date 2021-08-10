@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from activity import Activity
+from .activity import Activity
 
 
 class ActivityBuilder:

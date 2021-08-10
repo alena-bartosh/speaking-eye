@@ -5,7 +5,7 @@ from typing import Union, cast
 
 import i18n
 
-from language import Language
+from .language import Language
 
 
 class Localizator:

@@ -28,11 +28,11 @@ coverage:
 
 start:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "One-time start"
-	@$(ACTIVATE_VENV) && python3 ./speaking_eye/speaking_eye.py $(SE_ARGS)
+	@$(ACTIVATE_VENV) && python3 -m speaking_eye $(SE_ARGS)
 
 typecheck:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Type checking with mypy"
-	@$(ACTIVATE_VENV) && mypy --strict --show-error-codes --warn-unused-ignores ./speaking_eye/speaking_eye.py
+	@$(ACTIVATE_VENV) && mypy --strict --show-error-codes --warn-unused-ignores ./speaking_eye/__main__.py
 	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 lint:

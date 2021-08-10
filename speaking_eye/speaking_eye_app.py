@@ -12,23 +12,23 @@ from typing import Any, cast, List, Optional
 from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
 from pyee import BaseEventEmitter
 
-from activity import Activity
-from activity_reader import ActivityReader
-from activity_stat_holder import ActivityStatHolder
-from activity_writer import ActivityWriter
-from application_info_matcher import ApplicationInfoMatcher
-from config_reader import ConfigReader
-from files_provider import FilesProvider
-from gtk_extras import get_window_name
-from icon_state import IconState
-from localizator import Localizator
-from notification import Notification, NotificationEvent
-from notification_emojis import BREAK_TIME_EMOJIS, DISTRACTING_NOTIFICATION_EMOJIS
-from special_wm_class import SpecialWmClass
-from timer import Timer
-from tray_icon import TrayIcon
-from value import Value
-from x_helpers import get_wm_class
+from .activity import Activity
+from .activity_reader import ActivityReader
+from .activity_stat_holder import ActivityStatHolder
+from .activity_writer import ActivityWriter
+from .application_info_matcher import ApplicationInfoMatcher
+from .config_reader import ConfigReader
+from .files_provider import FilesProvider
+from .gtk_extras import get_window_name
+from .icon_state import IconState
+from .localizator import Localizator
+from .notification import Notification, NotificationEvent
+from .notification_emojis import BREAK_TIME_EMOJIS, DISTRACTING_NOTIFICATION_EMOJIS
+from .special_wm_class import SpecialWmClass
+from .timer import Timer
+from .tray_icon import TrayIcon
+from .value import Value
+from .x_helpers import get_wm_class
 
 
 class ApplicationEvent(Enum):

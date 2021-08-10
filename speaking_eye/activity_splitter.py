@@ -1,11 +1,11 @@
 from datetime import date
 from typing import List, Tuple
 
-from activity import Activity
-from activity_builder import ActivityBuilder
-from activity_helper import ActivityHelper
-from datetime_helper import DatetimeHelper
-from value import Value
+from .activity import Activity
+from .activity_builder import ActivityBuilder
+from .activity_helper import ActivityHelper
+from .datetime_helper import DatetimeHelper
+from .value import Value
 
 
 class ActivitySplitter:

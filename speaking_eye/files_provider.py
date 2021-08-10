@@ -6,8 +6,8 @@ from typing import cast
 
 import parse
 
-from icon_state import IconState
-from theme import Theme
+from .icon_state import IconState
+from .theme import Theme
 
 
 class FilesProvider:

@@ -13,14 +13,14 @@ from dash import Dash
 from dash.dependencies import Input, Output
 from pydash import some
 
-from activity_reader import ActivityReader
-from activity_stat_holder import ActivityStatHolder
-from config_reader import ConfigReader
-from datetime_formatter import DatetimeFormatter
-from datetime_helper import DatetimeHelper
-from files_provider import FilesProvider
-from localizator import Localizator
-from special_application_info_title import SpecialApplicationInfoTitle
+from .activity_reader import ActivityReader
+from .activity_stat_holder import ActivityStatHolder
+from .config_reader import ConfigReader
+from .datetime_formatter import DatetimeFormatter
+from .datetime_helper import DatetimeHelper
+from .files_provider import FilesProvider
+from .localizator import Localizator
+from .special_application_info_title import SpecialApplicationInfoTitle
 
 COLORS_SEQUENTIALS = [
     px.colors.sequential.Viridis,

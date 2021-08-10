@@ -1,7 +1,7 @@
 from datetime import timedelta
 
-from activity import Activity
-from activity_helper import ActivityHelper
+from .activity import Activity
+from .activity_helper import ActivityHelper
 
 
 class ActivityStat:

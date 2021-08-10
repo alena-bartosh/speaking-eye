@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from application_info import ApplicationInfo
+from .application_info import ApplicationInfo
 
 WM_NAME_KEY = 'wm_name'
 TAB_KEY = 'tab'
