@@ -1,8 +1,6 @@
 include LICENSE
 include README.md
 include setup.py
-recursive-include assets *
-recursive-include config *
-recursive-include dest *
-recursive-include i18n *
-recursive-include icon *
+recursive-include src/speaking_eye/assets *
+recursive-include src/speaking_eye/i18n *
+recursive-include src/speaking_eye/icon *

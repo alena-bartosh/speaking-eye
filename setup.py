@@ -48,6 +48,7 @@ setup(
     install_requires=requires,
     package_dir={'': 'src'},
     packages=['speaking_eye'],
+    include_package_data=True,
     entry_points={
         'console_scripts': [
             'speaking-eye = speaking_eye.__main__:main',
