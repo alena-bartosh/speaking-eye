@@ -13,6 +13,7 @@ requires = (
     'python-i18n>=0.3.9',
     'pyyaml>=5.4',
     'typeguard>=2.12.1',
+    'xdg==5.1.1',
 )
 
 this_directory = os.path.abspath(os.path.dirname(__file__))
