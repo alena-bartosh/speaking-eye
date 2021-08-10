@@ -28,6 +28,8 @@ coverage:
 
 start:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "One-time start"
+    # NOTE: Usage example:
+    #       SE_ARGS='-c config/config_example.yaml' make start
 	@$(ACTIVATE_VENV) && python3 -m src.speaking_eye $(SE_ARGS)
 
 typecheck:
