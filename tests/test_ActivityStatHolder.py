@@ -1,11 +1,11 @@
 import unittest
 from datetime import datetime, timedelta
 
-from activity import Activity
-from activity_stat import ActivityStat
-from activity_stat_holder import ActivityStatHolder
-from application_info import ApplicationInfo
-from special_application_info_title import SpecialApplicationInfoTitle
+from speaking_eye.activity import Activity
+from speaking_eye.activity_stat import ActivityStat
+from speaking_eye.activity_stat_holder import ActivityStatHolder
+from speaking_eye.application_info import ApplicationInfo
+from speaking_eye.special_application_info_title import SpecialApplicationInfoTitle
 
 
 class ActivityStatHolderTestCase(unittest.TestCase):

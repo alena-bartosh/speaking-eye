@@ -4,10 +4,10 @@ from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch, mock_open
 
-from activity import Activity
-from activity_reader import ActivityReader
-from application_info import ApplicationInfo
-from application_info_matcher import ApplicationInfoMatcher
+from speaking_eye.activity import Activity
+from speaking_eye.activity_reader import ActivityReader
+from speaking_eye.application_info import ApplicationInfo
+from speaking_eye.application_info_matcher import ApplicationInfoMatcher
 
 
 class ActivityReaderTestCase(unittest.TestCase):

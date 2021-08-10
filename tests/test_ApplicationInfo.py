@@ -1,6 +1,6 @@
 import unittest
 
-from application_info import ApplicationInfo
+from speaking_eye.application_info import ApplicationInfo
 
 
 class ApplicationInfoTestCase(unittest.TestCase):

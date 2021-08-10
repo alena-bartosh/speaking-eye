@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timedelta
 
-from datetime_formatter import DatetimeFormatter
+from speaking_eye.datetime_formatter import DatetimeFormatter
 
 
 class DatetimeFormatterTestCase(unittest.TestCase):

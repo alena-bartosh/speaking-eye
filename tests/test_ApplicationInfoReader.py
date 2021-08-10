@@ -1,7 +1,7 @@
 import unittest
 
-from application_info import ApplicationInfo
-from application_info_reader import ApplicationInfoReader
+from speaking_eye.application_info import ApplicationInfo
+from speaking_eye.application_info_reader import ApplicationInfoReader
 
 
 class ApplicationInfoReaderTestCase(unittest.TestCase):

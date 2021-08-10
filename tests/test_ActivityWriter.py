@@ -3,9 +3,9 @@ from datetime import datetime
 from pathlib import Path
 from unittest.mock import call, patch, Mock, mock_open
 
-from activity import Activity
-from activity_writer import ActivityWriter
-from files_provider import FilesProvider
+from speaking_eye.activity import Activity
+from speaking_eye.activity_writer import ActivityWriter
+from speaking_eye.files_provider import FilesProvider
 
 
 class ActivityWriterTestCase(unittest.TestCase):

@@ -1,7 +1,7 @@
 import unittest
 from datetime import date, datetime
 
-from datetime_helper import DatetimeHelper
+from speaking_eye.datetime_helper import DatetimeHelper
 
 
 class DatetimeHelperTestCase(unittest.TestCase):

@@ -1,8 +1,8 @@
 import unittest
 from datetime import datetime, timedelta
 
-from activity import Activity
-from activity_stat import ActivityStat
+from speaking_eye.activity import Activity
+from speaking_eye.activity_stat import ActivityStat
 
 
 class ActivityStatTestCase(unittest.TestCase):

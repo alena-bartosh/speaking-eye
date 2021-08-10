@@ -1,8 +1,8 @@
 import unittest
 from datetime import datetime
 
-from activity import Activity
-from activity_converter import ActivityConverter
+from speaking_eye.activity import Activity
+from speaking_eye.activity_converter import ActivityConverter
 
 
 class ActivityConverterTestCase(unittest.TestCase):

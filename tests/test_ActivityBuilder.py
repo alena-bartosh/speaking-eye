@@ -1,8 +1,8 @@
 import unittest
 from datetime import datetime
 
-from activity import Activity
-from activity_builder import ActivityBuilder
+from speaking_eye.activity import Activity
+from speaking_eye.activity_builder import ActivityBuilder
 
 
 class ActivityBuilderTestCase(unittest.TestCase):
