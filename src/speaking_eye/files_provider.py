@@ -19,18 +19,18 @@ class FilesProvider:
     __RAW_DATA_FILE_MASK = f'{{{__DATE_FORMAT_LABEL}}}_speaking_eye_raw_data.tsv'
     __FS_RAW_DATA_FILE_MASK = __RAW_DATA_FILE_MASK.format_map({__DATE_FORMAT_LABEL: '*'})
 
-    def __init__(self, app_root_dir: Path) -> None:
-        self.__app_root_dir = app_root_dir
+    def __init__(self, package_root_dir: Path) -> None:
+        self.__package_root_dir = package_root_dir
 
-        self.__i18n_dir = self.__app_root_dir / 'i18n'
-        self.__icon_dir = self.__app_root_dir / 'icon'
-        self.__raw_data_dir = self.__app_root_dir / 'dest'
+        self.__i18n_dir = self.__package_root_dir / 'i18n'
+        self.__icon_dir = self.__package_root_dir / 'icon'
+        self.__raw_data_dir = self.__package_root_dir / 'dest'
 
         self.__check_dirs()
 
     def __check_dirs(self) -> None:
         dir_paths = [
-            self.__app_root_dir,
+            self.__package_root_dir,
             self.__i18n_dir,
             self.__icon_dir,
             self.__raw_data_dir,
