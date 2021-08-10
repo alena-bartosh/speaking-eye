@@ -51,13 +51,13 @@ def dash_report_server_main(logger: logging.Logger,
 
 
 def main() -> None:
-    src_dir = os.path.dirname(os.path.abspath(__file__))
-    config_full_path = os.path.join(src_dir, '../config/config.yaml')
+    current_file_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+    config_full_path = current_file_dir.joinpath('../config/config.yaml')
 
     parser = argparse.ArgumentParser(description=f'[{APP_ID}] Track & analyze your computer activity')
     parser.add_argument('--log-level', type=str, choices=['debug', 'info', 'warning', 'error'],
                         default='debug', metavar='', help='debug/info/warning/error')
-    parser.add_argument('-c', '--config', type=str, default=config_full_path, metavar='', help='config path')
+    parser.add_argument('-c', '--config', type=str, default=str(config_full_path), metavar='', help='config path')
     args = parser.parse_args()
 
     log_level_map = {
@@ -125,7 +125,6 @@ def main() -> None:
     application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
     activity_reader = ActivityReader(logger, application_info_matcher)
 
-    current_file_dir = Path(os.path.dirname(os.path.abspath(__file__)))
     app_root_dir = current_file_dir / '..'
     files_provider = FilesProvider(app_root_dir)
 
