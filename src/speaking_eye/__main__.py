@@ -125,8 +125,7 @@ def main() -> None:
     application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
     activity_reader = ActivityReader(logger, application_info_matcher)
 
-    app_root_dir = current_file_dir / '..'
-    files_provider = FilesProvider(app_root_dir)
+    files_provider = FilesProvider(current_file_dir)
 
     language = config_reader.get_language()
     localizator = Localizator(files_provider.i18n_dir, language)
