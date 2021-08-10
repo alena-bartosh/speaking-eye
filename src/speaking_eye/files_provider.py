@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import cast
 
 import parse
+from xdg import xdg_data_home
 
 from .icon_state import IconState
 from .theme import Theme
@@ -19,12 +20,14 @@ class FilesProvider:
     __RAW_DATA_FILE_MASK = f'{{{__DATE_FORMAT_LABEL}}}_speaking_eye_raw_data.tsv'
     __FS_RAW_DATA_FILE_MASK = __RAW_DATA_FILE_MASK.format_map({__DATE_FORMAT_LABEL: '*'})
 
-    def __init__(self, package_root_dir: Path) -> None:
+    def __init__(self, package_root_dir: Path, app_id: str) -> None:
         self.__package_root_dir = package_root_dir
 
         self.__i18n_dir = self.__package_root_dir / 'i18n'
         self.__icon_dir = self.__package_root_dir / 'icon'
-        self.__raw_data_dir = self.__package_root_dir / 'dest'
+        self.__raw_data_dir = xdg_data_home() / app_id / 'dest'
+
+        self.__raw_data_dir.mkdir(parents=True, exist_ok=True)
 
         self.__check_dirs()
 

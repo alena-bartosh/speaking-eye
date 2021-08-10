@@ -18,7 +18,7 @@ default:
 
 test:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Run unit tests"
-	@$(ACTIVATE_VENV) && PYTHONPATH=src coverage run --source=./src/speaking_eye -m unittest discover ./tests
+	@$(ACTIVATE_VENV) && PYTHONPATH=src XDG_DATA_HOME=/root_dir coverage run --source=./src/speaking_eye -m unittest discover ./tests
 	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 coverage:
