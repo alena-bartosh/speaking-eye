@@ -40,12 +40,13 @@ def get_long_description() -> str:
 
 setup(
     name='speaking-eye',
-    version=get_version('speaking_eye/__init__.py'),
+    version=get_version('src/speaking_eye/__init__.py'),
     description="Track & analyze your computer activity. Focus on work and don't forget to take breaks",
     long_description=get_long_description(),
     long_description_content_type='text/markdown',
     url='https://github.com/alena-bartosh/speaking-eye',
     install_requires=requires,
+    package_dir={'': 'src'},
     packages=['speaking_eye'],
     entry_points={
         'console_scripts': [
