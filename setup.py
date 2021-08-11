@@ -33,9 +33,8 @@ def get_version(rel_path: str) -> str:
 
 
 def get_long_description() -> str:
-    readme_path = os.path.join(this_directory, 'README.md')
-    with open(readme_path, encoding='utf-8') as f:
-        # TODO: read only after "Installation and use" section (do not read before)
+    descr_path = os.path.join(this_directory, 'doc/pypi/long_description.md')
+    with open(descr_path, encoding='utf-8') as f:
         return f.read()
 
 
