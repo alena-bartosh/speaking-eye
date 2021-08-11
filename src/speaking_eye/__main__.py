@@ -6,11 +6,13 @@ import sys
 import tempfile
 import threading
 from pathlib import Path
+from shutil import copy
 from typing import List, Optional
 
 import coloredlogs
 import gi
 import yaml
+from xdg import xdg_data_home
 
 from .activity_reader import ActivityReader
 from .application_info import ApplicationInfo
@@ -51,8 +53,7 @@ def dash_report_server_main(logger: logging.Logger,
 
 
 def main() -> None:
-    current_file_dir = Path(os.path.dirname(os.path.abspath(__file__)))
-    config_full_path = current_file_dir.joinpath('./config/config.yaml')
+    config_full_path = xdg_data_home() / APP_ID / 'config' / 'config.yaml'
 
     parser = argparse.ArgumentParser(description=f'[{APP_ID}] Track & analyze your computer activity')
     parser.add_argument('--log-level', type=str, choices=['debug', 'info', 'warning', 'error'],
@@ -81,6 +82,15 @@ def main() -> None:
     except IOError:
         app_exit_with_failure(logger, msg='Another instance is already running!')
     # <--
+
+    current_file_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+
+    if not config_full_path.exists():
+        initial_config_path = current_file_dir / 'config' / 'config.yaml'
+
+        config_full_path.parent.mkdir(parents=True, exist_ok=True)
+        logger.debug(f'Copy config from [{initial_config_path}] to [{config_full_path}]...')
+        copy(initial_config_path, config_full_path)
 
     config: Optional[ConfigReader.ConfigType] = None
     error_config_msg = 'Speaking Eye does not work without config. Bye baby!'
