@@ -6,6 +6,7 @@ import sys
 import tempfile
 import threading
 from pathlib import Path
+from shutil import copy
 from typing import List, Optional
 
 import coloredlogs
@@ -48,6 +49,20 @@ def dash_report_server_main(logger: logging.Logger,
         server.run()
     except Exception:
         logger.exception('Could not start Report Server!')
+
+
+# TODO: pass loger into func & log file operations
+def make_autostartable_if_needed(config_reader: ConfigReader, files_provider: FilesProvider) -> None:
+    autostart_file_path = files_provider.autostart_file_path
+
+    if not config_reader.get_autostart():
+        if autostart_file_path.exists():
+            autostart_file_path.unlink()
+
+        return
+
+    if not autostart_file_path.exists():
+        copy(files_provider.desktop_file_path, autostart_file_path)
 
 
 def main() -> None:
@@ -110,6 +125,8 @@ def main() -> None:
 
     application_info_reader = ApplicationInfoReader()
     config_reader = ConfigReader(application_info_reader, config)
+
+    make_autostartable_if_needed(config_reader, files_provider)
 
     detailed_app_infos: Optional[List[ApplicationInfo]] = None
     distracting_app_infos: Optional[List[ApplicationInfo]] = None

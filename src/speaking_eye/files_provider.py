@@ -6,7 +6,7 @@ from shutil import copy
 from typing import cast, Optional, Union
 
 import parse
-from xdg import xdg_data_home
+from xdg import xdg_config_home, xdg_data_home
 
 from .icon_state import IconState
 from .theme import Theme
@@ -29,7 +29,11 @@ class FilesProvider:
         self.__icon_dir = self.__package_root_dir / 'icon'
         self.__initial_config_path = self.__package_root_dir / 'config' / 'config.yaml'
 
-        app_data_dir = xdg_data_home() / app_id
+        self.__autostart_file_path = xdg_config_home() / 'autostart' / 'speaking-eye.desktop'
+        data_home = xdg_data_home()
+        self.__desktop_file_path = data_home / 'applications' / 'speaking-eye.desktop'
+
+        app_data_dir = data_home / app_id
         self.__raw_data_dir = app_data_dir / 'data'
         self.__default_config_path = app_data_dir / 'config' / 'config.yaml'
 
@@ -56,6 +60,14 @@ class FilesProvider:
     @property
     def i18n_dir(self) -> Path:
         return self.__i18n_dir
+
+    @property
+    def autostart_file_path(self) -> Path:
+        return self.__autostart_file_path
+
+    @property
+    def desktop_file_path(self) -> Path:
+        return self.__desktop_file_path
 
     @property
     def config_path(self) -> Path:

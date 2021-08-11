@@ -70,3 +70,6 @@ class ConfigReader:
 
     def get_theme(self) -> Theme:
         return Theme.parse(get(self.config, 'theme'), Theme.DARK)
+
+    def get_autostart(self) -> bool:
+        return TypedValue.get(self.config, 'autostart', bool, True)

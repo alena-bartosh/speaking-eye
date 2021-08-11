@@ -4,6 +4,9 @@ theme: dark
 # language for notifications: [en - english (default), ru - russian, ua - ukrainian]
 language: en
 
+# run application automatically after login. set false if install for dev
+autostart: true
+
 # speaking-eye analyzes activity only for detailed_apps and distracting_apps
 # wm_name/tab are looked up with a regular expression so you can specify only part of the name
 # speaking-eye takes first match for app info so write more specific apps higher
