@@ -378,13 +378,11 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
 
         menu.append(Gtk.SeparatorMenuItem())
 
-        # TODO: localize
-        edit_config_item = Gtk.MenuItem('edit_config_item')
+        edit_config_item = Gtk.MenuItem(self.localizator.get('tray.edit_config'))
         edit_config_item.connect('activate', self.__on_edit_config_item_click)
         menu.append(edit_config_item)
 
-        # TODO: localize
-        open_data_dir_item = Gtk.MenuItem('open_data_dir')
+        open_data_dir_item = Gtk.MenuItem(self.localizator.get('tray.open_data_dir'))
         open_data_dir_item.connect('activate', self.__on_open_data_dir_item_click)
         menu.append(open_data_dir_item)
 

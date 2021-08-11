@@ -36,6 +36,8 @@ ru:
     work_time: 'Рабочее Время'
     open_report: 'Открыть Отчёт'
     close: 'Закрыть'
+    edit_config: 'Редактировать Конфиг'
+    open_data_dir: 'Посмотреть Данные'
 
   report_server:
     tab_title: 'Speaking Eye Отчёты'
