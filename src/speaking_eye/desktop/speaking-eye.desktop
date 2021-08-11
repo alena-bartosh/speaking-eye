@@ -7,6 +7,6 @@ Terminal=false
 StartupNotify=false
 
 X-GNOME-Autostart-enabled=true
-X-GNOME-Autostart-Delay=10
+X-GNOME-Autostart-Delay=5
 X-KDE-autostart-after=panel
-X-MATE-Autostart-Delay=10
+X-MATE-Autostart-Delay=5
