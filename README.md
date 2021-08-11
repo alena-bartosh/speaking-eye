@@ -3,13 +3,13 @@
 ![](https://github.com/alena-bartosh/speaking-eye/workflows/Lint%20&%20Tests/badge.svg)
 [![codecov](https://codecov.io/gh/alena-bartosh/speaking-eye/branch/master/graph/badge.svg)](https://codecov.io/gh/alena-bartosh/speaking-eye)
 
-### :eyes: Looking at
+### 👀 Looking at
 
 - [x] your working hours/breaks
 - [x] activity in any apps (IDE, browser tabs, terminal, etc.)
 - [x] distracting activity (custom list of apps/time limits)
 
-### :postal_horn: Speaking about
+### 📯 Speaking about
 
 - [x] your activity on the computer  
   <img src="doc/notification_examples/start_en.png" width="450">
@@ -21,7 +21,7 @@
 - [x] distracting apps if you spend a lot of time there  
   <img src="doc/notification_examples/distracting_en.png" width="450">
 
-### :globe_with_meridians: Speaks in
+### 🌐 Speaks in
 
 - [x] english
 - [x] по-русски
@@ -39,7 +39,9 @@ Using Speaking Eye you can simply track you working hours:
 
 ### Installation and use
 
-Speaking Eye can be installed in two different ways: for developing and for regular using (production).  
+Speaking Eye can be installed in two different ways. First way (via cloning repo and creating virtual env) is for developing 
+and second one (via pip) — for regular using.  
+
 The simplest way of installation is
 
 ```
@@ -87,12 +89,12 @@ To track a specific group of applications, follow this pattern:
 
 # In this case SE will save all these activities as 'Reading about my favorite project'
 ```
-
+Config will be saved into ```~/.local/share/speaking-eye/config``` (or path from ```XDG_DATA_HOME``` if set). 
 [Additional config example.](https://github.com/alena-bartosh/speaking-eye/blob/master/config/config_example.yaml)
 
 #### Data
 
-SE saves all collected data to ```speaking-eye/dest``` into ```{date}_speaking_eye_raw_data.tsv``` files that contain
+SE saves all collected data to ```~/.local/share/speaking-eye/data``` (or path from ```XDG_DATA_HOME``` if set) into ```{date}_speaking_eye_raw_data.tsv``` files that contain
 such columns for each activity:
 
 ```
@@ -112,21 +114,16 @@ report_server:
 ```
 ***SE analyzes only work time (when eye is active and open)!***
 
-### One-time start
+### Commands for developers
+
 ```sh
-make start
+$ make  # List of all supported commands
+$ make start  # One-time start
+$ make install/systemd  # Set auto start (after system startup)
+$ make checks  # Run type checking & linter & unittests
+$ SE_ARGS=--help make start  # See usage
 ```
 
-### Set auto start
-Speaking Eye will automatically turn on after system startup
-```sh
-make install/systemd
-```
-
-### Run type checking & linter & unittests
-```sh
-make checks
-```
 ### Demo
 
 [![speaking-eye demo](https://img.youtube.com/vi/0J-ZlpQaWHA/0.jpg)](https://youtu.be/0J-ZlpQaWHA)
