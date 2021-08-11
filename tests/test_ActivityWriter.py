@@ -32,7 +32,7 @@ class ActivityWriterTestCase(unittest.TestCase):
 
         writer.write(self.activity)
 
-        mock_open_res.assert_called_once_with('/root_dir/speaky/dest/2020-07-21_speaking_eye_raw_data.tsv', 'a')
+        mock_open_res.assert_called_once_with('/root_dir/speaky/data/2020-07-21_speaking_eye_raw_data.tsv', 'a')
 
         mock_file = mock_open_res.return_value
 
@@ -49,7 +49,7 @@ class ActivityWriterTestCase(unittest.TestCase):
         writer.write(second_activity)
 
         self.assertEqual(4, mock_is_dir_res.call_count)
-        mock_open_res.assert_called_once_with('/root_dir/speaky/dest/2020-07-21_speaking_eye_raw_data.tsv', 'a')
+        mock_open_res.assert_called_once_with('/root_dir/speaky/data/2020-07-21_speaking_eye_raw_data.tsv', 'a')
         self.assertEqual(2, mock_file.write.call_count)
         self.assertEqual(
             call('2020-07-21 22:30:00.000002\t2020-07-21 22:30:00.000008\t'
@@ -120,7 +120,7 @@ class ActivityWriterTestCase(unittest.TestCase):
             writer.event.on(ActivityWriter.NEW_DAY_EVENT, handle_new_day_event)
             writer.write(self.activity)
 
-        mock_open_res.assert_called_once_with('/root_dir/speaky/dest/2020-07-21_speaking_eye_raw_data.tsv', 'a')
+        mock_open_res.assert_called_once_with('/root_dir/speaky/data/2020-07-21_speaking_eye_raw_data.tsv', 'a')
         handle_new_day_event.assert_not_called()
 
     @patch('builtins.open', new_callable=mock_open)
@@ -139,7 +139,7 @@ class ActivityWriterTestCase(unittest.TestCase):
 
         writer.write(self.activity)
 
-        mock_open_res.assert_called_once_with('/root_dir/speaky/dest/2020-07-21_speaking_eye_raw_data.tsv', 'a')
+        mock_open_res.assert_called_once_with('/root_dir/speaky/data/2020-07-21_speaking_eye_raw_data.tsv', 'a')
 
         mock_file = mock_open_res.return_value
 
@@ -160,7 +160,7 @@ class ActivityWriterTestCase(unittest.TestCase):
         mock_file.close.assert_called_once()
 
         self.assertEqual(
-            call('/root_dir/speaky/dest/2020-07-22_speaking_eye_raw_data.tsv', 'a'), mock_open_res.call_args
+            call('/root_dir/speaky/data/2020-07-22_speaking_eye_raw_data.tsv', 'a'), mock_open_res.call_args
         )
         self.assertEqual(2, mock_file.write.call_count)
         self.assertEqual(
@@ -191,17 +191,17 @@ class ActivityWriterTestCase(unittest.TestCase):
         writer.write(three_days_activity)
 
         mock_open_res.assert_has_calls([
-            call('/root_dir/speaky/dest/2020-07-31_speaking_eye_raw_data.tsv', 'a'),
+            call('/root_dir/speaky/data/2020-07-31_speaking_eye_raw_data.tsv', 'a'),
             call().write('2020-07-31 12:05:00\t2020-07-31 23:59:59.999999\t'
                          '11:54:59.999999\twm_class2\twindow_name2\tTrue\n'),
             call().flush(),
             call().close(),
-            call('/root_dir/speaky/dest/2020-08-01_speaking_eye_raw_data.tsv', 'a'),
+            call('/root_dir/speaky/data/2020-08-01_speaking_eye_raw_data.tsv', 'a'),
             call().write('2020-08-01 00:00:00\t2020-08-01 23:59:59.999999\t'
                          '23:59:59.999999\twm_class2\twindow_name2\tTrue\n'),
             call().flush(),
             call().close(),
-            call('/root_dir/speaky/dest/2020-08-02_speaking_eye_raw_data.tsv', 'a'),
+            call('/root_dir/speaky/data/2020-08-02_speaking_eye_raw_data.tsv', 'a'),
             call().write('2020-08-02 00:00:00\t2020-08-02 11:30:00\t'
                          '11:30:00\twm_class2\twindow_name2\tTrue\n'),
             call().flush()

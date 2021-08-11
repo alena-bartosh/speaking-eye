@@ -13,7 +13,7 @@ from .theme import Theme
 
 class FilesProvider:
     """"
-    Provide paths to localization / icon / dest files.
+    Provide paths to localization / icon / data files.
     Help to search among files with raw data
     """
     __DATE_FORMAT_LABEL = 'date'
@@ -25,7 +25,7 @@ class FilesProvider:
 
         self.__i18n_dir = self.__package_root_dir / 'i18n'
         self.__icon_dir = self.__package_root_dir / 'icon'
-        self.__raw_data_dir = xdg_data_home() / app_id / 'dest'
+        self.__raw_data_dir = xdg_data_home() / app_id / 'data'
 
         self.__raw_data_dir.mkdir(parents=True, exist_ok=True)
 
