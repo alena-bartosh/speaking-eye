@@ -2,13 +2,15 @@ import glob
 import os
 from datetime import date, datetime
 from pathlib import Path
-from typing import cast
+from shutil import copy
+from typing import cast, Optional, Union
 
 import parse
 from xdg import xdg_data_home
 
 from .icon_state import IconState
 from .theme import Theme
+from .value import Value
 
 
 class FilesProvider:
@@ -25,11 +27,17 @@ class FilesProvider:
 
         self.__i18n_dir = self.__package_root_dir / 'i18n'
         self.__icon_dir = self.__package_root_dir / 'icon'
-        self.__raw_data_dir = xdg_data_home() / app_id / 'data'
+        self.__initial_config_path = self.__package_root_dir / 'config' / 'config.yaml'
+
+        app_data_dir = xdg_data_home() / app_id
+        self.__raw_data_dir = app_data_dir / 'data'
+        self.__default_config_path = app_data_dir / 'config' / 'config.yaml'
 
         self.__raw_data_dir.mkdir(parents=True, exist_ok=True)
 
         self.__check_dirs()
+
+        self.__config_path: Optional[Path] = None
 
     def __check_dirs(self) -> None:
         dir_paths = [
@@ -48,6 +56,34 @@ class FilesProvider:
     @property
     def i18n_dir(self) -> Path:
         return self.__i18n_dir
+
+    @property
+    def config_path(self) -> Path:
+        return Value.get_or_raise(self.__config_path, '__config_path')
+
+    @config_path.setter
+    def config_path(self, raw_value: Union[Path, str]) -> None:
+        value = raw_value
+
+        if isinstance(raw_value, str):
+            value = Path(raw_value)
+
+        self.__config_path = cast(Path, value)
+
+        if self.__config_path.exists():
+            return
+
+        is_custom_config_path = self.default_config_path != self.__config_path
+
+        if is_custom_config_path:
+            raise ValueError(f'__config_path [{self.__config_path}] does not exist!')
+
+        self.__config_path.parent.mkdir(parents=True, exist_ok=True)
+        copy(self.__initial_config_path, self.__config_path)
+
+    @property
+    def default_config_path(self) -> Path:
+        return self.__default_config_path
 
     def get_icon_file_path(self, theme: Theme, icon_state: IconState) -> Path:
         return self.__icon_dir / cast(str, theme.value) / f'{icon_state.value}.png'
