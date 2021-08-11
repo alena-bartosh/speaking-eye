@@ -85,6 +85,10 @@ class FilesProvider:
     def default_config_path(self) -> Path:
         return self.__default_config_path
 
+    @property
+    def raw_data_dir(self) -> Path:
+        return self.__raw_data_dir
+
     def get_icon_file_path(self, theme: Theme, icon_state: IconState) -> Path:
         return self.__icon_dir / cast(str, theme.value) / f'{icon_state.value}.png'
 

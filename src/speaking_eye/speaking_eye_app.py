@@ -1,6 +1,7 @@
 import logging
 import re
 import signal
+import subprocess
 import webbrowser
 from datetime import date, datetime, timedelta
 from enum import Enum
@@ -317,6 +318,12 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
 
         browser.open_new_tab(url)
 
+    def __on_edit_config_item_click(self, menu_item: Gtk.MenuItem) -> None:
+        subprocess.run(['xdg-open', f'{self.files_provider.config_path}'])
+
+    def __on_open_data_dir_item_click(self, menu_item: Gtk.MenuItem) -> None:
+        subprocess.run(['xdg-open', f'{self.files_provider.raw_data_dir}'])
+
     def set_work_time_state(self, value: bool) -> None:
         """
         Try to change work time state. It can be True (working time) or False (not working time).
@@ -368,6 +375,18 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         open_report_item = Gtk.MenuItem(self.localizator.get('tray.open_report'))
         open_report_item.connect('activate', self.__on_open_report_item_click)
         menu.append(open_report_item)
+
+        menu.append(Gtk.SeparatorMenuItem())
+
+        # TODO: localize
+        edit_config_item = Gtk.MenuItem('edit_config_item')
+        edit_config_item.connect('activate', self.__on_edit_config_item_click)
+        menu.append(edit_config_item)
+
+        # TODO: localize
+        open_data_dir_item = Gtk.MenuItem('open_data_dir')
+        open_data_dir_item.connect('activate', self.__on_open_data_dir_item_click)
+        menu.append(open_data_dir_item)
 
         menu.append(Gtk.SeparatorMenuItem())
 
