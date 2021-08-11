@@ -18,7 +18,7 @@ default:
 
 test:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Run unit tests"
-	@$(ACTIVATE_VENV) && PYTHONPATH=src coverage run --source=./src -m unittest discover ./tests
+	@$(ACTIVATE_VENV) && PYTHONPATH=src XDG_DATA_HOME=/root_dir coverage run --source=./src/speaking_eye -m unittest discover ./tests
 	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 coverage:
@@ -28,11 +28,13 @@ coverage:
 
 start:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "One-time start"
-	@$(ACTIVATE_VENV) && python3 ./src/speaking_eye.py $(SE_ARGS)
+    # NOTE: Usage example:
+    #       SE_ARGS='-c config/config_example.yaml' make start
+	@$(ACTIVATE_VENV) && python3 -m src.speaking_eye $(SE_ARGS)
 
 typecheck:
 	@$(LOAD_TEXT_OUTPUT); robot_says "💬" "Type checking with mypy"
-	@$(ACTIVATE_VENV) && mypy --strict --show-error-codes --warn-unused-ignores ./src/speaking_eye.py
+	@$(ACTIVATE_VENV) && mypy --strict --show-error-codes --warn-unused-ignores ./src/speaking_eye/__main__.py
 	@$(LOAD_TEXT_OUTPUT); robot_says "👍" "All good!"
 
 lint:

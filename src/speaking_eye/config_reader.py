@@ -3,11 +3,11 @@ from typing import Any, List, Dict, Optional
 
 from pydash import get
 
-from application_info import ApplicationInfo
-from application_info_reader import ApplicationInfoReader
-from language import Language
-from theme import Theme
-from typed_value import TypedValue
+from .application_info import ApplicationInfo
+from .application_info_reader import ApplicationInfoReader
+from .language import Language
+from .theme import Theme
+from .typed_value import TypedValue
 
 
 class ConfigReader:

@@ -1,8 +1,8 @@
 import unittest
 from datetime import date, datetime
 
-from activity import Activity
-from activity_splitter import ActivitySplitter
+from speaking_eye.activity import Activity
+from speaking_eye.activity_splitter import ActivitySplitter
 
 
 class ActivitySplitterTestCase(unittest.TestCase):

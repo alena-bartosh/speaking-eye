@@ -1,6 +1,6 @@
-from activity import Activity
-from bool_parser import BoolParser
-from datetime_formatter import DatetimeFormatter
+from .activity import Activity
+from .bool_parser import BoolParser
+from .datetime_formatter import DatetimeFormatter
 
 
 class ActivityConverter:

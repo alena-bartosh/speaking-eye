@@ -1,7 +1,7 @@
 import unittest
 from typing import Callable, List, Optional, Tuple, TypeVar
 
-from value import Value
+from speaking_eye.value import Value
 
 # declare type variable
 T = TypeVar('T')

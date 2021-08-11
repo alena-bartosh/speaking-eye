@@ -1,7 +1,7 @@
 import unittest
 from datetime import date
 
-from time_provider import TimeProvider
+from speaking_eye.time_provider import TimeProvider
 
 
 class TimeProviderTestCase(unittest.TestCase):

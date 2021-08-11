@@ -1,5 +1,3 @@
-__author__ = 'alena-bartosh'
-
 import argparse
 import fcntl
 import logging
@@ -14,23 +12,23 @@ import coloredlogs
 import gi
 import yaml
 
-from activity_reader import ActivityReader
-from application_info import ApplicationInfo
-from application_info_matcher import ApplicationInfoMatcher
-from application_info_reader import ApplicationInfoReader
-from config_reader import ConfigReader
-from dash_report_server import DashReportServer
-from files_provider import FilesProvider
-from localizator import Localizator
-from special_application_info_title import SpecialApplicationInfoTitle
-from special_wm_class import SpecialWmClass
+from .activity_reader import ActivityReader
+from .application_info import ApplicationInfo
+from .application_info_matcher import ApplicationInfoMatcher
+from .application_info_reader import ApplicationInfoReader
+from .config_reader import ConfigReader
+from .dash_report_server import DashReportServer
+from .files_provider import FilesProvider
+from .localizator import Localizator
+from .special_application_info_title import SpecialApplicationInfoTitle
+from .special_wm_class import SpecialWmClass
 
 gi.require_version('Wnck', '3.0')
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
 
-from speaking_eye_app import SpeakingEyeApp  # noqa: E402
+from .speaking_eye_app import SpeakingEyeApp  # noqa: E402
 
 APP_ID = 'speaking-eye'
 
@@ -53,13 +51,14 @@ def dash_report_server_main(logger: logging.Logger,
 
 
 def main() -> None:
-    src_dir = os.path.dirname(os.path.abspath(__file__))
-    config_full_path = os.path.join(src_dir, '../config/config.yaml')
+    current_file_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+    files_provider = FilesProvider(current_file_dir, APP_ID)
+    default_config_path = str(files_provider.default_config_path)
 
     parser = argparse.ArgumentParser(description=f'[{APP_ID}] Track & analyze your computer activity')
     parser.add_argument('--log-level', type=str, choices=['debug', 'info', 'warning', 'error'],
                         default='debug', metavar='', help='debug/info/warning/error')
-    parser.add_argument('-c', '--config', type=str, default=config_full_path, metavar='', help='config path')
+    parser.add_argument('-c', '--config', type=str, default=default_config_path, metavar='', help='config path')
     args = parser.parse_args()
 
     log_level_map = {
@@ -84,11 +83,20 @@ def main() -> None:
         app_exit_with_failure(logger, msg='Another instance is already running!')
     # <--
 
-    config: Optional[ConfigReader.ConfigType] = None
     error_config_msg = 'Speaking Eye does not work without config. Bye baby!'
 
     try:
-        with open(args.config) as config_file:
+        files_provider.config_path = args.config
+    except Exception:
+        logger.exception(f'Error during config path [{args.config}] initialization!')
+        app_exit_with_failure(logger, error_config_msg)
+
+    logger.debug(f'Use config_path [{files_provider.config_path}]')
+
+    config: Optional[ConfigReader.ConfigType] = None
+
+    try:
+        with open(str(files_provider.config_path)) as config_file:
             config = yaml.safe_load(config_file)
     except Exception:
         logger.exception(f'Config [{args.config}] is not correct')
@@ -126,10 +134,6 @@ def main() -> None:
 
     application_info_matcher = ApplicationInfoMatcher(detailed_app_infos, distracting_app_infos)
     activity_reader = ActivityReader(logger, application_info_matcher)
-
-    current_file_dir = Path(os.path.dirname(os.path.abspath(__file__)))
-    app_root_dir = current_file_dir / '..'
-    files_provider = FilesProvider(app_root_dir)
 
     language = config_reader.get_language()
     localizator = Localizator(files_provider.i18n_dir, language)

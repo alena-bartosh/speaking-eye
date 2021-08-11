@@ -1,6 +1,6 @@
 import unittest
 
-from bool_parser import BoolParser
+from speaking_eye.bool_parser import BoolParser
 
 
 class BoolParserTestCase(unittest.TestCase):

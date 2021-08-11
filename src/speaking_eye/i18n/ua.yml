@@ -36,6 +36,8 @@ ua:
     work_time: 'Робочий Час'
     open_report: 'Відкрити Звіт'
     close: 'Закрити'
+    edit_config: 'Редагувати Конфіг'
+    open_data_dir: 'Подивитись Дані'
 
   report_server:
     tab_title: 'Speaking Eye Звіти'

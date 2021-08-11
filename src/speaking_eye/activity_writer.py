@@ -3,11 +3,11 @@ from typing import cast, Optional, TextIO
 
 from pyee import BaseEventEmitter
 
-from activity import Activity
-from activity_converter import ActivityConverter
-from activity_helper import ActivityHelper
-from activity_splitter import ActivitySplitter
-from files_provider import FilesProvider
+from .activity import Activity
+from .activity_converter import ActivityConverter
+from .activity_helper import ActivityHelper
+from .activity_splitter import ActivitySplitter
+from .files_provider import FilesProvider
 
 
 class ActivityWriter:

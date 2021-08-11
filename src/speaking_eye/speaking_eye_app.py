@@ -1,6 +1,7 @@
 import logging
 import re
 import signal
+import subprocess
 import webbrowser
 from datetime import date, datetime, timedelta
 from enum import Enum
@@ -12,23 +13,23 @@ from typing import Any, cast, List, Optional
 from gi.repository import Gio, GLib, GObject, Gtk, Notify, Wnck
 from pyee import BaseEventEmitter
 
-from activity import Activity
-from activity_reader import ActivityReader
-from activity_stat_holder import ActivityStatHolder
-from activity_writer import ActivityWriter
-from application_info_matcher import ApplicationInfoMatcher
-from config_reader import ConfigReader
-from files_provider import FilesProvider
-from gtk_extras import get_window_name
-from icon_state import IconState
-from localizator import Localizator
-from notification import Notification, NotificationEvent
-from notification_emojis import BREAK_TIME_EMOJIS, DISTRACTING_NOTIFICATION_EMOJIS
-from special_wm_class import SpecialWmClass
-from timer import Timer
-from tray_icon import TrayIcon
-from value import Value
-from x_helpers import get_wm_class
+from .activity import Activity
+from .activity_reader import ActivityReader
+from .activity_stat_holder import ActivityStatHolder
+from .activity_writer import ActivityWriter
+from .application_info_matcher import ApplicationInfoMatcher
+from .config_reader import ConfigReader
+from .files_provider import FilesProvider
+from .gtk_extras import get_window_name
+from .icon_state import IconState
+from .localizator import Localizator
+from .notification import Notification, NotificationEvent
+from .notification_emojis import BREAK_TIME_EMOJIS, DISTRACTING_NOTIFICATION_EMOJIS
+from .special_wm_class import SpecialWmClass
+from .timer import Timer
+from .tray_icon import TrayIcon
+from .value import Value
+from .x_helpers import get_wm_class
 
 
 class ApplicationEvent(Enum):
@@ -317,6 +318,12 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
 
         browser.open_new_tab(url)
 
+    def __on_edit_config_item_click(self, menu_item: Gtk.MenuItem) -> None:
+        subprocess.run(['xdg-open', f'{self.files_provider.config_path}'])
+
+    def __on_open_data_dir_item_click(self, menu_item: Gtk.MenuItem) -> None:
+        subprocess.run(['xdg-open', f'{self.files_provider.raw_data_dir}'])
+
     def set_work_time_state(self, value: bool) -> None:
         """
         Try to change work time state. It can be True (working time) or False (not working time).
@@ -368,6 +375,16 @@ class SpeakingEyeApp(Gtk.Application):  # type: ignore[misc]
         open_report_item = Gtk.MenuItem(self.localizator.get('tray.open_report'))
         open_report_item.connect('activate', self.__on_open_report_item_click)
         menu.append(open_report_item)
+
+        menu.append(Gtk.SeparatorMenuItem())
+
+        edit_config_item = Gtk.MenuItem(self.localizator.get('tray.edit_config'))
+        edit_config_item.connect('activate', self.__on_edit_config_item_click)
+        menu.append(edit_config_item)
+
+        open_data_dir_item = Gtk.MenuItem(self.localizator.get('tray.open_data_dir'))
+        open_data_dir_item.connect('activate', self.__on_open_data_dir_item_click)
+        menu.append(open_data_dir_item)
 
         menu.append(Gtk.SeparatorMenuItem())
 

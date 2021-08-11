@@ -36,6 +36,8 @@ en:
     work_time: 'Work Time'
     open_report: 'Open Report'
     close: 'Close'
+    edit_config: 'Edit Config'
+    open_data_dir: 'Open Data'
 
   report_server:
     tab_title: 'Speaking Eye Reports'
