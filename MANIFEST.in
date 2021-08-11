@@ -1,6 +1,7 @@
 include LICENSE
 include README.md
 include setup.py
+include src/speaking_eye/config/config.yaml
 recursive-include src/speaking_eye/assets *
 recursive-include src/speaking_eye/i18n *
 recursive-include src/speaking_eye/icon *
