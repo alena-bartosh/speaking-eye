@@ -49,6 +49,12 @@ setup(
     install_requires=requires,
     package_dir={'': 'src'},
     packages=['speaking_eye'],
+    # NOTE: data_files will be copied into path with prefix ~/.local/ when installation without "sudo"
+    #       It is expected behaviour
+    data_files=[
+        ('share/icons/hicolor/scalable/apps', ['src/speaking_eye/desktop/speaking-eye.png']),
+        ('share/applications', ['src/speaking_eye/desktop/speaking-eye.desktop']),
+    ],
     include_package_data=True,
     entry_points={
         'console_scripts': [

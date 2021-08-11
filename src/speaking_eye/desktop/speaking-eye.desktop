@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Speaking Eye
+Exec=speaking-eye
+Icon=speaking-eye
+Type=Application
+Terminal=false
+StartupNotify=false
+
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Delay=10
+X-KDE-autostart-after=panel
+X-MATE-Autostart-Delay=10
