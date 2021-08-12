@@ -37,24 +37,53 @@ Using Speaking Eye you can simply track you working hours:
    * or as many days as you like  
      <img src="doc/reports_examples/several_days_en.png" width="450">     
 
-### Installation and use
-
-Speaking Eye can be installed in two different ways. First way (via cloning repo and creating virtual env) is for developing 
-and second one (via pip) — for regular using.  
+### Installation
 
 The simplest way of installation is
 
-```
+```sh
 pip install speaking-eye
 ```
 
-Anyway, you will need some system dependencies. Please see all steps on [wiki pages](https://github.com/alena-bartosh/speaking-eye/wiki/Installation).
+Also you will need some system dependencies.
 
+```sh
+sudo apt-get install \
+    python3-dev \
+    python3-venv \
+    libcairo2-dev \
+    libgirepository1.0-dev \
+    python3-gi \
+    gir1.2-gtk-3.0 \
+    gir1.2-wnck-3.0 \
+    gir1.2-appindicator3-0.1 \
+    gir1.2-notify-0.7
+```
+
+Now you can run Speaking Eye with command line or using Applications Menu in your desktop environment.
+
+```sh
+$ speaking-eye
+```
+
+To install application for developing please see steps on [wiki pages](https://github.com/alena-bartosh/speaking-eye/wiki/Installation-for-dev).
+
+### Auto start
+
+Auto start is enabled by default. After first run Speaking Eye will copy its `.desktop` file into ```~/.local/config/autostart``` (or path from ```XDG_CONFIG_HOME``` if set). Next time when you login application must start automatically.
+
+To disable auto start please set it in config and rerun application. Speaking Eye will remove its file from autostart dir.
+
+```
+autostart: true  # change to false to disable
+```
+
+### Use
 #### Basics
 
 After successful installation and start, you will see a tray icon. A running Speaking Eye (**SE**) has two states: 
-   * [active](https://github.com/alena-bartosh/speaking-eye/blob/master/icon/light/active.png) (open; for working time);
-   * [disabled](https://github.com/alena-bartosh/speaking-eye/blob/master/icon/light/disabled.png) (crossed out; for free time).
+   * [active](https://github.com/alena-bartosh/speaking-eye/blob/master/src/speaking_eye/icon/light/active.png) (open; for working time);
+   * [disabled](https://github.com/alena-bartosh/speaking-eye/blob/master/src/speaking_eye/icon/light/disabled.png) (crossed out; for free time).
 
 Use the active SE to track your work. For this check the box *'Work Time'* in the context menu.
 Eye is open: it thinks you are working. It will tell you about breaks, overtime and distracting activities. 
@@ -68,7 +97,9 @@ You also can close SE with *'Close'* in the context menu. Eye is closed: your br
 
 #### Config
 
-For a comfortable interaction with SE, please fill in [the config](https://github.com/alena-bartosh/speaking-eye/blob/master/config/config.yaml). 
+For a comfortable interaction with SE, please fill in [the config](https://github.com/alena-bartosh/speaking-eye/blob/master/src/speaking_eye/config/config.yaml). 
+You can open it with *'Edit Config'* in the context menu.
+
 Here you can choose the color theme of the icon and set time limits for notifications. 
 Also choose which activity you want to track (it is necessary) and which apps are considered harmful or distracting (optional).
 
@@ -90,7 +121,7 @@ To track a specific group of applications, follow this pattern:
 # In this case SE will save all these activities as 'Reading about my favorite project'
 ```
 Config will be saved into ```~/.local/share/speaking-eye/config``` (or path from ```XDG_DATA_HOME``` if set). 
-[Additional config example.](https://github.com/alena-bartosh/speaking-eye/blob/master/config/config_example.yaml)
+[Additional config example.](https://github.com/alena-bartosh/speaking-eye/blob/master/src/speaking_eye/config/config_example.yaml)
 
 #### Data
 
@@ -100,6 +131,8 @@ such columns for each activity:
 ```
 start_time, end_time, activity_time, wm_class, window_name, is_work_time
 ```
+
+You can open needed directory with *'Open Data'* in the context menu.
 
 #### Reports
 
@@ -114,16 +147,6 @@ report_server:
 ```
 ***SE analyzes only work time (when eye is active and open)!***
 
-### Commands for developers
-
-```sh
-$ make  # List of all supported commands
-$ make start  # One-time start
-$ make install/systemd  # Set auto start (after system startup)
-$ make checks  # Run type checking & linter & unittests
-$ SE_ARGS=--help make start  # See usage
-```
-
 ### Demo
 
 [![speaking-eye demo](https://img.youtube.com/vi/0J-ZlpQaWHA/0.jpg)](https://youtu.be/0J-ZlpQaWHA)
@@ -131,6 +154,7 @@ $ SE_ARGS=--help make start  # See usage
 ### 🐌 Possible improvements
 
 * Now SE uses ```xprop``` (a program that can list and set ```x11``` window properties). In the future we may want to use other window managers. Is it possible to get an active window using ```dbus```?
+* Autogenerate config through GUI
 
 ### Code conduction
 
