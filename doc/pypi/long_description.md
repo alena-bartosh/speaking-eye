@@ -20,16 +20,34 @@ Please read more information in [project README](https://github.com/alena-bartos
 
 ### Installation
 
-Speaking Eye can be installed in two different ways. First way (via cloning repo and creating virtual env) is for developing 
-and second one (via pip) — for regular using.  
-
 The simplest way of installation is
 
-```
+```sh
 pip install speaking-eye
 ```
 
-Anyway, you will need some system dependencies. Please see all steps on [wiki pages](https://github.com/alena-bartosh/speaking-eye/wiki/Installation).
+Also you will need some system dependencies.
+
+```sh
+sudo apt-get install \
+    python3-dev \
+    python3-venv \
+    libcairo2-dev \
+    libgirepository1.0-dev \
+    python3-gi \
+    gir1.2-gtk-3.0 \
+    gir1.2-wnck-3.0 \
+    gir1.2-appindicator3-0.1 \
+    gir1.2-notify-0.7
+```
+
+After it you can run Speaking Eye with command line or using Applications Menu in your desktop environment.
+
+```sh
+$ speaking-eye
+```
+
+To install application for developing please read steps on [wiki pages](https://github.com/alena-bartosh/speaking-eye/wiki/Installation).
 
 ### Demo
 
