@@ -55,7 +55,7 @@ class DashReportServer:
                  activity_reader: ActivityReader,
                  files_provider: FilesProvider,
                  localizator: Localizator) -> None:
-        self.app = Dash(__name__, assets_folder='../assets')
+        self.app = Dash(__name__, assets_folder='./assets')
 
         logging.getLogger('werkzeug').setLevel(logging.WARNING)
         logging.getLogger('parse').setLevel(logging.WARNING)
