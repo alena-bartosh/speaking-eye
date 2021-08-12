@@ -51,17 +51,22 @@ def dash_report_server_main(logger: logging.Logger,
         logger.exception('Could not start Report Server!')
 
 
-# TODO: pass loger into func & log file operations
-def make_autostartable_if_needed(config_reader: ConfigReader, files_provider: FilesProvider) -> None:
+def make_autostartable_if_needed(config_reader: ConfigReader,
+                                 files_provider: FilesProvider,
+                                 logger: logging.Logger) -> None:
     autostart_file_path = files_provider.autostart_file_path
 
     if not config_reader.get_autostart():
         if autostart_file_path.exists():
+            logger.debug(f'Remove [{autostart_file_path}] since [autostart=False] '
+                         f'and file exists...')
             autostart_file_path.unlink()
 
         return
 
     if not autostart_file_path.exists():
+        logger.debug(f'Copy [{files_provider.desktop_file_path}] into [{autostart_file_path}] '
+                     f'since [autostart=True] and file does not exist...')
         copy(files_provider.desktop_file_path, autostart_file_path)
 
 
@@ -126,7 +131,7 @@ def main() -> None:
     application_info_reader = ApplicationInfoReader()
     config_reader = ConfigReader(application_info_reader, config)
 
-    make_autostartable_if_needed(config_reader, files_provider)
+    make_autostartable_if_needed(config_reader, files_provider, logger)
 
     detailed_app_infos: Optional[List[ApplicationInfo]] = None
     distracting_app_infos: Optional[List[ApplicationInfo]] = None
