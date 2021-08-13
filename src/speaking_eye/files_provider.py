@@ -30,6 +30,8 @@ class FilesProvider:
         self.__initial_config_path = self.__package_root_dir / 'config' / 'config.yaml'
 
         self.__autostart_file_path = xdg_config_home() / 'autostart' / 'speaking-eye.desktop'
+        self.__autostart_file_path.parent.mkdir(parents=True, exist_ok=True)
+
         data_home = xdg_data_home()
         self.__desktop_file_path = data_home / 'applications' / 'speaking-eye.desktop'
 

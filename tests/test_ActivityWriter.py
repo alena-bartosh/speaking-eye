@@ -23,7 +23,7 @@ class ActivityWriterTestCase(unittest.TestCase):
     def test_when_record_first_activities_of_the_day(self, mock_mkdir_res, mock_is_dir_res, mock_open_res) -> None:
         files_provider = FilesProvider(Path('/root_dir/'), self.app_id)
         self.assertEqual(4, mock_is_dir_res.call_count)
-        self.assertEqual(1, mock_mkdir_res.call_count)
+        self.assertEqual(2, mock_mkdir_res.call_count)
 
         writer = ActivityWriter(files_provider)
         handle_new_day_event = Mock()
@@ -74,7 +74,7 @@ class ActivityWriterTestCase(unittest.TestCase):
     def test_when_activity_has_not_finished(self, mock_mkdir_res, mock_is_dir_res, mock_open_res) -> None:
         files_provider = FilesProvider(Path('/root_dir/'), self.app_id)
         self.assertEqual(4, mock_is_dir_res.call_count)
-        self.assertEqual(1, mock_mkdir_res.call_count)
+        self.assertEqual(2, mock_mkdir_res.call_count)
 
         writer = ActivityWriter(files_provider)
 
@@ -113,7 +113,7 @@ class ActivityWriterTestCase(unittest.TestCase):
                 expected_regex='current_file should be opened!'):
             files_provider = FilesProvider(Path('/root_dir/'), self.app_id)
             self.assertEqual(4, mock_is_dir_res.call_count)
-            self.assertEqual(1, mock_mkdir_res.call_count)
+            self.assertEqual(2, mock_mkdir_res.call_count)
 
             writer = ActivityWriter(files_provider)
 
@@ -129,7 +129,7 @@ class ActivityWriterTestCase(unittest.TestCase):
     def test_when_new_day_started(self, mock_mkdir_res, mock_is_dir_res, mock_open_res) -> None:
         files_provider = FilesProvider(Path('/root_dir/'), self.app_id)
         self.assertEqual(4, mock_is_dir_res.call_count)
-        self.assertEqual(1, mock_mkdir_res.call_count)
+        self.assertEqual(2, mock_mkdir_res.call_count)
 
         writer = ActivityWriter(files_provider)
 
@@ -175,7 +175,7 @@ class ActivityWriterTestCase(unittest.TestCase):
     def test_when_tree_day_activity(self, mock_mkdir_res, mock_is_dir_res, mock_open_res) -> None:
         files_provider = FilesProvider(Path('/root_dir/'), self.app_id)
         self.assertEqual(4, mock_is_dir_res.call_count)
-        self.assertEqual(1, mock_mkdir_res.call_count)
+        self.assertEqual(2, mock_mkdir_res.call_count)
 
         writer = ActivityWriter(files_provider)
 
