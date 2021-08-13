@@ -88,10 +88,13 @@ def main() -> None:
         'error': logging.ERROR
     }
 
-    # TODO: raise & exit if XDG_SESSION_TYPE is not x11 (check env vars for that)
-
     coloredlogs.install(log_level_map[args.log_level])
     logger = logging.getLogger(APP_ID)
+
+    # TODO: Support Wayland (new display server protocol)
+    if os.getenv('XDG_SESSION_TYPE') != 'x11':
+        error_xdg_session_msg = 'Sorry, Speaking eye supports only x11 windows manager for now!'
+        app_exit_with_failure(logger, error_xdg_session_msg)
 
     # TODO: It can be extracted into separate package with name like "run_once" -->
     pid_file = f'{tempfile.gettempdir()}/{APP_ID}.pid'
