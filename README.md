@@ -60,6 +60,8 @@ sudo apt-get install \
     gir1.2-notify-0.7
 ```
 
+Please relogin to ensure `$PATH` env var contains ```~/.local/bin```.
+
 Now you can run Speaking Eye with command line or using Applications Menu in your desktop environment.
 
 ```sh
@@ -70,7 +72,7 @@ To install application for developing please see steps on [wiki pages](https://g
 
 ### Auto start
 
-Auto start is enabled by default. After first run Speaking Eye will copy its `.desktop` file into ```~/.local/config/autostart``` (or path from ```XDG_CONFIG_HOME``` if set). Next time when you login application must start automatically.
+Auto start is enabled by default. After first run Speaking Eye will copy its `.desktop` file into ```~/.local/config/autostart``` (or path from ```$XDG_CONFIG_HOME``` if set). Next time when you login application must start automatically.
 
 To disable auto start please set it in config and rerun application. Speaking Eye will remove its file from autostart dir.
 
@@ -120,12 +122,12 @@ To track a specific group of applications, follow this pattern:
 
 # In this case SE will save all these activities as 'Reading about my favorite project'
 ```
-Config will be saved into ```~/.local/share/speaking-eye/config``` (or path from ```XDG_DATA_HOME``` if set). 
+Config will be saved into ```~/.local/share/speaking-eye/config``` (or path from ```$XDG_DATA_HOME``` if set). 
 [Additional config example.](https://github.com/alena-bartosh/speaking-eye/blob/master/src/speaking_eye/config/config_example.yaml)
 
 #### Data
 
-SE saves all collected data to ```~/.local/share/speaking-eye/data``` (or path from ```XDG_DATA_HOME``` if set) into ```{date}_speaking_eye_raw_data.tsv``` files that contain
+SE saves all collected data to ```~/.local/share/speaking-eye/data``` (or path from ```$XDG_DATA_HOME``` if set) into ```{date}_speaking_eye_raw_data.tsv``` files that contain
 such columns for each activity:
 
 ```

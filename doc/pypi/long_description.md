@@ -41,13 +41,15 @@ sudo apt-get install \
     gir1.2-notify-0.7
 ```
 
-After it you can run Speaking Eye with command line or using Applications Menu in your desktop environment.
+Please relogin to ensure `$PATH` env var contains ```~/.local/bin```.
+
+Now you can run Speaking Eye with command line or using Applications Menu in your desktop environment.
 
 ```sh
 $ speaking-eye
 ```
 
-To install application for developing please read steps on [wiki pages](https://github.com/alena-bartosh/speaking-eye/wiki/Installation).
+To install application for developing please see steps on [wiki pages](https://github.com/alena-bartosh/speaking-eye/wiki/Installation-for-dev).
 
 ### Demo
 
