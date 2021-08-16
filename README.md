@@ -39,6 +39,8 @@ Using Speaking Eye you can simply track you working hours:
 
 ### Installation
 
+[Quick installation guide (video)](https://github.com/alena-bartosh/speaking-eye#quick-installation-guide)
+
 The simplest way of installation is
 
 ```sh
@@ -148,6 +150,10 @@ report_server:
   browser: firefox
 ```
 ***SE analyzes only work time (when eye is active and open)!***
+
+### Quick installation guide
+
+[![speaking-eye installation](https://img.youtube.com/vi/qz1N4jtmi9Q/0.jpg)](https://youtu.be/qz1N4jtmi9Q)
 
 ### Demo
 
